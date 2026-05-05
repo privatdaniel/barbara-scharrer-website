@@ -1,0 +1,71 @@
+<!-- =====================================================================
+     WEBFLOW HTML EMBED — Loader für die Webinar-Landingpage
+     =====================================================================
+     Lädt Content + Bilder direkt aus dem GitHub-Repo via jsDelivr-CDN.
+     Repo: https://github.com/directmailing-io/barbara-scharrer-webinar-lp
+     CDN:  https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/
+
+     WORKFLOW:
+       1. Code lokal ändern → committen → push to GitHub
+       2. jsDelivr aktualisiert sich automatisch (Cache ~12 h)
+       3. Für sofortige Aktualisierung: in der URL @main durch Commit-SHA
+          ersetzen oder einmalig https://purge.jsdelivr.net/... aufrufen
+     ===================================================================== -->
+
+<script>
+  /* === ZENTRALE KONFIG (Datum, Uhrzeit, Bilder) =====================
+     Diese Werte stehen IM Webflow-Embed (nicht in der externen Datei)
+     und können jederzeit hier geändert werden, ohne neuen Push.        */
+  window.BSLP_CONFIG = {
+
+    /* Datum & Uhrzeit */
+    weekday: 'Dienstag',
+    date:    '19.05.2026',
+    time:    '19:00',
+
+    /* Bild-URLs (alle via jsDelivr aus dem GitHub-Repo) */
+    images: {
+      logo:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg',
+      hero:     'https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/barbara-scharrer-bg.jpg',
+      host:     'https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/barbara-scharrer-host.jpg',
+      aufricht: 'https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/aufrechtprinzip.png'
+    }
+  };
+</script>
+
+<!-- Mount + Loader -->
+<div id="bslp-mount"></div>
+
+<script>
+  (function(){
+    /* HTML-Content via jsDelivr aus dem GitHub-Repo */
+    var CONTENT_URL = 'https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/webinar-content.txt';
+
+    var mount = document.getElementById('bslp-mount');
+    if (!mount) return;
+
+    fetch(CONTENT_URL, { credentials: 'omit' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function(html){
+        mount.innerHTML = html;
+        /* <script>-Tags aus innerHTML manuell re-aktivieren */
+        mount.querySelectorAll('script').forEach(function(oldScript){
+          var newScript = document.createElement('script');
+          for (var i = 0; i < oldScript.attributes.length; i++) {
+            var a = oldScript.attributes[i];
+            newScript.setAttribute(a.name, a.value);
+          }
+          newScript.textContent = oldScript.textContent;
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+      })
+      .catch(function(err){
+        console.error('[Webinar-LP] Content-Load fehlgeschlagen:', err);
+        mount.innerHTML = '<p style="padding:2rem;text-align:center;color:#888;font-family:sans-serif">'
+                        + 'Inhalte können momentan nicht geladen werden.</p>';
+      });
+  })();
+</script>

@@ -1,0 +1,2833 @@
+<!--
+  Webflow HTML Embed: Webinar-Landingpage (Navigation + Hero)
+  Einbau: HTML-Embed-Widget innerhalb von "main-wrapper"
+  Schriftart: nutzt die in Webflow bereits geladene Manrope (kein Google-Fonts-Reload)
+
+  ASSETS (sind aktuell mit funktionierenden URLs vorbelegt – beim Webflow-Einbau
+  optional gegen Webflow-Asset-URLs tauschen):
+    LOGO: zeigt direkt auf das vorhandene Logo-SVG eurer Webflow-CDN
+    BG:   liegt als Datei "barbara-scharrer-bg.jpg" NEBEN dieser HTML-Datei
+          → für die finale Webflow-Version: Datei in Webflow Assets hochladen
+            und in der CSS-Variable --bslp-bg-image die URL einsetzen.
+-->
+
+<!-- ============================================================
+     ZENTRALE KONFIG  ·  Datum/Uhrzeit + Bild-URLs
+     ============================================================
+     Nur HIER einmal pflegen — die Werte werden überall in der
+     Landingpage automatisch eingesetzt.
+
+     Webflow-CMS-Variante: einfach die String-Werte durch CMS-Tokens
+     ersetzen, z. B. '{{wf {"path":"name","type":"PlainText"} }}'.
+
+     Webflow-Einbau: Bilder in Webflow Assets hochladen und unten die
+     Asset-URLs einsetzen — der Rest funktioniert automatisch.
+     ============================================================ -->
+<script>
+  window.BSLP_CONFIG = {
+
+    /* Datum & Uhrzeit (werden in Hero, Trust, Workshop, Signup, Form verwendet) */
+    weekday: 'Dienstag',
+    date:    '19.05.2026',
+    time:    '19:00',
+
+    /* Bild-URLs (Logo, Hero-Foto, Host-Foto, AUFricht-Grafik) */
+    images: {
+      logo:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg',
+      hero:     'barbara-scharrer-bg.jpg',     /* Hero-Hintergrund (Yoga-Studio mit Frauen) */
+      host:     'barbara-scharrer-host.jpg',   /* „Deine Gastgeberin"-Foto (Barbara sitzend) */
+      aufricht: 'aufrechtprinzip.png'          /* 3-Stadien-Skelett-Skizze in der Solution-Card */
+    }
+  };
+</script>
+
+<style>
+  /* ============================================================
+     Scope: alle Klassen mit Präfix "bslp-".
+     Farben: Blau = primär, Beige = sekundär (Brand BS)
+     ============================================================ */
+
+  /* Body-Reset: greift nur lokal/Preview, in Webflow-Body sowieso 0.
+     Verhindert den weißen 8 px-Default-Rahmen rund um das Embed.    */
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  .bslp-root {
+    --bslp-black: #0a0a0a;
+    --bslp-ink: #1a1a1a;
+    --bslp-muted: #5a5a5a;
+    --bslp-line: rgba(10, 10, 10, 0.08);
+    --bslp-blau-1: #87a9c2;
+    --bslp-blau-2: #678ba5;
+    --bslp-blau-3: #4a708c;
+    --bslp-beige-1: #c1a68d;
+    --bslp-beige-2: #ac8f75;
+    --bslp-live: #e0322a;
+    --bslp-radius-pill: 999px;
+    --bslp-radius-lg: 24px;
+    --bslp-radius-md: 16px;
+
+    /* Hintergrundbild Hero – für Webflow später durch Asset-URL ersetzen */
+    --bslp-bg-image: url("barbara-scharrer-bg.jpg");
+
+    font-family: Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--bslp-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+    box-sizing: border-box;
+  }
+  .bslp-root *, .bslp-root *::before, .bslp-root *::after { box-sizing: border-box; }
+  .bslp-root img { max-width: 100%; height: auto; display: block; }
+  .bslp-root a { color: inherit; text-decoration: none; }
+
+  /* ===================== HEADER + HERO WRAPPER ===================== */
+  /* Beide Sections teilen sich EIN gemeinsames Hintergrundbild.
+     Das Bild liegt auf .bslp-stage-bg (echter <img>), damit wir die
+     Frau gezielt rechts platzieren können (object-fit cover + Position). */
+  .bslp-stage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--bslp-bg-color, #f5f8fb);
+    /* Full-bleed Breakout: bricht aus container-padding aus, damit Hero
+       bündig zu beiden Viewport-Kanten reicht (ohne weißen Rahmen). */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+  .bslp-root .bslp-stage-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 100% center;
+    /* moderater Right-Shift → Barbara sitzt mittig-rechts (~80 % Viewport),
+       ihr Gesicht bleibt vollständig sichtbar, Hintergrund-Frauen werden
+       weiter aus der Mitte verdrängt. */
+    transform: translateX(11%);
+    z-index: 0;
+  }
+  .bslp-stage-veil {
+    /* Gradient nie ganz solid: max 95 % → das Bild schimmert überall
+       sanft durch, auch hinter dem Text. */
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 38% 60% at 86% 55%, rgba(255,255,255,0) 0%, rgba(245, 248, 251, 0.08) 70%, rgba(245, 248, 251, 0.15) 100%),
+      linear-gradient(90deg,
+        rgba(245, 248, 251, 0.95) 0%,
+        rgba(245, 248, 251, 0.95) 52%,
+        rgba(245, 248, 251, 0.74) 64%,
+        rgba(245, 248, 251, 0.28) 78%,
+        rgba(245, 248, 251, 0)    94%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .bslp-stage-veil::after {
+    /* feiner Top- und Bottom-Glow, ebenfalls max 95 % */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 16%),
+      linear-gradient(0deg,   rgba(245,248,251,0.50) 0%, rgba(245,248,251,0) 22%);
+    pointer-events: none;
+  }
+  .bslp-stage > nav,
+  .bslp-stage > section { position: relative; z-index: 2; }
+
+  /* ============================ NAVIGATION ============================ */
+  .bslp-nav {
+    position: relative;
+    z-index: 5;
+    background: transparent;
+    border-bottom: none;
+  }
+  .bslp-nav-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0.875rem 5%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .bslp-nav-logo {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+  }
+  .bslp-root .bslp-logo-img {
+    height: 52px;
+    width: auto;
+    max-width: none;
+  }
+  .bslp-nav-tagline {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.55rem 1.1rem 0.55rem 0.55rem;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.875rem;
+    line-height: 1.2;
+    color: var(--bslp-black);
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    box-shadow: 0 6px 24px rgba(74, 112, 140, 0.12), 0 1px 0 rgba(255,255,255,0.6) inset;
+  }
+  .bslp-nav-tagline .bslp-blau { color: var(--bslp-blau-3); }
+  .bslp-nav-tagline-icon {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bslp-blau-2), var(--bslp-blau-3));
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(74, 112, 140, 0.30);
+  }
+  .bslp-nav-tagline-icon svg { width: 15px; height: 15px; }
+
+  .bslp-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bslp-live);
+    position: relative;
+    box-shadow: 0 0 0 0 rgba(224, 50, 42, 0.55);
+    animation: bslp-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes bslp-pulse {
+    0%   { box-shadow: 0 0 0 0   rgba(224, 50, 42, 0.55); }
+    70%  { box-shadow: 0 0 0 10px rgba(224, 50, 42, 0); }
+    100% { box-shadow: 0 0 0 0   rgba(224, 50, 42, 0); }
+  }
+
+  /* ============================== HERO ============================== */
+  .bslp-hero {
+    position: relative;
+  }
+  .bslp-hero-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2.25rem 5% 5rem;       /* deutlich mehr Atem unten zur Trust-Card */
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+    gap: 2.5rem;
+    align-items: center;
+    min-height: clamp(440px, 60vh, 580px);
+  }
+  .bslp-hero-copy {
+    position: relative;
+    max-width: 42rem;
+  }
+  .bslp-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(103, 139, 165, 0.25);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--bslp-blau-3);
+    letter-spacing: 0.005em;
+    box-shadow: 0 4px 16px rgba(74, 112, 140, 0.08);
+    margin-bottom: 1.25rem;
+  }
+  .bslp-hero-eyebrow .bslp-live-dot { width: 7px; height: 7px; }
+
+  .bslp-h1 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.75rem, 2.7vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--bslp-black);
+    margin: 0 0 1.1rem;
+    text-wrap: balance;
+  }
+  .bslp-h1-accent {
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;        /* AUFricht-Prinzip darf NIE umbrechen */
+  }
+  .bslp-subheadline {
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--bslp-ink);
+    margin: 0 0 1.1rem;
+    max-width: 34rem;
+  }
+  .bslp-lead {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bslp-muted);
+    margin: 0 0 1.5rem;
+    max-width: 32rem;
+  }
+
+  /* CTA */
+  .bslp-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .bslp-cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 1rem 1.85rem;
+    border-radius: var(--bslp-radius-lg);
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bslp-beige-2), var(--bslp-beige-1));
+    color: #ffffff;
+    font-family: Manrope, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: 0.005em;
+    border: 0.5px solid rgba(255,255,255,0.25);
+    box-shadow: 0 10px 26px rgba(172, 143, 117, .4), 0 1px 0 rgba(255,255,255,.4) inset;
+    transition: transform .2s ease, box-shadow .25s ease, background-image .3s ease;
+    text-align: center;
+    cursor: pointer;
+  }
+  .bslp-root .bslp-cta,
+  .bslp-root .bslp-cta:visited,
+  .bslp-root .bslp-cta:hover,
+  .bslp-root .bslp-cta:focus,
+  .bslp-root .bslp-cta:active {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .bslp-cta:hover {
+    transform: translateY(-1px);
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bslp-beige-2) 70%, var(--bslp-beige-1));
+    box-shadow: 0 14px 32px rgba(172, 143, 117, .45), 0 1px 0 rgba(255,255,255,.4) inset;
+  }
+  .bslp-cta:active { transform: translateY(0); }
+  .bslp-cta-arrow {
+    width: 18px;
+    height: 18px;
+    transition: transform .25s ease;
+  }
+  .bslp-cta:hover .bslp-cta-arrow { transform: translateX(3px); }
+  .bslp-cta-meta {
+    font-size: 0.8125rem;
+    color: var(--bslp-muted);
+    opacity: 0.7;
+    line-height: 1.4;
+    padding-left: 0.25rem;
+  }
+  .bslp-cta-meta strong { color: var(--bslp-ink); font-weight: 700; }
+
+  /* ============================ TRUST-SEKTION ============================ */
+  /* Inset-Card: schwebt zwischen Hero und nachfolgendem Content,
+     mit klar sichtbaren runden Ecken auf allen Seiten.            */
+  .bslp-trust {
+    position: relative;
+    z-index: 3;
+    max-width: 76rem;
+    margin: -1rem auto 2rem;        /* dezenter Overlap → mehr sichtbarer Atem im Hero */
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
+    border-radius: var(--bslp-radius-lg);
+    box-shadow:
+      0 1px 2px   rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(10, 10, 10, 0.06),
+      0 28px 60px rgba(10, 10, 10, 0.04);
+  }
+  .bslp-trust-inner {
+    padding: 2.25rem 2.5rem 2.5rem;
+  }
+  .bslp-trust-header {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 1.75rem;
+  }
+  .bslp-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.125rem, 1.45vw, 1.375rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--bslp-black);
+    margin: 0 0 0.4rem;
+    text-wrap: balance;
+  }
+  .bslp-trust-sub {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--bslp-blau-3);
+    margin: 0;
+    line-height: 1.4;
+    letter-spacing: 0.005em;
+    text-wrap: balance;             /* gleichmäßige Zeilenbrüche bei Wrap */
+    max-width: 32rem;
+  }
+  .bslp-trust-sub > span:last-child { text-wrap: balance; }
+  .bslp-trust-sub .bslp-live-dot { width: 7px; height: 7px; }
+
+  .bslp-trust-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+  .bslp-trust-card {
+    /* keine Card-Optik mehr — nur Inhalt, mit dezentem Vertical-Divider */
+    padding: 0.5rem 1.25rem;
+    text-align: center;
+    border-left: 1px solid rgba(103, 139, 165, 0.12);
+  }
+  .bslp-trust-card:first-child { border-left: 0; }
+
+  .bslp-trust-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 0.85rem;
+    border-radius: 50%;
+    background: rgba(135, 169, 194, 0.10);
+    color: var(--bslp-blau-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bslp-trust-icon svg { width: 18px; height: 18px; }
+  .bslp-trust-value {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 1.9vw, 1.875rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--bslp-blau-3);
+    margin: 0 0 0.35rem;
+  }
+  .bslp-trust-value sup {
+    font-size: 1em;
+    font-weight: 700;
+    vertical-align: baseline;
+    margin-left: 0.05em;
+    top: 0;
+  }
+  .bslp-trust-label {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--bslp-muted);
+    font-weight: 500;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  /* ============================ STORY-SEKTION ============================ */
+  .bslp-story {
+    position: relative;
+    background: #ffffff;
+    padding: 5rem 5% 6rem;
+  }
+  .bslp-story-inner {
+    max-width: 44rem;
+    margin: 0 auto;
+  }
+  .bslp-story-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.625rem, 2.6vw, 2.375rem);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.018em;
+    color: var(--bslp-black);
+    margin: 0 0 3rem;
+    text-wrap: balance;
+  }
+  .bslp-story-h2-stat {
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+  }
+  .bslp-story-h2-emph {
+    display: block;
+    margin-top: 0.5rem;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--bslp-blau-3);
+  }
+
+  .bslp-story-body { font-size: 1.0625rem; line-height: 1.75; color: var(--bslp-ink); }
+  .bslp-story-body p { margin: 0 0 1.25rem; }
+  .bslp-story-body p em { font-style: italic; color: var(--bslp-blau-3); font-weight: 500; }
+  .bslp-story-body p strong { font-weight: 700; color: var(--bslp-black); }
+
+  .bslp-story-intro {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: var(--bslp-blau-3) !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Selbst-Check-Liste für die „Vielleicht erkennst du dich"-Items */
+  .bslp-story-checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.25rem;
+    display: grid;
+    gap: 0;
+  }
+  .bslp-story-checklist li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: flex-start;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid rgba(103, 139, 165, 0.10);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--bslp-ink);
+  }
+  .bslp-story-checklist li:last-child { border-bottom: 0; }
+  .bslp-story-checklist li em {
+    font-style: italic;
+    color: var(--bslp-blau-3);
+    font-weight: 500;
+  }
+  .bslp-story-check {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(135, 169, 194, 0.12);
+    color: var(--bslp-blau-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    margin-top: 0.15rem;
+  }
+  .bslp-story-check svg { width: 13px; height: 13px; }
+
+  /* Critical-Card – warm-roter Aufmerksamkeits-Block (hell, kritisch) */
+  .bslp-story-critical {
+    position: relative;
+    margin: 2.5rem 0;
+    padding: 1.75rem 1.75rem 1.75rem 2.25rem;
+    background: linear-gradient(135deg, #fff5f3 0%, #fff9f7 60%, #fef5f0 100%);
+    border: 1px solid rgba(224, 50, 42, 0.18);
+    border-radius: var(--bslp-radius-lg);
+    box-shadow: 0 1px 2px rgba(224, 50, 42, 0.04), 0 8px 24px rgba(224, 50, 42, 0.06);
+    overflow: hidden;
+  }
+  .bslp-story-critical::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--bslp-live) 0%, #b8211a 100%);
+  }
+  .bslp-story-critical-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.75rem;
+    background: rgba(224, 50, 42, 0.08);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bslp-live);
+    margin: 0 0 0.85rem;
+  }
+  .bslp-story-critical-eyebrow svg { width: 14px; height: 14px; }
+  .bslp-story-critical p {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--bslp-ink);
+  }
+  .bslp-story-critical p strong { color: var(--bslp-black); font-weight: 700; }
+
+  /* Statement-Highlight (für „Nicht lösen.", „Du bist nicht allein.", etc.) */
+  .bslp-story-statement {
+    margin: 2.25rem 0 !important;
+    font-size: clamp(1.25rem, 1.8vw, 1.5rem) !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    color: var(--bslp-black) !important;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  .bslp-story-statement em {
+    font-style: italic;
+    font-weight: 700;
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+  }
+
+  /* Stat-Callout-Box für „75–85 % in 8 Wochen" */
+  .bslp-story-stat {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: center;
+    margin: 2.5rem 0;
+    padding: 1.5rem 1.75rem;
+    background: linear-gradient(135deg, rgba(135, 169, 194, 0.10) 0%, rgba(193, 166, 141, 0.06) 100%);
+    border: 1px solid rgba(103, 139, 165, 0.18);
+    border-radius: var(--bslp-radius-lg);
+  }
+  /* Wenn Stat direkt nach AUFricht-Figur folgt → leicht über die Skelette schieben */
+  .bslp-story-aufricht + .bslp-story-stat {
+    margin-top: -2.25rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.92) 100%);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 28px rgba(74, 112, 140, 0.10);
+  }
+  .bslp-story-stat-value {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(2.25rem, 3vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.015em;
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* sup wird sonst transparent geclipt, weil der Parent background-clip:text +
+     color:transparent hat → eigenes Gradient + Clip auf der sup einsetzen,
+     damit das % im selben Verlauf wie die Zahl erscheint. */
+  .bslp-story-stat-value sup {
+    font-size: 1em;
+    font-weight: 700;
+    vertical-align: baseline;
+    top: 0;
+    margin-left: 0.04em;
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+  .bslp-story-stat-text {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--bslp-ink);
+    font-weight: 500;
+    margin: 0;
+  }
+
+  /* MEGA-CTA — riesiger zwei-zeiliger Anmelde-Button */
+  .bslp-cta-mega-wrap {
+    margin: 2.75rem 0;
+    display: flex;
+    justify-content: center;
+  }
+  .bslp-cta-mega {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 38rem;
+    padding: 1.5rem 1.85rem 1.5rem 2rem;
+    border-radius: 26px;
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bslp-beige-2), var(--bslp-beige-1));
+    color: #ffffff;
+    border: 0.5px solid rgba(255,255,255,0.25);
+    box-shadow: 0 14px 36px rgba(172, 143, 117, .40), 0 1px 0 rgba(255,255,255,.4) inset;
+    transition: transform .2s ease, box-shadow .25s ease, background-image .3s ease;
+    text-align: left;
+    text-decoration: none;
+  }
+  .bslp-cta-mega:hover {
+    transform: translateY(-1px);
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bslp-beige-2) 70%, var(--bslp-beige-1));
+    box-shadow: 0 18px 42px rgba(172, 143, 117, .50), 0 1px 0 rgba(255,255,255,.4) inset;
+  }
+  .bslp-root .bslp-cta-mega,
+  .bslp-root .bslp-cta-mega:visited,
+  .bslp-root .bslp-cta-mega:hover,
+  .bslp-root .bslp-cta-mega:focus,
+  .bslp-root .bslp-cta-mega:active { color: #ffffff; text-decoration: none; }
+  .bslp-cta-mega-text { min-width: 0; }
+  .bslp-cta-mega-label {
+    display: block;
+    font-family: Manrope, sans-serif;
+    font-size: 1.4375rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  .bslp-cta-mega-sub {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.92);
+  }
+  .bslp-cta-mega-arrow {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    transition: transform .25s ease;
+  }
+  .bslp-cta-mega:hover .bslp-cta-mega-arrow { transform: translateX(4px); }
+
+  /* AUFricht-Bild im Lösungs-Card – nur Visual mit weichem Bottom-Fade */
+  .bslp-story-aufricht {
+    position: relative;
+    z-index: 1;
+    margin: 2.5rem -1rem 0;
+    padding: 0;
+    overflow: hidden;
+    /* sanfter Verlauf nach unten in transparent → das Bild verschmilzt
+       mit dem Card-Hintergrund, ohne harte Kante */
+    -webkit-mask-image: linear-gradient(180deg, black 0%, black 82%, transparent 100%);
+    mask-image: linear-gradient(180deg, black 0%, black 82%, transparent 100%);
+  }
+  .bslp-root .bslp-story-aufricht-img {
+    width: 100%;
+    height: auto;
+    max-width: none;
+    display: block;
+    /* Bild hat dunklen Hintergrund + helle Striche → invertieren, damit
+       der schwarze Bg zu weiß wird (matched zur hellen Card), und die
+       Striche als dunkle Skizze sichtbar werden */
+    filter: invert(1) brightness(0.92) contrast(1.18);
+  }
+
+  /* Lösungs-Card — neu gestaltet: dimensionaler Hintergrund, mehr Atem */
+  .bslp-story-solution {
+    position: relative;
+    margin: 3rem 0 0;
+    padding: 3rem 2.5rem 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(135, 169, 194, 0.14) 0%, transparent 65%),
+      linear-gradient(180deg, rgba(135, 169, 194, 0.05) 0%, #ffffff 55%);
+    border: 1px solid rgba(103, 139, 165, 0.18);
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(74, 112, 140, 0.04), 0 24px 60px -20px rgba(74, 112, 140, 0.10);
+  }
+  /* Mega-CTA als kompletter Card-Boden – wirkt wie ein riesiger Button-Bereich */
+  .bslp-story-solution .bslp-cta-mega-wrap {
+    margin: 2.5rem -2.5rem 0;
+  }
+  .bslp-story-solution .bslp-cta-mega {
+    width: 100%;
+    max-width: none;
+    border: 0;
+    border-radius: 0;
+    padding: 1.65rem 2.25rem;
+    box-shadow: 0 -1px 0 rgba(255,255,255,.5) inset;
+  }
+  .bslp-story-solution .bslp-cta-mega:hover {
+    transform: none;
+    box-shadow: 0 -1px 0 rgba(255,255,255,.5) inset;
+  }
+  .bslp-story-solution .bslp-cta-mega-arrow { width: 26px; height: 26px; }
+  /* Header-Zeile: Statement links, "DIE LÖSUNG"-Pille rechts auf gleicher Höhe */
+  .bslp-story-solution-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin: 0 0 1.5rem;
+  }
+  .bslp-story-solution-header .bslp-story-statement {
+    margin: 0 !important;
+    flex: 1 1 auto;
+  }
+  .bslp-story-solution-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: #ecfdf3;
+    border: 1px solid rgba(2, 122, 72, 0.22);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #027a48;
+    margin: 0;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .bslp-story-solution-eyebrow svg { width: 14px; height: 14px; }
+
+  /* ===================== WORKSHOP-INHALTE (farbige Sektion als Card) ===================== */
+  .bslp-content {
+    position: relative;
+    max-width: 80rem;
+    margin: 3rem auto;
+    padding: 4.5rem 5%;
+    background:
+      radial-gradient(ellipse 60% 80% at 90% 10%, rgba(135, 169, 194, 0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 70% at 0% 100%, rgba(193, 166, 141, 0.20) 0%, transparent 55%),
+      linear-gradient(160deg, #4a708c 0%, #3d5e75 50%, #2f4a5e 100%);
+    color: #ffffff;
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(47, 74, 94, 0.20);
+  }
+  .bslp-content-inner {
+    max-width: 56rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .bslp-content-tagline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 1.05rem;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: 0.005em;
+    margin-bottom: 1.25rem;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .bslp-content-tagline .bslp-live-dot { width: 8px; height: 8px; }
+  .bslp-content-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.875rem, 3vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin: 0 0 2.75rem;
+    text-wrap: balance;
+  }
+
+  .bslp-content-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.5rem;
+    display: grid;
+    gap: 0.75rem;
+    text-align: left;
+  }
+  .bslp-content-list li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    align-items: flex-start;
+    padding: 1.1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--bslp-radius-md);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition: background-color .25s ease, border-color .25s ease;
+  }
+  .bslp-content-list li:hover {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.20);
+  }
+  .bslp-content-list li strong {
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .bslp-content-check {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c1a68d 0%, #ac8f75 100%);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+    box-shadow: 0 2px 8px rgba(140, 113, 88, 0.3);
+  }
+  .bslp-content-check svg { width: 14px; height: 14px; }
+
+  .bslp-content-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 2.5rem;
+  }
+
+  /* ===================== SIGNUP-SEKTION (finaler CTA + Formular) ===================== */
+  .bslp-signup {
+    position: relative;
+    max-width: 80rem;
+    margin: 3rem auto 4rem;
+    padding: 4.5rem 5%;
+    background:
+      radial-gradient(ellipse 70% 80% at 90% 10%, rgba(255, 255, 255, 0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 0% 100%, rgba(193, 166, 141, 0.18) 0%, transparent 55%),
+      linear-gradient(160deg, #82A4BD 0%, #678BA5 100%);
+    color: #ffffff;
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(103, 139, 165, 0.25);
+  }
+  .bslp-signup-inner {
+    max-width: 38rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .bslp-signup-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 1.05rem;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.005em;
+    margin-bottom: 1.25rem;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .bslp-signup-eyebrow .bslp-live-dot { width: 8px; height: 8px; }
+  .bslp-signup-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.875rem, 3vw, 2.625rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.022em;
+    color: #ffffff;
+    margin: 0 0 0.85rem;
+    text-wrap: balance;
+  }
+  .bslp-signup-h2 em {
+    font-style: italic;
+    color: var(--bslp-beige-1);
+  }
+  .bslp-signup-lead {
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 0 0 2rem;
+    font-weight: 500;
+  }
+
+  /* Trust-Reassurance-Reihe vor dem Formular */
+  .bslp-signup-trust {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.25rem;
+    margin: 0 0 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  .bslp-signup-trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .bslp-signup-trust svg {
+    width: 14px;
+    height: 14px;
+    color: var(--bslp-beige-1);
+  }
+
+  /* Weiße Form-Card auf dem dunklen Hintergrund */
+  .bslp-signup-form-card {
+    background: #ffffff;
+    border-radius: var(--bslp-radius-lg);
+    padding: 2.25rem 2rem;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+    text-align: left;
+    color: var(--bslp-ink);
+    margin: 0 auto;
+    max-width: 36rem;
+  }
+  /* Privacy-Footer-Text unter dem Formular (innerhalb der Section, außerhalb der Card) */
+  .bslp-signup-privacy {
+    margin: 1.5rem auto 0;
+    max-width: 32rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+  }
+  .bslp-signup-privacy strong { color: #ffffff; font-weight: 700; }
+
+  /* ===================== FOOTER ===================== */
+  .bslp-footer {
+    position: relative;
+    background: linear-gradient(180deg, #82A4BD 0%, #6c91ad 100%);
+    color: #ffffff;
+    padding: 4.5rem 5% 1.75rem;
+    /* Full-bleed: bricht aus Container-Padding aus, damit Footer bündig zum Viewport reicht */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+  .bslp-footer-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-bottom: 2.5rem;
+  }
+  .bslp-footer-logo {
+    display: inline-block;
+  }
+  .bslp-root .bslp-footer-logo-img {
+    height: 132px;
+    width: auto;
+    max-width: none;
+    display: block;
+  }
+  .bslp-footer-col h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1.5rem;
+    letter-spacing: -0.005em;
+  }
+  .bslp-footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .bslp-footer-list a {
+    color: rgba(255, 255, 255, 0.92);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: color .2s ease;
+  }
+  .bslp-footer-list a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+  .bslp-footer-bottom-wrap {
+    max-width: 80rem;
+    margin: 0 auto;
+  }
+  .bslp-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.20);
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .bslp-footer-copy {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+  }
+  .bslp-footer-socials {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .bslp-footer-socials a {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease, color .2s ease;
+  }
+  .bslp-footer-socials a:hover {
+    transform: translateY(-2px);
+    color: #ffffff;
+  }
+  .bslp-footer-socials svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* ===================== TESTIMONIALS (Das sagen andere) ===================== */
+  .bslp-testimonials {
+    position: relative;
+    max-width: 80rem;
+    margin: 3rem auto 0;
+    padding: 4.5rem 5% 1.5rem;
+  }
+  .bslp-testimonials-header {
+    text-align: center;
+    max-width: 38rem;
+    margin: 0 auto 2.75rem;
+  }
+  .bslp-testimonials-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(103, 139, 165, 0.22);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bslp-blau-3);
+    margin-bottom: 1rem;
+  }
+  .bslp-testimonials-eyebrow svg { width: 14px; height: 14px; }
+  .bslp-testimonials-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--bslp-black);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .bslp-testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .bslp-test-card {
+    position: relative;
+    isolation: isolate;
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.06);
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    /* Stagger-Reveal — magicui-Stil ohne JS */
+    animation: bslp-test-rise .65s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+  .bslp-test-card:nth-child(1) { animation-delay: 0.05s; }
+  .bslp-test-card:nth-child(2) { animation-delay: 0.15s; }
+  .bslp-test-card:nth-child(3) { animation-delay: 0.25s; }
+  .bslp-test-card:nth-child(4) { animation-delay: 0.35s; }
+  @keyframes bslp-test-rise {
+    from { opacity: 0; transform: translateY(28px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+  .bslp-test-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(103, 139, 165, 0.30);
+    box-shadow: 0 24px 48px rgba(74, 112, 140, 0.12), 0 1px 2px rgba(10, 10, 10, 0.04);
+  }
+
+  /* Video-Thumbnail mit Play-Overlay */
+  .bslp-test-video {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: #1c2330;
+    overflow: hidden;
+  }
+  .bslp-test-play {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    display: block;
+  }
+  .bslp-root .bslp-test-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+    max-width: none;
+    display: block;
+  }
+  .bslp-test-play:hover .bslp-test-thumb { transform: scale(1.04); }
+  .bslp-test-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0,0,0, 0.30), 0 1px 0 rgba(255,255,255,.5) inset;
+    transition: transform .25s ease, box-shadow .25s ease;
+    pointer-events: none;
+  }
+  .bslp-test-play:hover .bslp-test-play-icon {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 12px 32px rgba(0,0,0, 0.36);
+  }
+  .bslp-test-play-icon svg {
+    width: 22px;
+    height: 22px;
+    color: var(--bslp-blau-3);
+    margin-left: 3px;
+  }
+  /* Pulse-Ring um den Play-Button (subtle wow) */
+  .bslp-test-play-icon::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55);
+    animation: bslp-test-pulse 2.4s ease-out infinite;
+  }
+  @keyframes bslp-test-pulse {
+    0%   { box-shadow: 0 0 0 0   rgba(255, 255, 255, 0.55); }
+    70%  { box-shadow: 0 0 0 18px rgba(255, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0   rgba(255, 255, 255, 0); }
+  }
+
+  /* Body unter dem Video */
+  .bslp-test-body {
+    padding: 1.5rem 1.5rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .bslp-test-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .bslp-test-meta-name {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--bslp-black);
+    letter-spacing: -0.005em;
+  }
+  .bslp-test-meta-context {
+    font-size: 0.8125rem;
+    color: var(--bslp-muted);
+    font-weight: 500;
+  }
+  .bslp-test-stars {
+    display: inline-flex;
+    gap: 1px;
+    color: var(--bslp-beige-2);
+    margin-left: auto;
+  }
+  .bslp-test-stars svg { width: 14px; height: 14px; }
+  .bslp-test-quote {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--bslp-ink);
+    font-weight: 500;
+  }
+  .bslp-test-quote::before { content: "„"; color: var(--bslp-blau-3); font-weight: 700; }
+  .bslp-test-quote::after  { content: "“"; color: var(--bslp-blau-3); font-weight: 700; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bslp-test-card { animation: none; }
+    .bslp-test-play-icon::before { animation: none; }
+  }
+
+  /* ===================== HOST-SEKTION (Card – einheitlich mit Workshop-Card) ===================== */
+  .bslp-host {
+    position: relative;
+    max-width: 80rem;
+    margin: 3rem auto;
+    padding: 0;
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(10, 10, 10, 0.06),
+      0 28px 60px rgba(10, 10, 10, 0.04);
+  }
+  .bslp-host-content {
+    padding: 3.5rem 3rem;
+  }
+  .bslp-host-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.5fr) minmax(0, 0.5fr);
+    gap: 2.5rem;
+    align-items: stretch;
+  }
+  /* Foto-Spalte: füllt komplette Card-Höhe aus, Bild deckt mit cover */
+  .bslp-host-photo-wrap {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(10, 10, 10, 0.10);
+  }
+  .bslp-root .bslp-host-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+  /* Brief-Spalte */
+  .bslp-host-letter-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 0;
+  }
+  .bslp-host-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.1vw, 2rem);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.018em;
+    color: var(--bslp-black);
+    margin: 0 0 1.5rem;
+    text-wrap: balance;
+  }
+  .bslp-host-h2 em {
+    font-style: italic;
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Glassmorphism Social-Proof-Strip — schwebt am unteren Bildrand */
+  .bslp-host-stats {
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    padding: 0.85rem 0.5rem;
+    background: linear-gradient(180deg, rgba(20, 25, 35, 0.32) 0%, rgba(20, 25, 35, 0.48) 100%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-radius: 16px;
+    z-index: 2;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  }
+  .bslp-host-stat {
+    text-align: center;
+    padding: 0 0.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .bslp-host-stat:first-child { border-left: 0; }
+  .bslp-host-stat-num {
+    display: block;
+    font-family: Manrope, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.15rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.20);
+  }
+  .bslp-host-stat-label {
+    display: block;
+    font-size: 0.6875rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  }
+  .bslp-host-letter {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--bslp-ink);
+  }
+  .bslp-host-letter p { margin: 0 0 1.4rem; }
+  .bslp-host-letter p:last-child { margin-bottom: 0; }
+  .bslp-host-letter p strong { font-weight: 700; color: var(--bslp-black); }
+  /* Briefabschluss „Deine Barbara" — gleiche Schriftart und -größe wie der Fließtext */
+  .bslp-host-letter .bslp-host-signoff {
+    margin-top: 1.75rem !important;
+    margin-bottom: 0 !important;
+  }
+  /* Beiger CTA-Band am Card-Boden */
+  .bslp-host-cta-band {
+    padding: 1.5rem 2.5rem;
+    background: linear-gradient(135deg, #f5e9da 0%, #ede0ce 50%, #e6d4bd 100%);
+    border-top: 1px solid rgba(193, 166, 141, 0.30);
+    text-align: center;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--bslp-black);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+  }
+
+  /* ============================ RESPONSIVE ============================ */
+  @media (max-width: 1199px) {
+    /* Tagline schrumpft etwas, bleibt aber auf einer Zeile */
+    .bslp-nav-tagline { font-size: 0.8125rem; padding: 0.45rem 0.9rem; }
+    .bslp-nav-tagline-icon { width: 26px; height: 26px; }
+  }
+  @media (max-width: 1023px) {
+    /* unter 1024: Tagline-Text wäre für eine Zeile zu lang → Mobile-Banner-Modus aktivieren */
+    .bslp-nav { padding: 0; }
+    .bslp-nav-inner {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      gap: 0;
+    }
+    .bslp-nav-logo { order: 2; padding: 0.75rem 5%; }
+    .bslp-nav-tagline {
+      order: 1;
+      width: 100%;
+      max-width: none;
+      border-radius: 0;
+      border-left: 0;
+      border-right: 0;
+      border-top: 0;
+      border-bottom: 1px solid rgba(103, 139, 165, 0.25);
+      justify-content: center;
+      padding: 0.55rem 5%;
+      font-size: 0.8125rem;
+      line-height: 1.35;
+      gap: 0.55rem;
+      text-align: center;
+      white-space: normal;
+    }
+    .bslp-nav-tagline-icon { width: 24px; height: 24px; }
+    .bslp-nav-tagline-icon svg { width: 13px; height: 13px; }
+    .bslp-root .bslp-logo-img { height: 44px; }
+  }
+  @media (max-width: 1280px) {
+    /* Trust-, Workshop-, Host- und Signup-Card auf Tablet/Desktop-S inset */
+    .bslp-trust { margin-left: 2rem; margin-right: 2rem; }
+    .bslp-content { margin-left: 2rem; margin-right: 2rem; }
+    .bslp-host { margin-left: 2rem; margin-right: 2rem; }
+    .bslp-signup { margin-left: 2rem; margin-right: 2rem; }
+    .bslp-testimonials { padding-left: 2rem; padding-right: 2rem; }
+  }
+  @media (max-width: 991px) {
+    /* Footer auf Tablet: 2-Spalten + Logo voll */
+    .bslp-footer-inner { grid-template-columns: 1fr 1fr 1fr; gap: 2rem; }
+    .bslp-footer-logo { grid-column: 1 / -1; }
+  }
+  @media (max-width: 991px) {
+    /* Mobile/Tablet: Bild als Full-Width-Hero oben, Content darunter */
+    .bslp-stage {
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      overflow: visible;
+    }
+    .bslp-nav { order: 1; }
+    .bslp-root .bslp-stage-bg {
+      order: 2;
+      position: static;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 7;        /* sehr kompakt → CTA bleibt above-the-fold */
+      object-fit: cover;
+      object-position: 78% 22%;
+      transform: none;
+      -webkit-mask-image: linear-gradient(180deg, black 0%, black 80%, transparent 100%);
+      mask-image: linear-gradient(180deg, black 0%, black 80%, transparent 100%);
+    }
+    .bslp-stage-veil { display: none; }
+    .bslp-hero { order: 3; }
+    .bslp-hero-inner {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding: 0.75rem 5% 1.5rem;
+      min-height: 0;
+    }
+    .bslp-hero-copy { max-width: none; }
+    .bslp-hero-eyebrow { margin-bottom: 0.7rem; font-size: 0.75rem; padding: 0.35rem 0.75rem; }
+    .bslp-h1 { font-size: clamp(1.4rem, 5vw, 1.75rem); margin-bottom: 0.7rem; line-height: 1.15; }
+    .bslp-subheadline { font-size: 0.875rem; margin-bottom: 0.7rem; line-height: 1.4; }
+    .bslp-lead { font-size: 0.8125rem; line-height: 1.5; margin-bottom: 1rem; }
+    .bslp-cta-meta { display: none; }
+  }
+  @media (max-width: 767px) {
+    .bslp-hero-inner { padding: 0.85rem 5% 1.5rem; }
+    .bslp-h1 { letter-spacing: -0.015em; }
+    .bslp-cta { width: 100%; padding: 0.95rem 1.25rem; font-size: 1rem; }
+    .bslp-cta-wrap { align-items: stretch; gap: 0.5rem; }
+    .bslp-cta-meta { display: none; }
+
+    .bslp-trust { margin: -0.75rem 1rem 1.5rem; }
+    .bslp-trust-inner { padding: 1.75rem 1.5rem 2rem; }
+    .bslp-trust-header { margin-bottom: 1.5rem; }
+    .bslp-trust-sub {
+      display: block;                /* kein Flex → Text fließt sauber, zentriert */
+      text-align: center;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      padding: 0 0.5rem;
+      max-width: none;
+    }
+    .bslp-trust-sub .bslp-live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      flex: none;
+      margin: 0 0.4rem -1px 0;       /* leichte vertikale Mitte zur Schrift */
+      vertical-align: middle;
+    }
+    .bslp-trust-sub > span:last-child { display: inline; vertical-align: middle; }
+
+    .bslp-story { padding: 3rem 5% 3.5rem; }
+    .bslp-story-h2 { margin-bottom: 2rem; }
+    .bslp-story-body { font-size: 1rem; line-height: 1.7; }
+    .bslp-story-checklist li { font-size: 1rem; padding: 0.85rem 0; gap: 0.7rem; }
+    .bslp-story-critical { margin: 2rem 0; padding: 1.5rem 1.25rem 1.5rem 1.5rem; }
+    .bslp-story-critical p { font-size: 1.0625rem; }
+    .bslp-story-stat {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      text-align: center;
+      padding: 1.5rem 1.25rem;
+    }
+    .bslp-story-solution { padding: 1.75rem 1.25rem; margin: 2.25rem 0 0; }
+    .bslp-story-solution .bslp-cta-mega-wrap { margin: 1.75rem -1.25rem -1.75rem; }
+    .bslp-story-solution .bslp-cta-mega { padding: 1.35rem 1.5rem; }
+
+    .bslp-story-aufricht { margin: 1.75rem 0 0; }
+    .bslp-story-aufricht + .bslp-story-stat { margin-top: -1.25rem; }
+    .bslp-story-solution-header {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .bslp-cta-mega-wrap { margin: 2rem 0; }
+    .bslp-cta-mega {
+      grid-template-columns: 1fr;
+      padding: 1.25rem 1.5rem;
+      gap: 0.85rem;
+      text-align: center;
+    }
+    .bslp-cta-mega-label { font-size: 1.25rem; }
+    .bslp-cta-mega-sub { font-size: 0.8125rem; }
+    .bslp-cta-mega-arrow { display: none; }
+
+    .bslp-content { margin: 2rem 1rem; padding: 2.5rem 1.25rem; }
+    .bslp-content-h2 { margin-bottom: 2rem; }
+    .bslp-content-list li { padding: 0.95rem 1rem; font-size: 0.9375rem; gap: 0.7rem; }
+
+    .bslp-testimonials { padding: 3rem 5% 1rem; margin-top: 2rem; }
+    .bslp-testimonials-header { margin-bottom: 2rem; }
+    .bslp-testimonials-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .bslp-test-body { padding: 1.25rem 1.25rem 1.5rem; }
+    .bslp-test-play-icon { width: 56px; height: 56px; }
+
+    .bslp-signup { margin: 2rem 1rem 3rem; padding: 2.75rem 1.25rem; }
+    .bslp-signup-form-card { padding: 1.75rem 1.25rem; }
+    .bslp-signup-trust { gap: 0.5rem 0.85rem; }
+
+    .bslp-footer { padding: 3rem 5% 1.5rem; }
+    .bslp-footer-inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding-bottom: 2rem;
+    }
+    .bslp-footer-logo { grid-column: 1 / -1; margin-bottom: 0.5rem; }
+    .bslp-root .bslp-footer-logo-img { height: 96px; }
+    .bslp-footer-col h3 { margin-bottom: 1rem; font-size: 1rem; }
+    .bslp-footer-list { gap: 0.85rem; }
+    .bslp-footer-bottom { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+    .bslp-footer-copy { font-size: 0.8125rem; }
+
+    .bslp-host { margin: 2rem 1rem; }
+    .bslp-host-content { padding: 1.5rem; }
+    .bslp-host-inner { grid-template-columns: 1fr; gap: 1.75rem; }
+    .bslp-host-photo-wrap { aspect-ratio: 4/5; max-width: 22rem; margin: 0 auto; min-height: 0; }
+    .bslp-host-letter { font-size: 0.9375rem; line-height: 1.75; }
+    .bslp-host-letter p { margin: 0 0 1.15rem; }
+    .bslp-host-stats { left: 0.75rem; right: 0.75rem; bottom: 0.75rem; padding: 0.7rem 0.4rem; border-radius: 14px; }
+    .bslp-host-stat { padding: 0 0.35rem; }
+    .bslp-host-stat-num { font-size: 1rem; }
+    .bslp-host-stat-label { font-size: 0.625rem; }
+    .bslp-host-cta-band { padding: 1.25rem 1.5rem; font-size: 0.9375rem; }
+    .bslp-trust-grid { grid-template-columns: 1fr; gap: 0; }
+    .bslp-trust-card {
+      padding: 1.25rem 0;
+      border-left: 0;
+      border-top: 1px solid rgba(103, 139, 165, 0.12);
+    }
+    .bslp-trust-card:first-child { border-top: 0; padding-top: 0; }
+  }
+  @media (max-width: 479px) {
+    .bslp-hero-inner { padding: 2rem 5% 12rem; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .bslp-live-dot { animation: none; }
+    .bslp-cta, .bslp-cta-arrow { transition: none; }
+  }
+</style>
+
+<div class="bslp-root">
+
+  <div class="bslp-stage">
+
+    <!-- Hero-Foto: URL oben in BSLP_CONFIG.images.hero pflegen -->
+    <img class="bslp-stage-bg" data-bslp-img="hero" src="barbara-scharrer-bg.jpg" alt="" aria-hidden="true" />
+    <div class="bslp-stage-veil" aria-hidden="true"></div>
+
+    <!-- ====================== NAVIGATION ====================== -->
+    <nav class="bslp-nav" aria-label="Webinar-Navigation">
+      <div class="bslp-nav-inner">
+        <a href="/" class="bslp-nav-logo" aria-label="Barbara Scharrer Startseite">
+          <!-- Logo: URL oben in BSLP_CONFIG.images.logo pflegen -->
+          <img class="bslp-logo-img" data-bslp-img="logo" src="https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg" alt="Barbara Scharrer – Aufrecht & Echt" />
+        </a>
+
+        <div class="bslp-nav-tagline">
+          <span class="bslp-nav-tagline-icon" aria-hidden="true">
+            <!-- Broadcast/Live-Icon (Funkwellen) -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
+              <path d="M16.24 7.76a6 6 0 0 1 0 8.49"/>
+              <path d="M7.76 16.24a6 6 0 0 1 0-8.49"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              <path d="M4.93 19.07a10 10 0 0 1 0-14.14"/>
+            </svg>
+          </span>
+          <span><span class="bslp-blau">Live Workshop</span> für alle Frauen, die wieder <span class="bslp-blau">rausgehen wollen</span>, ohne ständig an die <span class="bslp-blau">nächste Toilette</span> zu denken</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ========================= HERO ========================= -->
+    <section class="bslp-hero" aria-labelledby="bslp-hero-heading">
+      <div class="bslp-hero-inner">
+
+        <div class="bslp-hero-copy">
+          <span class="bslp-hero-eyebrow">
+            <span class="bslp-live-dot" aria-hidden="true"></span>
+            <span>Live am <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>19.05.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+          </span>
+
+          <h1 id="bslp-hero-heading" class="bslp-h1">
+            Inkontinenz stoppen: Wie du mit dem <span class="bslp-h1-accent">AUFricht-Prinzip</span> in kürzester Zeit wieder Kontrolle über deine Blase bekommst
+          </h1>
+
+          <p class="bslp-subheadline">
+            – ohne ständiges Beckenboden-Anspannen, Medikamente oder Einlagen <em>(bequem von Zuhause aus)</em>.
+          </p>
+
+          <p class="bslp-lead">
+            Die meisten Frauen trainieren die falsche Beckenbodenschicht – und machen ihre Beschwerden dadurch oft noch schlimmer. Im kostenlosen Live-Workshop zeige ich dir, was wirklich hinter deinen Beschwerden steckt, wie du an der Ursache ansetzt und deine Lebensfreude zurückgewinnst – ohne ständige Angst vor plötzlichem Urinverlust.
+          </p>
+
+          <div class="bslp-cta-wrap">
+            <a class="bslp-cta" href="#webinar-anmeldung">
+              Jetzt für 0 € anmelden
+              <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+            <div class="bslp-cta-meta">
+              <strong>100&nbsp;% kostenfrei.</strong><br/>
+              Begrenzte Teilnehmerzahl.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ========================= TRUST-SEKTION ========================= -->
+  <section class="bslp-trust" aria-labelledby="bslp-trust-heading">
+    <div class="bslp-trust-inner">
+
+      <header class="bslp-trust-header">
+        <h2 id="bslp-trust-heading" class="bslp-h2">Inkontinenz stoppen mit Barbara Scharrer</h2>
+        <p class="bslp-trust-sub">
+          <span class="bslp-live-dot" aria-hidden="true"></span>
+          <span>LIVE und Online am <span data-bslp-date>19.05.2026</span> um <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+        </p>
+      </header>
+
+      <div class="bslp-trust-grid">
+
+        <div class="bslp-trust-card">
+          <div class="bslp-trust-icon" aria-hidden="true">
+            <!-- users / group icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <p class="bslp-trust-value">250</p>
+          <p class="bslp-trust-label">Frauen bereits begleitet</p>
+        </div>
+
+        <div class="bslp-trust-card">
+          <div class="bslp-trust-icon" aria-hidden="true">
+            <!-- trending up icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <p class="bslp-trust-value">75–85<sup>%</sup></p>
+          <p class="bslp-trust-label">Verbesserung in 8 Wochen</p>
+        </div>
+
+        <div class="bslp-trust-card">
+          <div class="bslp-trust-icon" aria-hidden="true">
+            <!-- home icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <p class="bslp-trust-value">100<sup>%</sup></p>
+          <p class="bslp-trust-label">von zuhause aus</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= STORY-SEKTION ========================= -->
+  <section class="bslp-story" aria-labelledby="bslp-story-heading">
+    <div class="bslp-story-inner">
+
+      <h2 id="bslp-story-heading" class="bslp-story-h2">
+        <span class="bslp-story-h2-stat">10 Millionen Menschen</span> in Deutschland leiden an Inkontinenz. Und die meisten sprechen nie darüber.
+        <span class="bslp-story-h2-emph">Du bist nicht allein.</span>
+      </h2>
+
+      <div class="bslp-story-body">
+
+        <p class="bslp-story-intro">Vielleicht erkennst du dich hier wieder:</p>
+
+        <ul class="bslp-story-checklist">
+          <li>
+            <span class="bslp-story-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span>Dein Alltag dreht sich nur noch um eine Frage: <em>„Wo ist das nächste Klo?"</em></span>
+          </li>
+          <li>
+            <span class="bslp-story-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span>Wenn du das Haus verlässt, hast du Angst, dass es passiert – beim Lachen, Husten oder Niesen.</span>
+          </li>
+          <li>
+            <span class="bslp-story-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span>Du traust dich kaum noch an Urlaub, Sport oder Spielen mit den Kindern zu denken. Beim Einkaufen, im Bus, bei Familienfeiern hast du immer Angst, dass etwas in die Hose geht.</span>
+          </li>
+          <li>
+            <span class="bslp-story-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span>Du sagst Einladungen ab, die du früher geliebt hast.</span>
+          </li>
+          <li>
+            <span class="bslp-story-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span>Du meidest Menschen, die dir wichtig sind. Nicht weil du nicht willst – sondern weil du Angst hast, dass es jemand bemerkt. Oder riecht.</span>
+          </li>
+        </ul>
+
+        <aside class="bslp-story-critical" role="note">
+          <p class="bslp-story-critical-eyebrow">Das Schlimmste</p>
+          <p>Du trägst das komplett allein. <strong>Nicht mal deine beste Freundin weiß davon.</strong> Vielleicht nicht mal dein Partner.</p>
+        </aside>
+
+        <p>Kein Arzt nimmt sich Zeit, dein Problem wirklich zu verstehen. Die meisten verschreiben Medikamente, empfehlen Physiotherapie oder sagen: <em>„Das ist halt so in Ihrem Alter."</em> Und du stehst wieder da – allein, frustriert und ohne echte Lösung.</p>
+
+        <p>Gleichzeitig gibt die Hilfsmittel-Industrie Milliarden aus, um dir Einlagen, Windeln und Beckenbodengeräte zu verkaufen. <em>„Diskret. Sicher. Für ein aktives Leben."</em></p>
+
+        <p class="bslp-story-statement">Aber wenn diese Produkte das Problem wirklich lösen würden – warum steigt die Zahl der Betroffenen dann jedes Jahr weiter? Weil Einlagen dein Problem managen. <em>Nicht lösen.</em></p>
+
+        <p>Und vielleicht hast du sogar versucht, es selbst in die Hand zu nehmen.</p>
+
+        <p>Beckenbodenübungen gemacht, wie es in jeder Zeitschrift steht. Anspannen, halten, loslassen. Wochenlang, vielleicht sogar monatelang. Und es wurde nicht besser. Vielleicht sogar schlimmer.</p>
+
+        <p>Nicht weil du etwas falsch gemacht hast – sondern weil <strong>klassisches Beckenbodentraining die falsche Muskelschicht trainiert</strong>. Und damit das Problem oft noch verschärft, statt es zu lösen.</p>
+
+        <div class="bslp-story-solution">
+          <div class="bslp-story-solution-header">
+            <p class="bslp-story-statement"><em>Es gibt einen anderen Weg.</em></p>
+            <p class="bslp-story-solution-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12l5 5L20 7"/>
+              </svg>
+              Die Lösung
+            </p>
+          </div>
+
+          <p>Einen Weg, der nicht an den Symptomen herumdoktert, sondern an der Ursache ansetzt. Das <strong>AUFricht-Prinzip</strong> betrachtet deinen Körper als das, was er ist: ein zusammenhängendes System.</p>
+
+          <p>Beckenboden, Tiefenmuskulatur, Körperhaltung, Rumpf und Nervensystem – alles hängt zusammen. Erst wenn du deinen Körper wieder aufrichtest, von innen und von außen, kann dein Beckenboden seine eigentliche Aufgabe wieder übernehmen.</p>
+
+          <figure class="bslp-story-aufricht">
+            <img class="bslp-story-aufricht-img" data-bslp-img="aufricht" src="aufrechtprinzip.png" alt="Drei Skelett-Skizzen: Übergang von gekrümmter zu aufrechter Körperhaltung" />
+          </figure>
+
+          <div class="bslp-story-stat">
+            <span class="bslp-story-stat-value">75–85<sup>%</sup></span>
+            <p class="bslp-story-stat-text">Verbesserung innerhalb von 8 Wochen — egal ob 20 oder über 80 Jahre alt. Egal, ob du seit Monaten oder seit Jahrzehnten betroffen bist.</p>
+          </div>
+
+          <p>Wenn dir diese Situationen bekannt vorkommen, dann zeige ich dir im kostenlosen Live-Workshop, warum bisherige Ansätze bei dir nicht funktioniert haben – und was stattdessen funktioniert.</p>
+
+          <div class="bslp-cta-mega-wrap">
+            <a class="bslp-cta-mega" href="#webinar-anmeldung">
+              <span class="bslp-cta-mega-text">
+                <span class="bslp-cta-mega-label">Jetzt für 0&nbsp;€ anmelden</span>
+                <span class="bslp-cta-mega-sub">LIVE-Workshop am <span data-bslp-date>19.05.2026</span> um <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+              </span>
+              <svg class="bslp-cta-mega-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WORKSHOP-INHALTE ===================== -->
+  <section class="bslp-content" aria-labelledby="bslp-content-heading">
+    <div class="bslp-content-inner">
+
+      <span class="bslp-content-tagline">
+        <span class="bslp-live-dot" aria-hidden="true"></span>
+        <span>LIVE-Workshop am <span data-bslp-date>19.05.2026</span> um <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+      </span>
+
+      <h2 id="bslp-content-heading" class="bslp-content-h2">Die Inhalte des Workshops</h2>
+
+      <ul class="bslp-content-list">
+        <li>
+          <span class="bslp-content-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span><strong>Warum die Hilfsmittel-Industrie Milliarden verdient</strong>, dein Problem aber nie verschwindet – und was du stattdessen tun kannst.</span>
+        </li>
+        <li>
+          <span class="bslp-content-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span>Warum <strong>Einlagen, Beckenboden-Übungen und Medikamente</strong> nur Symptome verwalten – aber nicht die Ursache in deinem Körper lösen.</span>
+        </li>
+        <li>
+          <span class="bslp-content-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span>Warum <strong>dein Alter keine Rolle spielt</strong> – und echte Verbesserungen auch nach jahrelanger Inkontinenz in wenigen Wochen möglich sind.</span>
+        </li>
+        <li>
+          <span class="bslp-content-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span>Das <strong>AUFricht-Prinzip</strong>, mit dem Frauen innerhalb von 8 Wochen ihre Beschwerden um bis zu 75–85&nbsp;% verbessern – anstatt den Beckenboden weiter anzuspannen.</span>
+        </li>
+        <li>
+          <span class="bslp-content-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span>Warum deine <strong>Beckenboden-App es wahrscheinlich schlimmer macht</strong> – und 5 weitere Denkfehler, die dafür sorgen, dass es nicht besser wird.</span>
+        </li>
+        <li>
+          <span class="bslp-content-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span>Wie du in wenigen Wochen die <strong>Angst vor plötzlichem Urinverlust</strong> hinter dir lässt – mit einem Ansatz, der deinen ganzen Körper einbezieht statt nur „unten" zu arbeiten.</span>
+        </li>
+        <li>
+          <span class="bslp-content-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span>Wie du mit <strong>wenigen Minuten am Tag</strong>, bequem und anonym von zuhause aus, deinen Beckenboden wirklich richtig trainierst.</span>
+        </li>
+      </ul>
+
+      <div class="bslp-content-cta-wrap">
+        <a class="bslp-cta" href="#webinar-anmeldung">
+          Jetzt für 0&nbsp;€ anmelden
+          <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS (Das sagen andere) ===================== -->
+  <section class="bslp-testimonials" aria-labelledby="bslp-test-heading">
+
+    <header class="bslp-testimonials-header">
+      <span class="bslp-testimonials-eyebrow">Echte Erfolge</span>
+      <h2 id="bslp-test-heading" class="bslp-testimonials-h2">Das sagen andere</h2>
+    </header>
+
+    <div class="bslp-testimonials-grid">
+
+      <article class="bslp-test-card">
+        <div class="bslp-test-video" data-yt="1gH_EjTzASs">
+          <button class="bslp-test-play" type="button" aria-label="Video von Anke abspielen">
+            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/1gH_EjTzASs/hqdefault.jpg" alt="" loading="lazy" />
+            <span class="bslp-test-play-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
+        </div>
+        <div class="bslp-test-body">
+          <div class="bslp-test-meta">
+            <span class="bslp-test-meta-name">Anke</span>
+            <span class="bslp-test-meta-context">— 98 % besser nach 8 Wochen</span>
+            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            </span>
+          </div>
+          <p class="bslp-test-quote">Nach nur 8 Wochen ist meine Inkontinenz zu 98–99 % verschwunden. Heute fühle ich mich sicherer, aufrechter — und kann meinem Körper wieder vertrauen.</p>
+        </div>
+      </article>
+
+      <article class="bslp-test-card">
+        <div class="bslp-test-video" data-yt="0IKpeaJDAU4">
+          <button class="bslp-test-play" type="button" aria-label="Video von Susanne abspielen">
+            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/0IKpeaJDAU4/hqdefault.jpg" alt="" loading="lazy" />
+            <span class="bslp-test-play-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
+        </div>
+        <div class="bslp-test-body">
+          <div class="bslp-test-meta">
+            <span class="bslp-test-meta-name">Susanne</span>
+            <span class="bslp-test-meta-context">— Lebensqualität zurück</span>
+            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            </span>
+          </div>
+          <p class="bslp-test-quote">Heute kann ich wieder stundenlang durch die Stadt laufen, schlafe meistens durch und habe meine Lebensqualität zurückgewonnen.</p>
+        </div>
+      </article>
+
+      <article class="bslp-test-card">
+        <div class="bslp-test-video" data-yt="Kfr3-wKZU7c">
+          <button class="bslp-test-play" type="button" aria-label="Video von Hannelore abspielen">
+            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/Kfr3-wKZU7c/hqdefault.jpg" alt="" loading="lazy" />
+            <span class="bslp-test-play-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
+        </div>
+        <div class="bslp-test-body">
+          <div class="bslp-test-meta">
+            <span class="bslp-test-meta-name">Hannelore</span>
+            <span class="bslp-test-meta-context">— über 80, 75–80 % besser</span>
+            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            </span>
+          </div>
+          <p class="bslp-test-quote">Innerhalb weniger Wochen hat sich meine Inkontinenz um 75–80 % verbessert. Ich traue mich wieder unter Menschen.</p>
+        </div>
+      </article>
+
+      <article class="bslp-test-card">
+        <div class="bslp-test-video" data-yt="RwpErizob00">
+          <button class="bslp-test-play" type="button" aria-label="Video von Caro abspielen">
+            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/RwpErizob00/hqdefault.jpg" alt="" loading="lazy" />
+            <span class="bslp-test-play-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
+        </div>
+        <div class="bslp-test-body">
+          <div class="bslp-test-meta">
+            <span class="bslp-test-meta-name">Caro</span>
+            <span class="bslp-test-meta-context">— 20 Jahre, sicher im Alltag</span>
+            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            </span>
+          </div>
+          <p class="bslp-test-quote">Keine unkontrollierten Urinverluste mehr — selbst bei Erkältung oder starkem Husten. Mehr Freiheit, mehr Selbstbewusstsein.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Lite-YT-Embed: lädt YouTube-iframe erst beim Klick (privacy-friendly + schnell).
+       Hinweis: Falls Error 153 erscheint, bedeutet das, dass der YouTube-Channel
+       Embedding nur für bestimmte Domains erlaubt. Auf barbarascharrer.de (Webflow)
+       sollte es funktionieren – im lokalen file://-Preview ggf. nicht. -->
+  <script>
+    (function(){
+      document.addEventListener('click', function(e){
+        var btn = e.target.closest('.bslp-test-play');
+        if (!btn) return;
+        var wrap = btn.closest('.bslp-test-video');
+        if (!wrap || !wrap.dataset.yt) return;
+        e.preventDefault();
+        var id = wrap.dataset.yt;
+        var iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube-nocookie.com/embed/' + id +
+                     '?autoplay=1&rel=0&modestbranding=1&playsinline=1&feature=oembed';
+        iframe.title = 'Kundenstimme Video';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;';
+        wrap.innerHTML = '';
+        wrap.appendChild(iframe);
+      }, false);
+    })();
+  </script>
+
+  <!-- ===================== HOST: BARBARA ===================== -->
+  <section class="bslp-host" aria-labelledby="bslp-host-heading">
+
+    <div class="bslp-host-content">
+      <div class="bslp-host-inner">
+
+        <div class="bslp-host-photo-wrap">
+          <img class="bslp-host-photo" data-bslp-img="host" src="barbara-scharrer-host.jpg" alt="Barbara Scharrer" />
+          <div class="bslp-host-stats" aria-label="Social Proof">
+            <div class="bslp-host-stat">
+              <span class="bslp-host-stat-num">250</span>
+              <span class="bslp-host-stat-label">Frauen begleitet</span>
+            </div>
+            <div class="bslp-host-stat">
+              <span class="bslp-host-stat-num">75–85&thinsp;%</span>
+              <span class="bslp-host-stat-label">in 8 Wochen besser</span>
+            </div>
+            <div class="bslp-host-stat">
+              <span class="bslp-host-stat-num">100&thinsp;%</span>
+              <span class="bslp-host-stat-label">von zuhause aus</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bslp-host-letter-wrap">
+          <h2 id="bslp-host-heading" class="bslp-host-h2">
+            Deine Gastgeberin: <em>Barbara Scharrer</em>
+          </h2>
+
+          <div class="bslp-host-letter">
+            <p>Wenn ich nicht gerade daran arbeite, Frauen dabei zu unterstützen, ihren Körper wieder besser zu verstehen um ihre Beschwerden wieder loszuwerden, dann reise ich am liebsten um die Welt, tanze leidenschaftlich gerne Kizomba oder verbringe Zeit mit meiner Familie und unserem Hund.</p>
+
+            <p>Mein Name ist Barbara Scharrer – und ich unterstütze Frauen dabei, ihre Inkontinenz nachhaltig zu verbessern und wieder Vertrauen in ihren Körper zu gewinnen.</p>
+
+            <p>Seit über 7 Jahren arbeite ich in diesem Bereich – nach mehr als 20 Jahren eigener Beschwerden als Patientin. In dieser Zeit habe ich über 250 Frauen begleitet und das AUFricht-Prinzip entwickelt.</p>
+
+            <p>Mit diesem ganzheitlichen Programm erreichen viele meiner Kundinnen schon nach wenigen Wochen spürbare Verbesserungen – mehr Kontrolle, weniger Druck und ein ganz neues Körpergefühl.</p>
+
+            <p>In meinem kostenlosen Live-Workshop zeige ich dir, wie dein Beckenboden wirklich funktioniert und wie du ihn im Alltag richtig nutzt.</p>
+
+            <p class="bslp-host-signoff">Deine Barbara</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="bslp-host-cta-band">
+      Melde dich jetzt kostenlos an – und erfahre, wie du deine Inkontinenz wirklich stoppen kannst.
+    </div>
+
+  </section>
+
+  <!-- ===================== SIGNUP / FINALER CTA + FORMULAR ===================== -->
+  <section class="bslp-signup" id="webinar-anmeldung" aria-labelledby="bslp-signup-heading">
+    <div class="bslp-signup-inner">
+
+      <span class="bslp-signup-eyebrow">
+        <span class="bslp-live-dot" aria-hidden="true"></span>
+        <span>Live am <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>19.05.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+      </span>
+
+      <h2 id="bslp-signup-heading" class="bslp-signup-h2">
+        Sichere dir deinen Platz.
+      </h2>
+
+      <ul class="bslp-signup-trust" aria-label="Trust-Hinweise">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Streng vertraulich
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11h-2z"/>
+          </svg>
+          Diskret behandelt
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Unverbindlich
+        </li>
+      </ul>
+
+      <div class="bslp-signup-form-card">
+
+        <!--
+          =====================================================================
+          WEBINAR-ANMELDEFORMULAR v2.3
+          =====================================================================
+          Kein externes Setup nötig – reCAPTCHA v2 Sitekey bereits vorhanden.
+          Webhook-URL in _cfg.endpoint | Redirect in _cfg.redirect (nur im JS)
+          v2.3: Erweiterte Telefonnummer-Validierung (Fake-Erkennung)
+          =====================================================================
+        -->
+
+        <!-- ===== FORMULAR ===================================================== -->
+        <form id="form-webinar" novalidate autocomplete="on">
+
+          <!-- Honeypot -->
+          <input type="text" id="hp_website" name="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;opacity:0;pointer-events:none;">
+
+          <!-- Zeitstempel -->
+          <input type="hidden" id="formStartTime" name="formStartTime" value="">
+
+          <!-- Vorname -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="first_name">Vorname <span aria-hidden="true">*</span></label>
+            <input class="form_field_input" type="text" id="first_name" name="first_name" placeholder="Max" autocomplete="given-name" required aria-required="true" aria-describedby="err_first_name">
+            <span class="field-error" id="err_first_name" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Nachname -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="last_name">Nachname <span aria-hidden="true">*</span></label>
+            <input class="form_field_input" type="text" id="last_name" name="last_name" placeholder="Mustermann" autocomplete="family-name" required aria-required="true" aria-describedby="err_last_name">
+            <span class="field-error" id="err_last_name" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- E-Mail -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="email">Deine E-Mail-Adresse <span aria-hidden="true">*</span></label>
+            <input class="form_field_input" type="email" id="email" name="email" placeholder="deine@mailadresse.de" autocomplete="email" required aria-required="true" aria-describedby="err_email">
+            <span class="field-error" id="err_email" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Telefon mit Ländervorwahl -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="phone">Deine Telefonnummer <span aria-hidden="true">*</span></label>
+            <div class="phone-input-group" id="phone-group">
+              <select id="phone_prefix" class="phone-prefix-select" aria-label="Ländervorwahl">
+                <option value="+49" selected>🇩🇪 +49</option>
+                <option value="+43">🇦🇹 +43</option>
+                <option value="+41">🇨🇭 +41</option>
+                <option value="+31">🇳🇱 +31</option>
+                <option value="+32">🇧🇪 +32</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+34">🇪🇸 +34</option>
+                <option value="+39">🇮🇹 +39</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+48">🇵🇱 +48</option>
+                <option value="+351">🇵🇹 +351</option>
+                <option value="+352">🇱🇺 +352</option>
+                <option value="+358">🇫🇮 +358</option>
+                <option value="+420">🇨🇿 +420</option>
+                <option value="+90">🇹🇷 +90</option>
+                <option value="+1">🇺🇸 +1</option>
+              </select>
+              <input class="form_field_input phone-number-input" type="tel" id="phone" name="phone" placeholder="151 51 00 00 55" autocomplete="tel-national" required aria-required="true" aria-describedby="err_phone">
+            </div>
+            <span class="field-error" id="err_phone" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Hidden-Felder -->
+          <input type="hidden" name="touchpoint" value="Anmeldung_Webinar">
+          <input type="hidden" name="datum" value="{{wf {&quot;path&quot;:&quot;name&quot;,&quot;type&quot;:&quot;PlainText&quot;\} }}">
+          <input type="hidden" name="uhrzeit" value="19:00">
+
+          <!-- UTM-Parameter -->
+          <input type="hidden" name="utm_source">
+          <input type="hidden" name="utm_medium">
+          <input type="hidden" name="utm_campaign">
+          <input type="hidden" name="utm_term">
+          <input type="hidden" name="utm_content">
+
+          <!-- reCAPTCHA v2 -->
+          <div class="form_field-wrap" style="margin-bottom:6px;">
+            <div class="g-recaptcha" data-sitekey="6LfP8GcsAAAAAHMyxXnEzTqdKRG3LYW6PXfynUyy" data-theme="light"></div>
+            <span class="field-error" id="err_captcha" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Datenschutz-Checkbox -->
+          <div class="form_field-wrap checkbox-wrap" id="datenschutz-wrap">
+            <label class="datenschutzhinweis" for="datenschutz">
+              <input type="checkbox" id="datenschutz" name="datenschutz"
+                     required aria-required="true" aria-describedby="err_datenschutz">
+              <span>
+                Mit dem Absenden stimme ich der Verarbeitung meiner Daten gemäß der
+                <a class="datenschutz-link" href="https://barbarascharrer.de/datenschutz"
+                   target="_blank" rel="noopener">Datenschutzerklärung</a> zu.
+                Diese Einwilligung kann ich jederzeit widerrufen.
+              </span>
+            </label>
+            <span class="field-error" id="err_datenschutz" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Globale Fehlermeldung -->
+          <div id="form-error" class="form_error" role="alert" aria-live="assertive" style="display:none;"></div>
+
+          <!-- Absenden -->
+          <button type="submit" id="form-submit-btn" class="form_button">
+            Jetzt zum Webinar anmelden
+          </button>
+        </form>
+
+        <!-- reCAPTCHA Script -->
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+        <!-- ===== LOGIK ========================================================= -->
+        <script>
+          (function() {
+            "use strict";
+
+            /* ------------------------------------------------------------------
+               KONFIGURATION (URLs nur hier im JS, nicht im HTML-Attribut sichtbar)
+            ------------------------------------------------------------------ */
+            var _cfg = {
+              endpoint: [
+                "https://hook.eu2",
+                ".make.com/",
+                "19ab4lb143ysbgij7jre3x803te2ia4e"
+              ].join(""),
+              redirect: [
+                "https://www.barbarascharrer.de",
+                "/webinar-teilnahme-danke"
+              ].join(""),
+              minFillTime: 3000
+            };
+
+            /* ------------------------------------------------------------------
+               FEHLERTEXTE
+            ------------------------------------------------------------------ */
+            var _errMsg = {
+              first_name: "Bitte gib deinen Vornamen ein.",
+              last_name: "Bitte gib deinen Nachnamen ein.",
+              email: "Bitte gib eine gültige E-Mail-Adresse ein.",
+              phone: "Bitte gib deine Telefonnummer ein.",
+              datenschutz: "Bitte stimme der Datenschutzerklärung zu.",
+              captcha: "Bitte bestätige, dass du kein Roboter bist."
+            };
+
+            /* ------------------------------------------------------------------
+               HILFSFUNKTIONEN
+            ------------------------------------------------------------------ */
+            function $id(id) {
+              return document.getElementById(id);
+            }
+
+            function fillUtm(form) {
+              var p = new URLSearchParams(window.location.search);
+              ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach(function(n) {
+                var v = p.get(n);
+                if (v) {
+                  var el = form.querySelector("[name='" + n + "']");
+                  if (el) el.value = v;
+                }
+              });
+            }
+
+            function trimInputs(form) {
+              form.querySelectorAll("input[type='text'], input[type='email'], input[type='tel']")
+                .forEach(function(el) {
+                  if (el.value) el.value = el.value.trim();
+                });
+            }
+
+            function setFieldError(name, msg) {
+              var errEl = $id("err_" + name);
+              var inputEl = $id(name) || document.querySelector("[name='" + name + "']");
+              if (errEl) errEl.textContent = msg || "";
+              if (inputEl && inputEl.type !== "checkbox") {
+                inputEl.classList.toggle("is-invalid", !!msg);
+                if (msg) inputEl.setAttribute("aria-invalid", "true");
+                else inputEl.removeAttribute("aria-invalid");
+              }
+              if (name === "datenschutz") {
+                var wrap = $id("datenschutz-wrap");
+                if (wrap) wrap.classList.toggle("is-invalid-wrap", !!msg);
+              }
+              if (name === "phone") {
+                var grp = $id("phone-group");
+                if (grp) grp.classList.toggle("is-invalid", !!msg);
+              }
+            }
+
+            function clearFieldError(name) {
+              setFieldError(name, "");
+            }
+
+            function showGlobalError(msg) {
+              var box = $id("form-error");
+              if (!box) return;
+              box.textContent = msg;
+              box.style.display = "block";
+            }
+
+            function hideGlobalError() {
+              var box = $id("form-error");
+              if (box) box.style.display = "none";
+            }
+
+            /* ------------------------------------------------------------------
+               TELEFON-PLAUSIBILITÄTSPRÜFUNG
+            ------------------------------------------------------------------ */
+            function validatePhoneNumber(rawValue) {
+              var cleaned = rawValue.replace(/[\s\-\/\.\(\)]/g, '');
+              if (cleaned.charAt(0) === '+') cleaned = cleaned.slice(1);
+              if (cleaned.length === 0) return null;
+              if (!/^\d+$/.test(cleaned))
+                return "Bitte gib nur Ziffern, Leerzeichen oder Bindestriche ein.";
+              if (cleaned.length < 6 || cleaned.length > 15)
+                return "Bitte gib eine gültige Telefonnummer ein (6–15 Ziffern).";
+              if (/^(\d)\1+$/.test(cleaned))
+                return "Bitte gib deine echte Telefonnummer ein.";
+              var asc = true, desc = true;
+              for (var i = 1; i < cleaned.length; i++) {
+                if (+cleaned[i] !== +cleaned[i - 1] + 1) asc = false;
+                if (+cleaned[i] !== +cleaned[i - 1] - 1) desc = false;
+              }
+              if (asc || desc)
+                return "Bitte gib deine echte Telefonnummer ein.";
+              var maxBlock = Math.min(4, Math.floor(cleaned.length / 2));
+              for (var bl = 2; bl <= maxBlock; bl++) {
+                var blk = cleaned.slice(0, bl);
+                var rep = '';
+                while (rep.length < cleaned.length) rep += blk;
+                if (rep.slice(0, cleaned.length) === cleaned)
+                  return "Bitte gib deine echte Telefonnummer ein.";
+              }
+              var uniq = {};
+              for (var j = 0; j < cleaned.length; j++) uniq[cleaned[j]] = 1;
+              if (Object.keys(uniq).length < 3)
+                return "Bitte gib deine echte Telefonnummer ein.";
+              return null;
+            }
+
+            /* ------------------------------------------------------------------
+               VALIDIERUNG
+            ------------------------------------------------------------------ */
+            function validateForm(form) {
+              var valid = true;
+              var firstInvalid = null;
+              ["first_name", "last_name", "email", "phone", "datenschutz"].forEach(function(name) {
+                var el = $id(name);
+                if (!el) return;
+                if (!el.checkValidity()) {
+                  setFieldError(name, _errMsg[name] || "Pflichtfeld.");
+                  valid = false;
+                  if (!firstInvalid) firstInvalid = el;
+                } else {
+                  clearFieldError(name);
+                }
+              });
+
+              var phoneEl = $id("phone");
+              if (phoneEl && phoneEl.value.trim() && phoneEl.checkValidity()) {
+                var phoneErr = validatePhoneNumber(phoneEl.value.trim());
+                if (phoneErr) {
+                  setFieldError("phone", phoneErr);
+                  valid = false;
+                  if (!firstInvalid) firstInvalid = phoneEl;
+                }
+              }
+
+              if (firstInvalid) {
+                try { firstInvalid.focus(); } catch (e) {}
+              }
+              return valid;
+            }
+
+            /* ------------------------------------------------------------------
+               SPAM-CHECK
+            ------------------------------------------------------------------ */
+            function isSpam(form) {
+              var hp = form.querySelector("#hp_website");
+              if (hp && hp.value.trim() !== "") return true;
+              var start = parseInt(($id("formStartTime") || {}).value || "0", 10);
+              return (Date.now() - start) < _cfg.minFillTime;
+            }
+
+            /* ------------------------------------------------------------------
+               TELEFON: Vorwahl + Nummer zusammenführen
+            ------------------------------------------------------------------ */
+            function mergePhonePrefix() {
+              var prefix = $id("phone_prefix");
+              var phone = $id("phone");
+              if (!prefix || !phone) return;
+              var num = phone.value.trim();
+              if (num && !num.startsWith("+")) {
+                phone.value = prefix.value + " " + num;
+              }
+            }
+
+            /* ------------------------------------------------------------------
+               ECHTZEIT-VALIDIERUNG
+            ------------------------------------------------------------------ */
+            function wireRealtimeValidation(form) {
+              form.addEventListener("input", function(e) {
+                var t = e.target;
+                if (!t.name) return;
+                if (t.checkValidity()) {
+                  clearFieldError(t.name);
+                  hideGlobalError();
+                }
+              });
+              form.addEventListener("change", function(e) {
+                var t = e.target;
+                if (t.type === "checkbox" && t.name === "datenschutz" && t.checkValidity()) {
+                  clearFieldError("datenschutz");
+                }
+              });
+
+              var phoneInput = $id("phone");
+              if (phoneInput) {
+                phoneInput.addEventListener("blur", function() {
+                  var val = this.value.trim();
+                  if (!val) return;
+                  var err = validatePhoneNumber(val);
+                  if (err) setFieldError("phone", err);
+                  else clearFieldError("phone");
+                });
+              }
+            }
+
+            /* ------------------------------------------------------------------
+               FORMULAR-SUBMIT
+            ------------------------------------------------------------------ */
+            function wireFormSubmit(form) {
+              var submitted = false;
+              var btn = $id("form-submit-btn");
+
+              form.addEventListener("submit", function(e) {
+                e.preventDefault();
+                if (submitted) return;
+
+                trimInputs(form);
+
+                if (!validateForm(form)) {
+                  showGlobalError("Bitte korrigiere die markierten Felder.");
+                  return;
+                }
+                hideGlobalError();
+
+                if (isSpam(form)) {
+                  showGlobalError("Deine Anmeldung konnte nicht verarbeitet werden. Bitte versuche es erneut.");
+                  return;
+                }
+
+                var captchaToken = (typeof grecaptcha !== "undefined") ? grecaptcha.getResponse() : "";
+                if (!captchaToken) {
+                  setFieldError("captcha", _errMsg.captcha);
+                  return;
+                }
+                clearFieldError("captcha");
+
+                submitted = true;
+                if (btn) {
+                  btn.disabled = true;
+                  btn.textContent = "Wird gesendet …";
+                  btn.setAttribute("aria-busy", "true");
+                }
+
+                mergePhonePrefix();
+
+                var fd = new FormData(form);
+                fd.append("g-recaptcha-response", captchaToken);
+
+                var fallback = setTimeout(function() {
+                  window.location.href = _cfg.redirect;
+                }, 4000);
+
+                fetch(_cfg.endpoint, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: fd
+                  })
+                  .then(function() {
+                    clearTimeout(fallback);
+                    window.location.href = _cfg.redirect;
+                  })
+                  .catch(function() {
+                    clearTimeout(fallback);
+                    window.location.href = _cfg.redirect;
+                  });
+              });
+            }
+
+            /* ------------------------------------------------------------------
+               INIT
+            ------------------------------------------------------------------ */
+            document.addEventListener("DOMContentLoaded", function() {
+              var form = $id("form-webinar");
+              if (!form) return;
+              var ts = $id("formStartTime");
+              if (ts) ts.value = Date.now();
+              fillUtm(form);
+              wireRealtimeValidation(form);
+              wireFormSubmit(form);
+            });
+
+          })();
+        </script>
+
+
+        <!-- ===== STYLING ======================================================= -->
+        <style>
+          #form-webinar {
+            max-width: 500px;
+            margin: 0 auto;
+          }
+          .form_field-wrap { margin-bottom: 18px; }
+          #form-webinar .form_field-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #222;
+            font-size: 15px;
+          }
+          #form-webinar .form_field-label span {
+            color: #BBA087;
+            margin-left: 2px;
+          }
+          #form-webinar .form_field_input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #d1d1d1;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+            color: #222;
+            box-sizing: border-box;
+          }
+          #form-webinar .form_field_input:focus {
+            border-color: #BBA087;
+            box-shadow: 0 0 0 3px rgba(187, 160, 135, 0.25);
+            outline: none;
+          }
+          #form-webinar .form_field_input.is-invalid {
+            border-color: #d9534f;
+            box-shadow: 0 0 0 3px rgba(217, 83, 79, 0.15);
+          }
+          .phone-input-group {
+            display: flex;
+            border: 1.5px solid #d1d1d1;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+          }
+          .phone-input-group:focus-within {
+            border-color: #BBA087;
+            box-shadow: 0 0 0 3px rgba(187, 160, 135, 0.25);
+          }
+          .phone-input-group.is-invalid {
+            border-color: #d9534f;
+            box-shadow: 0 0 0 3px rgba(217, 83, 79, 0.15);
+          }
+          .phone-prefix-select {
+            flex-shrink: 0;
+            padding: 12px 8px 12px 12px;
+            border: none;
+            border-right: 1.5px solid #d1d1d1;
+            background: #f7f4f1;
+            font-size: 15px;
+            color: #222;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 26px;
+            outline: none;
+          }
+          .phone-prefix-select:focus { background-color: #f0ebe6; }
+          .phone-number-input {
+            flex: 1;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+          }
+          .phone-number-input:focus {
+            box-shadow: none !important;
+            outline: none;
+          }
+          .field-error {
+            display: block;
+            font-size: 13px;
+            color: #c0392b;
+            margin-top: 4px;
+          }
+          .field-error:empty { display: none; }
+          .checkbox-wrap {
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1.5px solid #e8e8e8;
+            background: #fafafa;
+            transition: border-color 0.2s;
+          }
+          .checkbox-wrap.is-invalid-wrap {
+            border-color: #d9534f;
+            background: #fff8f8;
+          }
+          #form-webinar .datenschutzhinweis {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            cursor: pointer;
+          }
+          #form-webinar .datenschutzhinweis input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            margin-top: 2px;
+            accent-color: #BBA087;
+            cursor: pointer;
+          }
+          #form-webinar .datenschutz-link {
+            color: #BBA087;
+            text-decoration: underline;
+          }
+          #form-error {
+            background: #fff5f5;
+            border: 1.5px solid #d9534f;
+            color: #7b2020;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 14px;
+          }
+          #form-webinar .form_button {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            background: #BBA087;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, opacity 0.2s;
+            margin-top: 6px;
+          }
+          #form-webinar .form_button:hover:not(:disabled) {
+            background: #a48f78;
+          }
+          #form-webinar .form_button:active:not(:disabled) {
+            transform: scale(0.98);
+          }
+          #form-webinar .form_button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+          }
+        </style>
+
+      </div>
+
+      <p class="bslp-signup-privacy">
+        <strong>Deine Daten bleiben absolut diskret.</strong> Wir geben sie niemals weiter und nutzen sie ausschließlich, um dir den Zugang zum Live-Workshop zu schicken. Jederzeit widerrufbar.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="bslp-footer" role="contentinfo">
+    <div class="bslp-footer-inner">
+
+      <a href="/" class="bslp-footer-logo" aria-label="Barbara Scharrer Startseite">
+        <img class="bslp-footer-logo-img" data-bslp-img="logo" src="https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg" alt="Barbara Scharrer – Aufrecht & Echt" />
+      </a>
+
+      <div class="bslp-footer-col">
+        <h3>Nützliche Links</h3>
+        <ul class="bslp-footer-list">
+          <li><a href="/">Startseite</a></li>
+          <li><a href="/kundenstimmen">Kundenstimmen</a></li>
+          <li><a href="/webinar">Webinar</a></li>
+          <li><a href="/videotraining">Kostenloses Videotraining</a></li>
+          <li><a href="https://barbara-scharrer.mymemberspot.de/auth/login?redirectTo=%2Fstartpage" target="_blank" rel="noopener">Mitglieder-Bereich</a></li>
+        </ul>
+      </div>
+
+      <div class="bslp-footer-col">
+        <h3>Rechtliches</h3>
+        <ul class="bslp-footer-list">
+          <li><a href="/impressum">Impressum</a></li>
+          <li><a href="/datenschutz">Datenschutzerklärung</a></li>
+          <li><a href="/agb">AGB</a></li>
+          <li><a href="/widerrufsbelehrung">Widerrufsbelehrung</a></li>
+          <li><a href="#" data-bslp-cookie>Cookie-Einstellungen</a></li>
+        </ul>
+      </div>
+
+      <div class="bslp-footer-col">
+        <h3>Social Media</h3>
+        <ul class="bslp-footer-list">
+          <li><a href="https://www.facebook.com/barbara.scharrer.92/" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="https://www.tiktok.com/@barbara_scharrer" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.instagram.com/barbara_scharrer/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.linkedin.com/in/barbara-scharrer-0b7352211/" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="https://www.youtube.com/@barbarascharrer517" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bslp-footer-bottom-wrap">
+      <div class="bslp-footer-bottom">
+        <p class="bslp-footer-copy">© 2025 Barbara Scharrer. All rights reserved.</p>
+        <div class="bslp-footer-socials" aria-label="Social Media">
+          <a href="https://www.facebook.com/barbara.scharrer.92/" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@barbara_scharrer" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.8a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.23z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/barbara_scharrer/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/barbara-scharrer-0b7352211/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@barbarascharrer517" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ============================================================
+     Konfig-Propagation aus BSLP_CONFIG (siehe oben)
+     - Datum/Uhrzeit/Wochentag → alle <span data-bslp-…>
+     - Bilder → alle <img data-bslp-img="…">
+     - Form-Hidden-Felder im Anmeldeformular
+     ============================================================ -->
+<script>
+  (function(){
+    var c = window.BSLP_CONFIG || {};
+
+    /* Datum/Uhrzeit/Wochentag propagieren */
+    function setText(attr, val) {
+      if (!val) return;
+      document.querySelectorAll('[data-bslp-' + attr + ']').forEach(function(el){
+        el.textContent = val;
+      });
+    }
+    setText('weekday', c.weekday);
+    setText('date',    c.date);
+    setText('time',    c.time);
+
+    /* Bild-URLs propagieren */
+    var imgs = c.images || {};
+    Object.keys(imgs).forEach(function(key){
+      if (!imgs[key]) return;
+      document.querySelectorAll('[data-bslp-img="' + key + '"]').forEach(function(el){
+        el.src = imgs[key];
+      });
+    });
+
+    /* Form-Hidden-Felder (nur überschreiben, wenn leer oder noch {{wf}}-Token drin) */
+    var fdate = document.querySelector('#form-webinar [name="datum"]');
+    var ftime = document.querySelector('#form-webinar [name="uhrzeit"]');
+    if (fdate && c.date && (!fdate.value || /\{\{wf/.test(fdate.value))) fdate.value = c.date;
+    if (ftime && c.time && (!ftime.value || /\{\{wf/.test(ftime.value))) ftime.value = c.time;
+  })();
+</script>
