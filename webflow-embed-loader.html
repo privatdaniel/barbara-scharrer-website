@@ -1,29 +1,14 @@
 <!-- =====================================================================
      WEBFLOW HTML EMBED — Loader für die Webinar-Landingpage
-     =====================================================================
-     Lädt Content + Bilder direkt aus dem GitHub-Repo via jsDelivr-CDN.
      Repo: https://github.com/directmailing-io/barbara-scharrer-webinar-lp
-     CDN:  https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/
-
-     WORKFLOW:
-       1. Code lokal ändern → committen → push to GitHub
-       2. jsDelivr aktualisiert sich automatisch (Cache ~12 h)
-       3. Für sofortige Aktualisierung: in der URL @main durch Commit-SHA
-          ersetzen oder einmalig https://purge.jsdelivr.net/... aufrufen
      ===================================================================== -->
 
 <script>
-  /* === ZENTRALE KONFIG (Datum, Uhrzeit, Bilder) =====================
-     Diese Werte stehen IM Webflow-Embed (nicht in der externen Datei)
-     und können jederzeit hier geändert werden, ohne neuen Push.        */
+  /* === ZENTRALE KONFIG (Datum, Uhrzeit, Bilder) ===================== */
   window.BSLP_CONFIG = {
-
-    /* Datum & Uhrzeit */
     weekday: 'Dienstag',
     date:    '19.05.2026',
     time:    '19:00',
-
-    /* Bild-URLs (alle via jsDelivr aus dem GitHub-Repo) */
     images: {
       logo:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg',
       hero:     'https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/barbara-scharrer-bg.jpg',
@@ -33,26 +18,51 @@
   };
 </script>
 
-<!-- Mount + Loader -->
-<div id="bslp-mount"></div>
+<div id="bslp-mount" style="min-height:240px;">
+  <div id="bslp-loading" style="padding:3rem 1.5rem;text-align:center;color:#888;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;">
+    <span style="display:inline-block;width:18px;height:18px;border:2px solid #ddd;border-top-color:#678ba5;border-radius:50%;animation:bslp-spin 0.7s linear infinite;vertical-align:middle;margin-right:0.5rem;"></span>
+    Inhalte werden geladen…
+  </div>
+</div>
+<style>@keyframes bslp-spin { to { transform: rotate(360deg); } }</style>
 
 <script>
   (function(){
-    /* HTML-Content via jsDelivr aus dem GitHub-Repo */
     var CONTENT_URL = 'https://cdn.jsdelivr.net/gh/directmailing-io/barbara-scharrer-webinar-lp@main/webinar-content.txt';
-
     var mount = document.getElementById('bslp-mount');
-    if (!mount) return;
+    if (!mount) {
+      console.error('[Webinar-LP] Mount-Element #bslp-mount nicht gefunden.');
+      return;
+    }
 
-    fetch(CONTENT_URL, { credentials: 'omit' })
+    function showError(msg, detail) {
+      mount.innerHTML =
+        '<div style="padding:2rem 1.5rem;text-align:center;color:#7b2020;background:#fff5f5;border:1px solid #d9534f;border-radius:8px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.5">' +
+          '<strong style="font-size:15px">Webinar-LP konnte nicht geladen werden.</strong><br>' +
+          '<span style="opacity:0.8">' + msg + '</span>' +
+          (detail ? '<br><small style="opacity:0.6;font-family:monospace;font-size:12px">' + detail + '</small>' : '') +
+        '</div>';
+    }
+
+    if (!window.fetch) {
+      showError('Browser unterstützt fetch() nicht.', 'Bitte einen aktuellen Browser nutzen.');
+      return;
+    }
+
+    fetch(CONTENT_URL, { credentials: 'omit', cache: 'no-cache' })
       .then(function(r){
-        if (!r.ok) throw new Error('HTTP ' + r.status);
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
         return r.text();
       })
       .then(function(html){
+        if (!html || html.length < 100) {
+          throw new Error('Empty response (' + (html ? html.length : 0) + ' bytes)');
+        }
         mount.innerHTML = html;
+
         /* <script>-Tags aus innerHTML manuell re-aktivieren */
-        mount.querySelectorAll('script').forEach(function(oldScript){
+        var scripts = mount.querySelectorAll('script');
+        scripts.forEach(function(oldScript){
           var newScript = document.createElement('script');
           for (var i = 0; i < oldScript.attributes.length; i++) {
             var a = oldScript.attributes[i];
@@ -61,11 +71,12 @@
           newScript.textContent = oldScript.textContent;
           oldScript.parentNode.replaceChild(newScript, oldScript);
         });
+
+        console.info('[Webinar-LP] geladen ('+ html.length +' Bytes, '+ scripts.length +' Scripts re-aktiviert)');
       })
       .catch(function(err){
         console.error('[Webinar-LP] Content-Load fehlgeschlagen:', err);
-        mount.innerHTML = '<p style="padding:2rem;text-align:center;color:#888;font-family:sans-serif">'
-                        + 'Inhalte können momentan nicht geladen werden.</p>';
+        showError(err.message || 'Unbekannter Fehler', CONTENT_URL);
       });
   })();
 </script>

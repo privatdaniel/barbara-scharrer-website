@@ -2517,7 +2517,7 @@
             /* ------------------------------------------------------------------
                INIT
             ------------------------------------------------------------------ */
-            document.addEventListener("DOMContentLoaded", function() {
+            function bslpFormInit() {
               var form = $id("form-webinar");
               if (!form) return;
               var ts = $id("formStartTime");
@@ -2525,7 +2525,12 @@
               fillUtm(form);
               wireRealtimeValidation(form);
               wireFormSubmit(form);
-            });
+            }
+            if (document.readyState === 'loading') {
+              document.addEventListener("DOMContentLoaded", bslpFormInit);
+            } else {
+              bslpFormInit();
+            }
 
           })();
         </script>
