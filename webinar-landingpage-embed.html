@@ -2527,6 +2527,19 @@
                 fd.append("g-recaptcha-response", captchaToken);
 
                 // Tracking-Payload (JSON) parallel zur Make-Automation senden.
+                // HSA-IDs (Meta-Autotag: Account/Campaign/Adset/Ad) liest die LP
+                // direkt aus der URL — sie sind nicht im Make-Formular vorhanden.
+                var _qs = new URLSearchParams(window.location.search);
+                function _qparam(name) {
+                  var v = _qs.get(name);
+                  if (!v) return null;
+                  v = v.trim();
+                  if (!v) return null;
+                  // Meta-/HubSpot-Platzhalter rausfiltern: {{...}} oder [...]
+                  if (/^\{\{.*\}\}$/.test(v) || /^\[.*\]$/.test(v)) return null;
+                  return v;
+                }
+
                 var trackingPayload = {
                   first_name:   (fd.get("first_name")   || "").toString(),
                   last_name:    (fd.get("last_name")    || "").toString(),
@@ -2539,6 +2552,13 @@
                   utm_campaign: (fd.get("utm_campaign") || "").toString() || null,
                   utm_content:  (fd.get("utm_content")  || "").toString() || null,
                   utm_term:     (fd.get("utm_term")     || "").toString() || null,
+                  hsa_acc:      _qparam("hsa_acc"),
+                  hsa_cam:      _qparam("hsa_cam"),
+                  hsa_grp:      _qparam("hsa_grp"),
+                  hsa_ad:       _qparam("hsa_ad"),
+                  hsa_src:      _qparam("hsa_src"),
+                  hsa_net:      _qparam("hsa_net"),
+                  hsa_ver:      _qparam("hsa_ver"),
                   referrer:     document.referrer || null,
                   recaptcha_token: captchaToken || null,
                   website:      (fd.get("website")      || "").toString()
