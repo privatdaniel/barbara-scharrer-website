@@ -2515,7 +2515,13 @@
                   last_name:    (fd.get("last_name")    || "").toString(),
                   email:        (fd.get("email")        || "").toString(),
                   phone:        (fd.get("phone")        || "").toString() || null,
-                  webinar_date: (fd.get("datum")        || "").toString() || null,
+                  webinar_date: (function(d){
+                    d = (d || "").toString().trim();
+                    if (!d) return null;
+                    var m = d.match(/^(\d{2})\.(\d{2})\.(\d{4})$/); // DD.MM.YYYY → ISO
+                    if (m) return m[3] + "-" + m[2] + "-" + m[1];
+                    return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : null;
+                  })(fd.get("datum")),
                   webinar_time: (function(t){ t = (t || "").toString(); return t ? (t.length === 5 ? t + ":00" : t) : null; })(fd.get("uhrzeit")),
                   utm_source:   (fd.get("utm_source")   || "").toString() || null,
                   utm_medium:   (fd.get("utm_medium")   || "").toString() || null,
