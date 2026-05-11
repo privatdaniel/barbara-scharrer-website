@@ -1801,7 +1801,7 @@
 
         <p>Gleichzeitig gibt die Hilfsmittel-Industrie Milliarden aus, um dir Einlagen, Windeln und Beckenbodengeräte zu verkaufen. <em>„Diskret. Sicher. Für ein aktives Leben."</em></p>
 
-        <p class="bslp-story-statement">Aber wenn diese Produkte das Problem wirklich lösen würden – warum steigt die Zahl der Betroffenen dann jedes Jahr weiter? Weil Einlagen dein Problem managen. <em>Nicht lösen.</em></p>
+        <p class="bslp-story-statement">Aber wenn diese Produkte das Problem wirklich lösen würden – warum steigt die Zahl der Betroffenen dann jedes Jahr weiter? Weil Einlagen dein Problem verstecken. <em>Nicht lösen.</em></p>
 
         <p>Und vielleicht hast du sogar versucht, es selbst in die Hand zu nehmen.</p>
 
@@ -2221,8 +2221,9 @@
 
           <!-- Hidden-Felder -->
           <input type="hidden" name="touchpoint" value="Anmeldung_Webinar">
-          <input type="hidden" name="datum" value="{{wf {&quot;path&quot;:&quot;name&quot;,&quot;type&quot;:&quot;PlainText&quot;\} }}">
-          <input type="hidden" name="uhrzeit" value="19:00">
+          <!-- Datum + Uhrzeit werden automatisch aus BSLP_CONFIG gesetzt (siehe Loader oben) -->
+          <input type="hidden" name="datum" value="">
+          <input type="hidden" name="uhrzeit" value="">
 
           <!-- UTM-Parameter -->
           <input type="hidden" name="utm_source">
@@ -2279,6 +2280,7 @@
                 ".make.com/",
                 "19ab4lb143ysbgij7jre3x803te2ia4e"
               ].join(""),
+              trackingEndpoint: "https://barbara-scharrer-tracking.vercel.app/api/lead",
               redirect: [
                 "https://www.barbarascharrer.de",
                 "/webinar-teilnahme-danke"
@@ -2524,23 +2526,49 @@
                 var fd = new FormData(form);
                 fd.append("g-recaptcha-response", captchaToken);
 
+                // Tracking-Payload (JSON) parallel zur Make-Automation senden.
+                var trackingPayload = {
+                  first_name:   (fd.get("first_name")   || "").toString(),
+                  last_name:    (fd.get("last_name")    || "").toString(),
+                  email:        (fd.get("email")        || "").toString(),
+                  phone:        (fd.get("phone")        || "").toString() || null,
+                  webinar_date: (fd.get("datum")        || "").toString() || null,
+                  webinar_time: (function(t){ t = (t || "").toString(); return t ? (t.length === 5 ? t + ":00" : t) : null; })(fd.get("uhrzeit")),
+                  utm_source:   (fd.get("utm_source")   || "").toString() || null,
+                  utm_medium:   (fd.get("utm_medium")   || "").toString() || null,
+                  utm_campaign: (fd.get("utm_campaign") || "").toString() || null,
+                  utm_content:  (fd.get("utm_content")  || "").toString() || null,
+                  utm_term:     (fd.get("utm_term")     || "").toString() || null,
+                  referrer:     document.referrer || null,
+                  recaptcha_token: captchaToken || null,
+                  website:      (fd.get("website")      || "").toString()
+                };
+
                 var fallback = setTimeout(function() {
                   window.location.href = _cfg.redirect;
                 }, 4000);
 
-                fetch(_cfg.endpoint, {
+                // Make (FormData, no-cors) + Tracking (JSON) parallel.
+                // Tracking-Fehler dürfen die Anmeldung nie blockieren.
+                Promise.allSettled([
+                  fetch(_cfg.endpoint, {
                     method: "POST",
                     mode: "no-cors",
                     body: fd
-                  })
-                  .then(function() {
-                    clearTimeout(fallback);
-                    window.location.href = _cfg.redirect;
-                  })
-                  .catch(function() {
-                    clearTimeout(fallback);
-                    window.location.href = _cfg.redirect;
-                  });
+                  }),
+                  fetch(_cfg.trackingEndpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(trackingPayload),
+                    keepalive: true
+                  }).catch(function(){ /* Tracking-Fehler ignorieren */ })
+                ]).then(function() {
+                  clearTimeout(fallback);
+                  window.location.href = _cfg.redirect;
+                }).catch(function() {
+                  clearTimeout(fallback);
+                  window.location.href = _cfg.redirect;
+                });
               });
             }
 
@@ -2829,10 +2857,10 @@
       });
     });
 
-    /* Form-Hidden-Felder (nur überschreiben, wenn leer oder noch {{wf}}-Token drin) */
+    /* Form-Hidden-Felder: Datum + Uhrzeit aus BSLP_CONFIG übernehmen */
     var fdate = document.querySelector('#form-webinar [name="datum"]');
     var ftime = document.querySelector('#form-webinar [name="uhrzeit"]');
-    if (fdate && c.date && (!fdate.value || /\{\{wf/.test(fdate.value))) fdate.value = c.date;
-    if (ftime && c.time && (!ftime.value || /\{\{wf/.test(ftime.value))) ftime.value = c.time;
+    if (fdate && c.date) fdate.value = c.date;
+    if (ftime && c.time) ftime.value = c.time;
   })();
 </script>
