@@ -2362,36 +2362,89 @@
 
             /* ------------------------------------------------------------------
                TELEFON-PLAUSIBILITÄTSPRÜFUNG
+
+               Zwei Schichten — beide tolerant gegen legitime Nummern:
+               1) Heuristiken (sofort aktiv): lehnen offensichtlich falsche
+                  Nummern ab. ≥5 gleiche Ziffern in Folge, durchgehende Treppe,
+                  Block-Wiederholung, >50% Nullen, führende 0 nach Vorwahl.
+               2) libphonenumber-js (per CDN nachgeladen, ~25 KB gzipped):
+                  prüft Länge + Struktur via isPossible(). Bewusst NICHT
+                  isValid(), damit Festnetz und weniger bekannte Provider
+                  immer durchgehen.
             ------------------------------------------------------------------ */
-            function validatePhoneNumber(rawValue) {
-              var cleaned = rawValue.replace(/[\s\-\/\.\(\)]/g, '');
-              if (cleaned.charAt(0) === '+') cleaned = cleaned.slice(1);
-              if (cleaned.length === 0) return null;
+            (function loadLibPhoneNumber() {
+              if (window.libphonenumber || document.getElementById("bslp-libpn")) return;
+              var s = document.createElement("script");
+              s.id = "bslp-libpn";
+              s.src = "https://cdn.jsdelivr.net/npm/libphonenumber-js@1.11.20/bundle/libphonenumber-min.js";
+              s.async = true;
+              document.head.appendChild(s);
+            })();
+
+            function validatePhoneNumber(prefix, rawValue) {
+              var p = (prefix || "").trim();
+              var raw = (rawValue || "").trim();
+              if (!raw) return null;
+
+              var cleaned = raw.replace(/[\s\-\/\.\(\)]/g, "");
+              var alreadyIntl = cleaned.charAt(0) === "+";
+              if (alreadyIntl) cleaned = cleaned.slice(1);
+
               if (!/^\d+$/.test(cleaned))
-                return "Bitte gib nur Ziffern, Leerzeichen oder Bindestriche ein.";
+                return "Bitte gib deine Nummer nur mit Ziffern, Leerzeichen oder Bindestrichen ein.";
               if (cleaned.length < 6 || cleaned.length > 15)
-                return "Bitte gib eine gültige Telefonnummer ein (6–15 Ziffern).";
+                return "Bitte gib eine vollständige Telefonnummer ein (6–15 Ziffern).";
+
+              if (!alreadyIntl && p && cleaned.charAt(0) === "0")
+                return "Bitte ohne führende 0 nach der Ländervorwahl (z. B. " + p + " 176 12345678).";
+
+              if (/(\d)\1{4,}/.test(cleaned))
+                return "Bitte gib deine echte Telefonnummer ein.";
+
               if (/^(\d)\1+$/.test(cleaned))
                 return "Bitte gib deine echte Telefonnummer ein.";
+
               var asc = true, desc = true;
               for (var i = 1; i < cleaned.length; i++) {
                 if (+cleaned[i] !== +cleaned[i - 1] + 1) asc = false;
                 if (+cleaned[i] !== +cleaned[i - 1] - 1) desc = false;
               }
-              if (asc || desc)
-                return "Bitte gib deine echte Telefonnummer ein.";
+              if (asc || desc) return "Bitte gib deine echte Telefonnummer ein.";
+
               var maxBlock = Math.min(4, Math.floor(cleaned.length / 2));
               for (var bl = 2; bl <= maxBlock; bl++) {
                 var blk = cleaned.slice(0, bl);
-                var rep = '';
+                var rep = "";
                 while (rep.length < cleaned.length) rep += blk;
                 if (rep.slice(0, cleaned.length) === cleaned)
                   return "Bitte gib deine echte Telefonnummer ein.";
               }
+
               var uniq = {};
               for (var j = 0; j < cleaned.length; j++) uniq[cleaned[j]] = 1;
               if (Object.keys(uniq).length < 3)
                 return "Bitte gib deine echte Telefonnummer ein.";
+
+              var zeros = (cleaned.match(/0/g) || []).length;
+              if (zeros / cleaned.length > 0.5)
+                return "Bitte gib deine echte Telefonnummer ein.";
+
+              var lp = window.libphonenumber;
+              if (lp && p) {
+                try {
+                  var full = alreadyIntl ? "+" + cleaned : p + cleaned;
+                  var parser = lp.parsePhoneNumberFromString || lp.parsePhoneNumber;
+                  if (parser) {
+                    var parsed = parser(full);
+                    if (parsed && typeof parsed.isPossible === "function" && !parsed.isPossible()) {
+                      return "Diese Nummer scheint nicht vollständig zu sein. Bitte prüfen.";
+                    }
+                  }
+                } catch (e) {
+                  /* Library-Fehler nicht propagieren — die Heuristiken haben bereits gefiltert. */
+                }
+              }
+
               return null;
             }
 
@@ -2415,7 +2468,9 @@
 
               var phoneEl = $id("phone");
               if (phoneEl && phoneEl.value.trim() && phoneEl.checkValidity()) {
-                var phoneErr = validatePhoneNumber(phoneEl.value.trim());
+                var prefixEl = $id("phone_prefix");
+                var prefixVal = prefixEl ? prefixEl.value : "";
+                var phoneErr = validatePhoneNumber(prefixVal, phoneEl.value.trim());
                 if (phoneErr) {
                   setFieldError("phone", phoneErr);
                   valid = false;
@@ -2476,7 +2531,20 @@
                 phoneInput.addEventListener("blur", function() {
                   var val = this.value.trim();
                   if (!val) return;
-                  var err = validatePhoneNumber(val);
+                  // Komfort: führende 0(en) abschneiden, wenn Vorwahl gewählt
+                  // und die Nummer nicht selbst international beginnt. Bleibt
+                  // mind. eine Nicht-Null-Ziffer übrig, damit das Feld nicht
+                  // bei Nur-Null-Eingaben leer wird.
+                  var prefixEl = $id("phone_prefix");
+                  var prefixVal = prefixEl ? prefixEl.value : "";
+                  if (prefixVal && val.charAt(0) === "0" && /[1-9]/.test(val)) {
+                    var stripped = val.replace(/^0+/, "");
+                    if (stripped && stripped !== val) {
+                      val = stripped;
+                      this.value = stripped;
+                    }
+                  }
+                  var err = validatePhoneNumber(prefixVal, val);
                   if (err) setFieldError("phone", err);
                   else clearFieldError("phone");
                 });
