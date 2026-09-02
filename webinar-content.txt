@@ -538,10 +538,10 @@
     pointer-events: none;
   }
   .bslp-empathy-content {
-    padding: 0 3rem 2.75rem;
+    padding: 1.5rem 3rem 2.75rem;
     position: relative;
     z-index: 2;
-    margin-top: -5rem;
+    margin-top: -3rem;
   }
   /* Card-BG als sanfter Weiß-zu-Hellblau-Gradient */
   .bslp-empathy-inner {
@@ -2866,7 +2866,8 @@
     .bslp-forwho { padding: 0 1rem; }
     .bslp-forwho-inner { padding: 2rem 1.35rem 1.75rem; }
     .bslp-forwho-h2 { font-size: 1.125rem; margin-bottom: 1.35rem; }
-    .bslp-forwho-chip { font-size: 0.875rem; padding: 0.45rem 0.95rem; }
+    .bslp-forwho-chip { font-size: 0.8125rem; padding: 0.45rem 0.85rem; white-space: normal !important; text-align: center; max-width: 100%; }
+    .bslp-forwho-chips { max-width: 100%; }
     .bslp-hero-subh1 { font-size: 1rem; margin: 0 auto 1rem; }
     .bslp-hero-values { padding: 1.25rem 1.25rem; margin: 1.25rem auto 0; }
     .bslp-hero-values li { font-size: 0.9375rem; }
