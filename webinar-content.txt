@@ -2555,8 +2555,117 @@
     .bslp-hero-value-check svg { width: 11px; height: 11px; }
   }
 
-  /* ============================ MOBILE FEINSCHLIFF (< 767px) ============================
-     Umfassender Sweep für alle neuen Sektionen und UI-Elemente. */
+  /* ============================ MOBILE FIX PASS (< 767px) ============================
+     Aggressiver Fix-Sweep: Bild-Text-Überlappungen weg, Text-Breiten großzügig,
+     Section-Paddings konsolidiert. */
+  @media (max-width: 767px) {
+    /* --- KRITISCH: Alle Section-Cards nutzen jetzt schmalere äußere Padding
+           damit Text-Container mehr Breite bekommen --- */
+    .bslp-story-inner { padding: 0 1rem !important; }
+    .bslp-empathy,
+    .bslp-forwho,
+    .bslp-vs,
+    .bslp-lesson,
+    .bslp-qualify { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .bslp-trust,
+    .bslp-content,
+    .bslp-testimonials,
+    .bslp-host,
+    .bslp-signup { margin-left: 1rem !important; margin-right: 1rem !important; }
+    .bslp-trust-inner,
+    .bslp-forwho-inner,
+    .bslp-vs-inner,
+    .bslp-lesson-inner,
+    .bslp-qualify-inner,
+    .bslp-empathy-inner { padding: 1.75rem 1.15rem !important; }
+    .bslp-story-problem,
+    .bslp-story-solution { padding-left: 1.15rem !important; padding-right: 1.15rem !important; margin-left: 0 !important; margin-right: 0 !important; }
+
+    /* --- FIX 1: Empathy — Bild überlappt KEINEN Text mehr --- */
+    .bslp-empathy-photo { aspect-ratio: 16 / 9 !important; }
+    .bslp-empathy-content { margin-top: 0 !important; padding: 0.5rem 0.5rem 0.5rem !important; }
+    .bslp-empathy-photo-img {
+      -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(0,0,0,0.5) 85%, rgba(0,0,0,0) 100%) !important;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(0,0,0,0.5) 85%, rgba(0,0,0,0) 100%) !important;
+    }
+    .bslp-empathy-eyebrow { margin-top: 0.5rem; }
+    .bslp-empathy-signoff {
+      display: block !important;
+      max-width: none !important;
+      text-align: center;
+    }
+    .bslp-empathy-inner p { max-width: none !important; }
+
+    /* --- Kennst-Cards (Sektion 3) --- */
+    .bslp-story-critical-hero { padding: 1.75rem 1.25rem; margin: 0 auto; }
+    .bslp-story-critical-hero-badge { font-size: 0.7rem; padding: 0.35rem 0.75rem; }
+    .bslp-story-critical-hero-lead { font-size: clamp(1.125rem, 4.5vw, 1.375rem); }
+    .bslp-story-critical-hero-body { font-size: 0.9375rem; }
+    .bslp-story-h2 { font-size: clamp(1.375rem, 5vw, 1.75rem); margin-bottom: 1.5rem !important; padding: 0 0.25rem; }
+    .bslp-kennst-card { padding: 1.5rem 1.15rem !important; gap: 0.85rem; }
+
+    /* --- Solution-Card --- */
+    .bslp-story-solution { padding: 1.75rem 1.15rem !important; margin: 1.5rem auto 0 !important; }
+    .bslp-story-solution-header { flex-direction: column-reverse; align-items: flex-start; gap: 0.85rem; }
+    .bslp-story-solution .bslp-story-statement { font-size: 1.125rem !important; }
+    .bslp-story-aufricht { max-width: 18rem; margin: 1.25rem auto 0; }
+    .bslp-story-stat-value { font-size: 2rem; }
+    .bslp-story-stat-text { font-size: 0.875rem; }
+
+    /* --- Problem-Cards --- */
+    .bslp-story-problem { padding: 1.5rem 1.15rem !important; margin: 1.25rem auto; }
+    .bslp-story-subh { font-size: clamp(1.125rem, 4.5vw, 1.375rem); }
+    .bslp-story-problem p { font-size: 0.9375rem; line-height: 1.6; }
+    .bslp-story-problem .bslp-story-statement { font-size: 1rem !important; padding: 0.85rem 0.9rem; }
+
+    /* --- Testimonials → 1 Spalte --- */
+    .bslp-testimonials-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .bslp-testimonials-header { margin-bottom: 1.5rem; }
+    .bslp-testimonials-eyebrow { font-size: 0.7rem; }
+    .bslp-testimonials-h2 { font-size: clamp(1.375rem, 5vw, 1.75rem); }
+    .bslp-test-quote { font-size: 0.9375rem; }
+    .bslp-test-body { padding: 1rem 1.15rem 1.25rem; }
+
+    /* --- Workshop-Inhalte --- */
+    .bslp-content-h2 { font-size: clamp(1.375rem, 5vw, 1.75rem); }
+    .bslp-content-tagline { font-size: 0.75rem; padding: 0.35rem 0.75rem; }
+    .bslp-takeaway-item { padding: 1.15rem 1.15rem; gap: 0.85rem; grid-template-columns: 36px 1fr; }
+    .bslp-takeaway-num { width: 36px; height: 36px; font-size: 1rem; }
+    .bslp-takeaway-h3 { font-size: 0.9375rem; }
+    .bslp-takeaway-body p { font-size: 0.875rem; }
+
+    /* --- Host-Card --- */
+    .bslp-host-h2 { font-size: clamp(1.375rem, 5vw, 1.75rem); }
+
+    /* --- VS-Vergleich --- */
+    .bslp-vs-h2 { font-size: clamp(1.25rem, 5vw, 1.625rem); }
+    .bslp-vs-col { padding: 1.5rem 1.15rem !important; }
+
+    /* --- Qualify (Entscheidungshilfe) --- */
+    .bslp-qualify-h2 { font-size: clamp(1.25rem, 5vw, 1.625rem); }
+    .bslp-qualify-list li { font-size: 0.875rem; line-height: 1.5; padding-left: 1.6rem; }
+    .bslp-qualify-list--two-col { grid-template-columns: 1fr !important; gap: 0.85rem !important; }
+    .bslp-qualify-col { padding: 1.5rem 1.15rem !important; }
+
+    /* --- Signup --- */
+    .bslp-signup { padding: 2rem 1rem 2.5rem !important; }
+    .bslp-signup-eyebrow { font-size: 0.7rem; padding: 0.35rem 0.75rem; line-height: 1.35; }
+    .bslp-signup-trust { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .bslp-signup-trust li { font-size: 0.875rem; }
+    .bslp-signup-privacy { font-size: 0.75rem; }
+    .bslp-signup-form-card { padding: 1.75rem 1.15rem !important; }
+
+    /* --- Kennst-Progressions-Pfeile --- */
+    .bslp-kennst-arrow { padding: 0.25rem 0; }
+    .bslp-kennst-arrow svg { width: 20px; height: 20px; }
+
+    /* --- Alle Buttons min-height 48px --- */
+    .bslp-cta, .bslp-cta-mega, #form-webinar .form_button { min-height: 48px; }
+    .bslp-hero-eyebrow > span:last-child,
+    .bslp-signup-eyebrow > span:last-child { display: inline; }
+  }
+
+  /* ============================ ORIGINAL 767px BLOCK (Legacy, wird durch obigen ergänzt) ============================ */
   @media (max-width: 767px) {
     /* Kennst-Cards (Sektion 3) */
     .bslp-story-critical-hero { padding: 2rem 1.35rem; margin: 0 auto; }
