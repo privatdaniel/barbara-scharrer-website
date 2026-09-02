@@ -4833,27 +4833,63 @@
       }
     });
 
-    /* Hero-Video: YouTube-ID + Thumbnail aus BSLP_CONFIG.heroVideo setzen.
-       Erlaubt sind: reine ID ("NcKMslGQJyQ") oder komplette youtube.com/youtu.be-URL. */
+    /* Hero-Video: unterstützt Wistia UND YouTube.
+       Wistia-URL:  https://user.wistia.com/medias/<ID>  →  Wistia-Player embed
+       YouTube-URL: youtu.be/<ID> oder youtube.com/watch?v=<ID>  →  YT-Lite-Embed
+       Reine ID (nur YouTube-Format): NcKMslGQJyQ                                     */
+    function extractWistiaId(input) {
+      var s = (input || '').toString().trim();
+      if (!s) return '';
+      var m = s.match(/wistia\.(?:net|com)\/(?:medias|embed(?:\/iframe)?)\/([a-z0-9]+)/i);
+      return m ? m[1] : '';
+    }
     function extractYouTubeId(input) {
       var s = (input || '').toString().trim();
       if (!s) return '';
-      // youtu.be/<ID>  |  youtube.com/watch?v=<ID>  |  youtube.com/embed/<ID>  |  reine ID
       var m = s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{6,})/);
       if (m) return m[1];
       if (/^[A-Za-z0-9_-]{6,}$/.test(s)) return s;
       return '';
     }
-    var heroYt = extractYouTubeId(c.heroVideo);
+
     var heroWrap = document.querySelector('[data-bslp-hero-video]');
     if (heroWrap) {
-      if (heroYt) {
+      var heroWistia = extractWistiaId(c.heroVideo);
+      var heroYt = heroWistia ? '' : extractYouTubeId(c.heroVideo);
+
+      if (heroWistia) {
+        /* --- Wistia Embed --- */
+        /* Player-Farbe = Marken-Blau (--bslp-blau-2 → 678ba5). videoFoam = responsive. */
+        heroWrap.innerHTML =
+          '<div class="wistia_responsive_padding" style="padding:56.25% 0 0 0;position:relative;">' +
+            '<div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">' +
+              '<div class="wistia_embed wistia_async_' + heroWistia + ' videoFoam=true playerColor=678ba5" style="height:100%;position:relative;width:100%;">' +
+                '<div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;">' +
+                  '<img src="https://fast.wistia.com/embed/medias/' + heroWistia + '/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" aria-hidden="true" onload="this.parentNode.style.opacity=1;" />' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+
+        /* Wistia Player-Scripts nachladen (nur einmal) */
+        if (!document.querySelector('script[src*="assets/external/E-v1.js"]')) {
+          var wsEng = document.createElement('script');
+          wsEng.src = 'https://fast.wistia.com/assets/external/E-v1.js';
+          wsEng.async = true;
+          document.head.appendChild(wsEng);
+        }
+        var wsMedia = document.createElement('script');
+        wsMedia.src = 'https://fast.wistia.com/embed/medias/' + heroWistia + '.jsonp';
+        wsMedia.async = true;
+        document.head.appendChild(wsMedia);
+
+      } else if (heroYt) {
+        /* --- YouTube Lite-Embed (Fallback) --- */
         heroWrap.setAttribute('data-yt', heroYt);
         var thumbEl = heroWrap.querySelector('[data-bslp-hero-thumb]');
         if (thumbEl) {
           thumbEl.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(heroYt) + '/maxresdefault.jpg';
           thumbEl.onerror = function(){
-            /* Fallback auf hqdefault, falls maxres nicht existiert */
             if (thumbEl.src.indexOf('maxresdefault') !== -1) {
               thumbEl.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(heroYt) + '/hqdefault.jpg';
             }

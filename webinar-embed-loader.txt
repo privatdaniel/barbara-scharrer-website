@@ -39,14 +39,13 @@
       lesson:   ''
     },
 
-    /* ------- Hero-Video (YouTube) ----------------------------------
-       Erlaubt: komplette YouTube-URL ODER nur die ID.
-       Beispiele:
+    /* ------- Hero-Video (Wistia oder YouTube) --------------------------
+       Wistia (bevorzugt, mit Marken-Farbe im Player):
+         'https://leonscharrer53.wistia.com/medias/zbz2gtfcrr'
+       YouTube (Fallback):
          'https://www.youtube.com/watch?v=NcKMslGQJyQ'
-         'https://youtu.be/NcKMslGQJyQ'
-         'NcKMslGQJyQ'
-       Zum Entfernen des Hero-Videos leeren String setzen: ''            */
-    heroVideo: 'https://www.youtube.com/watch?v=NcKMslGQJyQ',
+       Zum Entfernen des Hero-Videos leeren String setzen: ''             */
+    heroVideo: 'https://leonscharrer53.wistia.com/medias/zbz2gtfcrr',
 
     /* ------- Testimonial-Cards (bis zu 4) --------------------------
        Jedes Element:

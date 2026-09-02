@@ -29,9 +29,8 @@
     },
 
     /* ------- Hero-Video (persönliche Nachricht von Barbara) -----------
-       Erlaubt: komplette YouTube-URL ODER nur die ID.
-       Zum Austauschen einfach die URL ändern.                            */
-    heroVideo: 'https://www.youtube.com/watch?v=BxY2sMQ4EDs',
+       Wistia (bevorzugt) oder YouTube-URL. Player-Farbe = Marken-Blau.  */
+    heroVideo: 'https://leonscharrer53.wistia.com/medias/or47qtzmq3',
 
     /* ------- Kalender-Eintrag ------------------------------------------
        durationMinutes wird in Google-Kalender + .ics übernommen.        */
