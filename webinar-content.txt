@@ -3352,7 +3352,7 @@
 
       <!-- Barbara zeigt nach unten auf die Card -->
       <figure class="bslp-lesson-photo">
-        <img class="bslp-lesson-photo-img" data-bslp-img="lesson" src="" alt="" loading="lazy" />
+        <img class="bslp-lesson-photo-img" data-bslp-img="lesson" src="https://cdn.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/images/lesson-barbara.png" alt="Barbara zeigt nach unten auf die Card" loading="lazy" />
       </figure>
 
       <h2 id="bslp-lesson-heading" class="bslp-lesson-h2">
