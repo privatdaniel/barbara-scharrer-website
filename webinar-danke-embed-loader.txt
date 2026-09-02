@@ -86,11 +86,10 @@
 
 <script>
   (function(){
-    /* Content wird direkt aus dem GitHub-Repo via jsDelivr CDN geladen.
-       Bei git push ist die neue Version live, kein Webflow-Reupload nötig.
-       Bei Bedarf sofortiges Cache-Purge:
-       https://purge.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-danke-content.txt */
-    var CONTENT_URL = 'https://cdn.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-danke-content.txt';
+    /* Content wird direkt aus dem GitHub-Repo geladen.
+       raw.githubusercontent.com cached nur 5 Minuten — nach git push
+       ist die neue Version in max. 5 Min live. */
+    var CONTENT_URL = 'https://raw.githubusercontent.com/privatdaniel/barbara-scharrer-website/main/webinar-danke-content.txt';
 
     var mount = document.getElementById('bsty-mount');
     if (!mount) return;

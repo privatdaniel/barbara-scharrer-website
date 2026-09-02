@@ -95,12 +95,11 @@
 
 <script>
   (function(){
-    /* Content wird direkt aus dem GitHub-Repo via jsDelivr CDN geladen.
-       Vorteil: bei jeder Änderung (git push) ist die neue Version live,
-       kein Re-Upload in Webflow nötig. jsDelivr purged Cache automatisch bei push.
-       Bei Bedarf sofortiges Cache-Purge:
-       https://purge.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-content.txt */
-    var CONTENT_URL = 'https://cdn.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-content.txt';
+    /* Content wird direkt aus dem GitHub-Repo geladen.
+       raw.githubusercontent.com cached nur 5 Minuten (statt 12h bei jsDelivr) —
+       ideal für schnelle Iteration. Nach jedem git push ist die neue Version
+       in max. 5 Min live, ohne manuelles Cache-Purge. */
+    var CONTENT_URL = 'https://raw.githubusercontent.com/privatdaniel/barbara-scharrer-website/main/webinar-content.txt';
 
     var mount = document.getElementById('bslp-mount');
     if (!mount) return;
