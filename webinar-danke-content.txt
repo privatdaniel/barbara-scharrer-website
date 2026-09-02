@@ -1,0 +1,1382 @@
+<!--
+  Webflow HTML Embed: Webinar-Danke-Seite (Video-Funnel-Style)
+  Einbau: HTML-Embed-Widget innerhalb von "main-wrapper"
+  Schriftart: nutzt die in Webflow bereits geladene Manrope
+
+  Steuerung erfolgt komplett über window.BSTY_CONFIG (siehe Embed-Loader):
+    - Datum, Uhrzeit, Wochentag
+    - Hero-Video (YouTube)
+    - Testimonials (bis zu 4)
+    - Bilder (Logo)
+-->
+
+<style>
+  /* ============================================================
+     Scope: alle Klassen mit Präfix "bsty-".
+     Farben identisch zur Webinar-LP (Blau/Beige, Manrope).
+     ============================================================ */
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  .bsty-root {
+    --bsty-black: #0a0a0a;
+    --bsty-ink: #1a1a1a;
+    --bsty-muted: #5a5a5a;
+    --bsty-line: rgba(10, 10, 10, 0.08);
+    --bsty-blau-1: #87a9c2;
+    --bsty-blau-2: #678ba5;
+    --bsty-blau-3: #4a708c;
+    --bsty-beige-1: #c1a68d;
+    --bsty-beige-2: #ac8f75;
+    --bsty-green: #027a48;
+    --bsty-green-bg: #d1fadf;
+    --bsty-live: #e0322a;
+    --bsty-radius-pill: 999px;
+    --bsty-radius-lg: 24px;
+    --bsty-radius-md: 16px;
+
+    font-family: Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--bsty-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+    box-sizing: border-box;
+  }
+  .bsty-root *, .bsty-root *::before, .bsty-root *::after { box-sizing: border-box; }
+  .bsty-root img { max-width: 100%; height: auto; display: block; }
+  .bsty-root a { color: inherit; text-decoration: none; }
+  .bsty-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+
+  /* ============================ STAGE + NAV ============================ */
+  .bsty-stage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 0%, rgba(135, 169, 194, 0.20) 0%, transparent 55%),
+      linear-gradient(180deg, #eef3f8 0%, #f5f8fb 40%, #ffffff 100%);
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+  .bsty-stage > nav,
+  .bsty-stage > section { position: relative; z-index: 2; }
+
+  .bsty-nav {
+    position: relative;
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid rgba(103, 139, 165, 0.15);
+  }
+  .bsty-nav-inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 0.75rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .bsty-nav-inner::after { content: ""; display: block; }
+  .bsty-nav-logo { justify-self: start; display: inline-flex; align-items: center; }
+  .bsty-root .bsty-logo-img { height: 44px; width: auto; max-width: none; }
+  .bsty-nav-badge {
+    justify-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 1rem 0.4rem 0.5rem;
+    background: linear-gradient(135deg, rgba(2, 122, 72, 0.12) 0%, rgba(2, 122, 72, 0.06) 100%);
+    border: 1px solid rgba(2, 122, 72, 0.28);
+    border-radius: var(--bsty-radius-pill);
+    font-size: 0.8125rem;
+    line-height: 1.25;
+    color: var(--bsty-black);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .bsty-nav-badge-icon {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #12b76a 0%, #027a48 100%);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(2, 122, 72, 0.30);
+  }
+  .bsty-nav-badge-icon svg { width: 12px; height: 12px; }
+
+  /* ============================ HERO ============================ */
+  .bsty-hero { position: relative; }
+  .bsty-hero-inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 2.25rem 2rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+  }
+  .bsty-hero-copy {
+    position: relative;
+    max-width: 60rem;
+    width: 100%;
+    text-align: center;
+  }
+  .bsty-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.95rem;
+    background: rgba(2, 122, 72, 0.08);
+    border: 1px solid rgba(2, 122, 72, 0.24);
+    border-radius: var(--bsty-radius-pill);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--bsty-green);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .bsty-hero-eyebrow svg { width: 14px; height: 14px; }
+
+  .bsty-h1 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.875rem, 3.2vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.022em;
+    color: var(--bsty-black);
+    margin: 0 0 1rem;
+    text-wrap: pretty;
+  }
+  .bsty-h1-accent {
+    background: linear-gradient(180deg, var(--bsty-blau-2) 0%, var(--bsty-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+  }
+  .bsty-hero-sub {
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--bsty-muted);
+    margin: 0 auto 0.5rem;
+    max-width: 46rem;
+  }
+  .bsty-hero-sub strong { color: var(--bsty-black); font-weight: 700; }
+
+  /* Hero-Video (Barbara direkte Ansprache) */
+  .bsty-hero-video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 48rem;
+    margin: 1rem auto 0;
+    border-radius: var(--bsty-radius-lg);
+    overflow: hidden;
+    background: #0a0a0a;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.08),
+      0 22px 48px rgba(10, 10, 10, 0.22),
+      0 44px 88px rgba(10, 10, 10, 0.14);
+  }
+  .bsty-hero-video::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: 0 0 0 1px rgba(103, 139, 165, 0.10) inset;
+    pointer-events: none;
+    transition: box-shadow 0.3s ease;
+  }
+  .bsty-hero-video:hover::after {
+    box-shadow: 0 0 0 3px rgba(103, 139, 165, 0.20) inset;
+  }
+  .bsty-hero-video-play {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0; border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+  }
+  .bsty-hero-video-thumb {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .bsty-hero-video-play:hover .bsty-hero-video-thumb { transform: scale(1.03); }
+  .bsty-hero-video-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--bsty-blau-3);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 12px 32px rgba(10, 10, 10, 0.28);
+    transition: transform 0.25s ease, background 0.2s ease;
+  }
+  .bsty-hero-video-play:hover .bsty-hero-video-icon {
+    transform: translate(-50%, -50%) scale(1.08);
+    background: #fff;
+  }
+  .bsty-hero-video-icon svg { width: 36px; height: 36px; margin-left: 4px; }
+  .bsty-hero-video-caption {
+    display: block;
+    margin: 0.85rem auto 0;
+    font-size: 0.875rem;
+    color: var(--bsty-muted);
+    max-width: 40rem;
+    font-style: italic;
+  }
+
+  /* ============================ DATE + COUNTDOWN + CTA-CALENDER ============================ */
+  .bsty-datetime {
+    position: relative;
+    z-index: 3;
+    max-width: 76rem;
+    margin: -1.5rem auto 3rem;
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
+    border-radius: var(--bsty-radius-lg);
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(10, 10, 10, 0.06),
+      0 28px 60px rgba(10, 10, 10, 0.04);
+    padding: 2.5rem 2.5rem;
+    text-align: center;
+  }
+  .bsty-datetime-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bsty-blau-3);
+    margin-bottom: 1rem;
+  }
+  .bsty-live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--bsty-live);
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(224, 50, 42, 0.55);
+    animation: bsty-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes bsty-pulse {
+    0%   { box-shadow: 0 0 0 0    rgba(224, 50, 42, 0.55); }
+    70%  { box-shadow: 0 0 0 10px rgba(224, 50, 42, 0); }
+    100% { box-shadow: 0 0 0 0    rgba(224, 50, 42, 0); }
+  }
+  .bsty-datetime-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.018em;
+    color: var(--bsty-black);
+    margin: 0 auto 0.5rem;
+    max-width: 40rem;
+    text-wrap: balance;
+  }
+  .bsty-datetime-h2 .bsty-h1-accent { white-space: normal; }
+  .bsty-datetime-sub {
+    font-size: 0.9375rem;
+    color: var(--bsty-muted);
+    margin: 0 auto 1.75rem;
+    max-width: 36rem;
+  }
+
+  /* Countdown-Row */
+  .bsty-countdown {
+    display: inline-flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0 auto 1.75rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, rgba(135, 169, 194, 0.10) 0%, rgba(193, 166, 141, 0.06) 100%);
+    border: 1px solid rgba(103, 139, 165, 0.16);
+    border-radius: var(--bsty-radius-lg);
+  }
+  .bsty-countdown-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 62px;
+  }
+  .bsty-countdown-num {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--bsty-black);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .bsty-countdown-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bsty-muted);
+    margin-top: 0.35rem;
+  }
+  .bsty-countdown-sep {
+    align-self: center;
+    font-size: 1.25rem;
+    color: rgba(10, 10, 10, 0.25);
+    line-height: 1;
+    transform: translateY(-0.35rem);
+  }
+  .bsty-countdown-live {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--bsty-live);
+    letter-spacing: 0.02em;
+  }
+
+  /* CTA-Row: Calendar-Buttons */
+  .bsty-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0 auto;
+    max-width: 48rem;
+  }
+  .bsty-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.5rem;
+    border-radius: var(--bsty-radius-pill);
+    font-family: Manrope, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.005em;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.2s ease, border-color 0.2s ease;
+    text-align: center;
+  }
+  .bsty-btn svg { width: 18px; height: 18px; flex: 0 0 auto; }
+  .bsty-btn-primary {
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bsty-beige-2), var(--bsty-beige-1));
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 10px 26px rgba(172, 143, 117, 0.4), 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+  }
+  .bsty-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px rgba(172, 143, 117, 0.45), 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+  }
+  .bsty-btn-outline {
+    background: #ffffff;
+    color: var(--bsty-black);
+    border-color: rgba(10, 10, 10, 0.15);
+  }
+  .bsty-btn-outline:hover {
+    border-color: var(--bsty-blau-3);
+    color: var(--bsty-blau-3);
+  }
+  .bsty-root .bsty-btn,
+  .bsty-root .bsty-btn:visited,
+  .bsty-root .bsty-btn:hover,
+  .bsty-root .bsty-btn:focus,
+  .bsty-root .bsty-btn:active { text-decoration: none; }
+
+  /* ============================ NEXT-STEPS CARDS ============================ */
+  .bsty-steps {
+    max-width: 76rem;
+    margin: 0 auto 4rem;
+    padding: 0 2rem;
+  }
+  .bsty-steps-header {
+    text-align: center;
+    max-width: 42rem;
+    margin: 0 auto 2rem;
+  }
+  .bsty-steps-eyebrow {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--bsty-blau-3);
+    margin-bottom: 0.65rem;
+  }
+  .bsty-steps-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--bsty-black);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .bsty-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .bsty-step-card {
+    position: relative;
+    padding: 2rem 1.75rem 1.75rem;
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.06);
+    border-radius: var(--bsty-radius-lg);
+    box-shadow: 0 1px 2px rgba(10, 10, 10, 0.03), 0 12px 28px rgba(10, 10, 10, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .bsty-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(135, 169, 194, 0.18) 0%, rgba(103, 139, 165, 0.10) 100%);
+    color: var(--bsty-blau-3);
+    font-family: Manrope, sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+  }
+  .bsty-step-h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--bsty-black);
+    margin: 0;
+  }
+  .bsty-step-body {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bsty-muted);
+    margin: 0;
+  }
+  .bsty-step-body strong { color: var(--bsty-black); font-weight: 700; }
+
+  /* ============================ TESTIMONIALS (Fallstudien) ============================ */
+  .bsty-testimonials {
+    max-width: 76rem;
+    margin: 0 auto 4rem;
+    padding: 0 2rem;
+  }
+  .bsty-testimonials-header {
+    text-align: center;
+    max-width: 44rem;
+    margin: 0 auto 2rem;
+  }
+  .bsty-testimonials-eyebrow {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--bsty-blau-3);
+    margin-bottom: 0.65rem;
+  }
+  .bsty-testimonials-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--bsty-black);
+    margin: 0 0 0.65rem;
+    text-wrap: balance;
+  }
+  .bsty-testimonials-sub {
+    font-size: 0.9375rem;
+    color: var(--bsty-muted);
+    margin: 0 auto;
+    max-width: 36rem;
+  }
+  .bsty-testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .bsty-test-card {
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.06);
+    border-radius: var(--bsty-radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 2px rgba(10, 10, 10, 0.03), 0 12px 28px rgba(10, 10, 10, 0.04);
+  }
+  .bsty-test-video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #0a0a0a;
+    overflow: hidden;
+  }
+  .bsty-test-play {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    padding: 0; border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+  }
+  .bsty-test-thumb {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .bsty-test-play-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 62px; height: 62px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--bsty-blau-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(10, 10, 10, 0.25);
+    transition: transform 0.2s ease;
+  }
+  .bsty-test-play:hover .bsty-test-play-icon { transform: translate(-50%, -50%) scale(1.06); }
+  .bsty-test-play-icon svg { width: 22px; height: 22px; margin-left: 3px; }
+  .bsty-test-body { padding: 1.5rem 1.5rem 1.75rem; }
+  .bsty-test-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+  .bsty-test-meta-name {
+    font-family: Manrope, sans-serif;
+    font-weight: 700;
+    color: var(--bsty-black);
+    font-size: 1rem;
+  }
+  .bsty-test-meta-context {
+    font-size: 0.8125rem;
+    color: var(--bsty-muted);
+  }
+  .bsty-test-stars {
+    display: inline-flex;
+    gap: 2px;
+    margin-left: auto;
+    color: #f6b73c;
+  }
+  .bsty-test-stars svg { width: 14px; height: 14px; }
+  .bsty-test-quote {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bsty-ink);
+    margin: 0;
+  }
+
+  /* ============================ CONTACT / SUPPORT ============================ */
+  .bsty-contact {
+    max-width: 76rem;
+    margin: 0 auto 4rem;
+    padding: 0 2rem;
+  }
+  .bsty-contact-inner {
+    background: linear-gradient(135deg, #f5e9da 0%, #ede0ce 50%, #e6d4bd 100%);
+    border-radius: var(--bsty-radius-lg);
+    padding: 2.5rem 2.5rem;
+    text-align: center;
+    border: 1px solid rgba(193, 166, 141, 0.30);
+  }
+  .bsty-contact-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.25rem, 2vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bsty-black);
+    margin: 0 0 0.65rem;
+    letter-spacing: -0.015em;
+  }
+  .bsty-contact-sub {
+    font-size: 0.9375rem;
+    color: var(--bsty-ink);
+    margin: 0 auto 1.25rem;
+    max-width: 40rem;
+    line-height: 1.6;
+  }
+  .bsty-contact-mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: #ffffff;
+    border-radius: var(--bsty-radius-pill);
+    font-weight: 700;
+    color: var(--bsty-black);
+    text-decoration: none;
+    border: 1px solid rgba(10, 10, 10, 0.08);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .bsty-contact-mail:hover { transform: translateY(-1px); border-color: var(--bsty-blau-3); }
+  .bsty-contact-mail svg { width: 16px; height: 16px; }
+
+  /* ============================ FOOTER ============================ */
+  .bsty-footer {
+    background: #f5f7f9;
+    padding: 3.5rem 2rem 2rem;
+    color: var(--bsty-muted);
+    font-size: 0.875rem;
+  }
+  .bsty-footer-inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(10, 10, 10, 0.06);
+  }
+  .bsty-footer-logo { display: inline-flex; align-items: center; }
+  .bsty-root .bsty-footer-logo-img { height: 52px; width: auto; max-width: none; }
+  .bsty-footer-col h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--bsty-black);
+    margin: 0 0 1rem;
+    letter-spacing: -0.005em;
+  }
+  .bsty-footer-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.65rem; }
+  .bsty-footer-list a {
+    color: var(--bsty-muted);
+    transition: color 0.15s ease;
+  }
+  .bsty-footer-list a:hover { color: var(--bsty-blau-3); }
+  .bsty-footer-bottom-wrap {
+    max-width: 76rem;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+  }
+  .bsty-footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .bsty-footer-copy { margin: 0; font-size: 0.8125rem; }
+  .bsty-footer-socials { display: flex; gap: 0.85rem; }
+  .bsty-footer-socials a {
+    width: 34px; height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bsty-muted);
+    background: #ffffff;
+    border-radius: 50%;
+    border: 1px solid rgba(10, 10, 10, 0.06);
+    transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .bsty-footer-socials a:hover { color: var(--bsty-blau-3); border-color: var(--bsty-blau-3); transform: translateY(-2px); }
+  .bsty-footer-socials svg { width: 14px; height: 14px; }
+
+  /* ============================ RESPONSIVE ============================ */
+  @media (max-width: 1280px) {
+    .bsty-datetime { margin-left: 2rem; margin-right: 2rem; }
+  }
+  @media (max-width: 1199px) {
+    .bsty-nav-badge { font-size: 0.75rem; padding: 0.35rem 0.8rem 0.35rem 0.45rem; }
+  }
+  @media (max-width: 1023px) {
+    .bsty-nav { padding: 0; background: rgba(255, 255, 255, 0.85); }
+    .bsty-nav-inner {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      gap: 0;
+    }
+    .bsty-nav-inner::after { display: none; }
+    .bsty-nav-logo { order: 2; padding: 0.6rem 5%; }
+    .bsty-nav-badge {
+      order: 1;
+      width: 100%;
+      justify-content: center;
+      border-radius: 0;
+      border-left: 0;
+      border-right: 0;
+      border-top: 0;
+      border-bottom: 1px solid rgba(2, 122, 72, 0.22);
+      padding: 0.6rem 5%;
+      text-align: center;
+    }
+    .bsty-root .bsty-logo-img { height: 38px; }
+  }
+  @media (min-width: 992px) and (max-width: 1199px) {
+    .bsty-hero-inner { padding: 2rem 5% 3rem; }
+    .bsty-h1 { font-size: clamp(1.75rem, 3.6vw, 2.375rem); }
+    .bsty-hero-video { max-width: 42rem; }
+    .bsty-datetime { padding: 2.25rem 2rem; }
+    .bsty-steps-grid { gap: 1rem; }
+    .bsty-step-card { padding: 1.75rem 1.5rem; }
+  }
+  @media (min-width: 768px) and (max-width: 991px) {
+    .bsty-hero-inner { padding: 1.75rem 5% 2.5rem; gap: 1.25rem; }
+    .bsty-h1 { font-size: clamp(1.625rem, 4vw, 2.125rem); max-width: 42rem; }
+    .bsty-hero-sub { max-width: 42rem; font-size: 1rem; }
+    .bsty-hero-video { max-width: 40rem; }
+    .bsty-hero-video-icon { width: 72px; height: 72px; }
+    .bsty-hero-video-icon svg { width: 28px; height: 28px; }
+
+    .bsty-datetime { padding: 2rem 1.75rem; margin: -1rem 1.5rem 2.5rem; }
+    .bsty-datetime-h2 { font-size: clamp(1.375rem, 3vw, 1.875rem); }
+
+    .bsty-steps { padding: 0 1.5rem; margin-bottom: 3rem; }
+    .bsty-steps-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+    .bsty-step-card { padding: 1.5rem 1.5rem; flex-direction: row; align-items: flex-start; gap: 1rem; }
+    .bsty-step-card .bsty-step-num { flex: 0 0 auto; }
+    .bsty-step-card > div { flex: 1 1 auto; display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .bsty-testimonials { padding: 0 1.5rem; margin-bottom: 3rem; }
+    .bsty-testimonials-grid { gap: 1rem; }
+
+    .bsty-contact { padding: 0 1.5rem; }
+    .bsty-contact-inner { padding: 2.25rem 2rem; }
+  }
+  @media (max-width: 767px) {
+    .bsty-hero-inner { padding: 1.5rem 5% 2rem; gap: 1rem; }
+    .bsty-hero-eyebrow { font-size: 0.7rem; padding: 0.35rem 0.75rem; margin-bottom: 0.85rem; }
+    .bsty-h1 { font-size: clamp(1.5rem, 6.5vw, 2rem); line-height: 1.12; margin-bottom: 0.85rem; }
+    .bsty-hero-sub { font-size: 0.9375rem; line-height: 1.55; }
+    .bsty-hero-video-icon { width: 60px; height: 60px; }
+    .bsty-hero-video-icon svg { width: 24px; height: 24px; }
+    .bsty-hero-video-caption { font-size: 0.8125rem; }
+
+    .bsty-datetime {
+      margin: -0.75rem 1rem 2rem;
+      padding: 2rem 1.25rem;
+    }
+    .bsty-datetime-h2 { font-size: clamp(1.25rem, 5.5vw, 1.625rem); }
+    .bsty-datetime-sub { font-size: 0.875rem; margin-bottom: 1.5rem; }
+    .bsty-countdown {
+      gap: 0.4rem;
+      padding: 1rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .bsty-countdown-cell { min-width: 52px; }
+    .bsty-countdown-num { font-size: 1.5rem; }
+    .bsty-countdown-label { font-size: 0.625rem; letter-spacing: 0.06em; }
+    .bsty-countdown-sep { font-size: 1rem; }
+    .bsty-cta-row { flex-direction: column; align-items: stretch; }
+    .bsty-btn { width: 100%; padding: 1rem 1.25rem; font-size: 1rem; }
+
+    .bsty-steps { padding: 0 1rem; margin-bottom: 2.5rem; }
+    .bsty-steps-header { margin-bottom: 1.5rem; }
+    .bsty-steps-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    .bsty-step-card { padding: 1.5rem 1.35rem; flex-direction: row; align-items: flex-start; gap: 0.9rem; }
+    .bsty-step-card .bsty-step-num { flex: 0 0 auto; }
+    .bsty-step-card > div { flex: 1 1 auto; display: flex; flex-direction: column; gap: 0.4rem; }
+    .bsty-step-h3 { font-size: 1.0625rem; }
+    .bsty-step-body { font-size: 0.9375rem; }
+
+    .bsty-testimonials { padding: 0 1rem; margin-bottom: 2.5rem; }
+    .bsty-testimonials-header { margin-bottom: 1.5rem; }
+    .bsty-testimonials-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .bsty-test-body { padding: 1.25rem 1.25rem 1.5rem; }
+    .bsty-test-play-icon { width: 52px; height: 52px; }
+    .bsty-test-play-icon svg { width: 18px; height: 18px; }
+
+    .bsty-contact { padding: 0 1rem; margin-bottom: 2.5rem; }
+    .bsty-contact-inner { padding: 2rem 1.5rem; }
+
+    .bsty-footer { padding: 2.5rem 5% 1.5rem; }
+    .bsty-footer-inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding-bottom: 2rem;
+    }
+    .bsty-footer-logo { grid-column: 1 / -1; }
+    .bsty-root .bsty-footer-logo-img { height: 44px; }
+    .bsty-footer-bottom { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+  @media (max-width: 479px) {
+    .bsty-hero-inner { padding: 1.25rem 5% 1.5rem; }
+    .bsty-h1 { font-size: clamp(1.375rem, 6.5vw, 1.75rem); }
+    .bsty-hero-sub { font-size: 0.875rem; }
+    .bsty-countdown { gap: 0.3rem; padding: 0.85rem 0.75rem; }
+    .bsty-countdown-cell { min-width: 46px; }
+    .bsty-countdown-num { font-size: 1.35rem; }
+    .bsty-step-card { padding: 1.25rem 1.15rem; gap: 0.75rem; }
+    .bsty-step-num { width: 36px; height: 36px; border-radius: 10px; font-size: 1rem; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .bsty-live-dot { animation: none; }
+    .bsty-btn { transition: none; }
+  }
+</style>
+
+<div class="bsty-root">
+
+  <div class="bsty-stage">
+
+    <!-- ====================== NAVIGATION ====================== -->
+    <nav class="bsty-nav" aria-label="Danke-Seite Navigation">
+      <div class="bsty-nav-inner">
+        <a href="/" class="bsty-nav-logo" aria-label="Barbara Scharrer Startseite">
+          <img class="bsty-logo-img" data-bsty-img="logo" src="https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg" alt="Barbara Scharrer, Aufrecht und Echt" />
+        </a>
+
+        <div class="bsty-nav-badge">
+          <span class="bsty-nav-badge-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span>Dein Platz ist reserviert</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ====================== HERO ====================== -->
+    <section class="bsty-hero" aria-labelledby="bsty-hero-heading">
+      <div class="bsty-hero-inner">
+
+        <div class="bsty-hero-copy">
+          <span class="bsty-hero-eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Anmeldung bestätigt
+          </span>
+
+          <h1 id="bsty-hero-heading" class="bsty-h1">
+            Perfekt, du bist dabei. Ich freue mich schon riesig auf dich, im <span class="bsty-h1-accent">Live-Workshop</span>.
+          </h1>
+
+          <p class="bsty-hero-sub">
+            Dein Platz ist verbindlich reserviert. Bitte nimm dir eine Minute Zeit und schau dir jetzt die kurze Nachricht von Barbara an. Sie erklärt dir, wie du das meiste aus dem Live-Workshop rausholst und warum du unbedingt live dabei sein solltest.
+          </p>
+        </div>
+
+        <!-- Hero-Video: VSL Dankesseite (Barbara direkt) -->
+        <div class="bsty-hero-video" data-bsty-hero-video>
+          <button class="bsty-hero-video-play" type="button" aria-label="Nachricht von Barbara abspielen">
+            <img class="bsty-hero-video-thumb" data-bsty-hero-thumb alt="" loading="lazy" />
+            <span class="bsty-hero-video-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
+        </div>
+        <span class="bsty-hero-video-caption">Barbara persönlich, direkt für dich. Bitte einmal komplett anschauen, es lohnt sich.</span>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ====================== DATE + COUNTDOWN + CALENDER ====================== -->
+  <section class="bsty-datetime" aria-labelledby="bsty-datetime-heading">
+
+    <div class="bsty-datetime-eyebrow">
+      <span class="bsty-live-dot" aria-hidden="true"></span>
+      <span>Dein Termin</span>
+    </div>
+
+    <h2 id="bsty-datetime-heading" class="bsty-datetime-h2">
+      Live am <span data-bsty-weekday>Dienstag</span>, <span data-bsty-date>15.09.2026</span> um <span data-bsty-time>19:00</span> Uhr
+    </h2>
+    <p class="bsty-datetime-sub">
+      Speicher dir den Termin jetzt fest im Kalender, damit du garantiert dabei bist.
+    </p>
+
+    <!-- Countdown -->
+    <div class="bsty-countdown" role="timer" aria-live="polite" data-bsty-countdown>
+      <div class="bsty-countdown-cell">
+        <span class="bsty-countdown-num" data-bsty-cd="d">00</span>
+        <span class="bsty-countdown-label">Tage</span>
+      </div>
+      <span class="bsty-countdown-sep" aria-hidden="true">:</span>
+      <div class="bsty-countdown-cell">
+        <span class="bsty-countdown-num" data-bsty-cd="h">00</span>
+        <span class="bsty-countdown-label">Stunden</span>
+      </div>
+      <span class="bsty-countdown-sep" aria-hidden="true">:</span>
+      <div class="bsty-countdown-cell">
+        <span class="bsty-countdown-num" data-bsty-cd="m">00</span>
+        <span class="bsty-countdown-label">Minuten</span>
+      </div>
+      <span class="bsty-countdown-sep" aria-hidden="true">:</span>
+      <div class="bsty-countdown-cell">
+        <span class="bsty-countdown-num" data-bsty-cd="s">00</span>
+        <span class="bsty-countdown-label">Sekunden</span>
+      </div>
+    </div>
+
+    <!-- Calendar-Buttons -->
+    <div class="bsty-cta-row">
+      <a class="bsty-btn bsty-btn-primary" href="#" data-bsty-cal="google" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        In Google Kalender speichern
+      </a>
+      <button type="button" class="bsty-btn bsty-btn-outline" data-bsty-cal="ics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Apple oder Outlook (.ics)
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ====================== NEXT STEPS (Damit du nichts verpasst) ====================== -->
+  <section class="bsty-steps" aria-labelledby="bsty-steps-heading">
+    <header class="bsty-steps-header">
+      <span class="bsty-steps-eyebrow">Damit du nichts verpasst</span>
+      <h2 id="bsty-steps-heading" class="bsty-steps-h2">Drei kurze Schritte, dann bist du bereit.</h2>
+    </header>
+
+    <div class="bsty-steps-grid">
+
+      <article class="bsty-step-card">
+        <span class="bsty-step-num" aria-hidden="true">1</span>
+        <div>
+          <h3 class="bsty-step-h3">E-Mail checken</h3>
+          <p class="bsty-step-body">Deine Bestätigung liegt gleich in deinem Postfach. Bitte auch <strong>im Spam-Ordner</strong> nachsehen und die Absender-Adresse als Kontakt speichern, damit die Erinnerungen sicher ankommen.</p>
+        </div>
+      </article>
+
+      <article class="bsty-step-card">
+        <span class="bsty-step-num" aria-hidden="true">2</span>
+        <div>
+          <h3 class="bsty-step-h3">Termin in deinen Kalender</h3>
+          <p class="bsty-step-body">Mit einem Klick oben speicherst du den Termin in Google, Apple oder Outlook. Dann kann dir <strong>nichts mehr dazwischenkommen</strong>.</p>
+        </div>
+      </article>
+
+      <article class="bsty-step-card">
+        <span class="bsty-step-num" aria-hidden="true">3</span>
+        <div>
+          <h3 class="bsty-step-h3">Ruhigen Raum vorbereiten</h3>
+          <p class="bsty-step-body">Plane dir rund zwei Stunden ganz für dich. Kopfhörer, ein Glas Wasser, eine bequeme Sitzposition. <strong>Kamera brauchst du keine</strong>, du bleibst diskret dabei.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ====================== FALLSTUDIEN (Testimonials) ====================== -->
+  <section class="bsty-testimonials" aria-labelledby="bsty-test-heading">
+    <header class="bsty-testimonials-header">
+      <span class="bsty-testimonials-eyebrow">Fallstudien</span>
+      <h2 id="bsty-test-heading" class="bsty-testimonials-h2">Genauso wie diese Frauen kannst auch du es schaffen.</h2>
+      <p class="bsty-testimonials-sub">
+        Hör dir kurz an, was Frauen erlebt haben, die vor dir denselben Schritt gemacht haben. Genau darüber sprechen wir im Live-Workshop.
+      </p>
+    </header>
+
+    <div class="bsty-testimonials-grid" data-bsty-testimonials-grid>
+      <!-- Cards werden per JS aus BSTY_CONFIG.testimonials gerendert -->
+    </div>
+  </section>
+
+  <!-- ====================== SUPPORT / CONTACT ====================== -->
+  <section class="bsty-contact" aria-labelledby="bsty-contact-heading">
+    <div class="bsty-contact-inner">
+      <h2 id="bsty-contact-heading" class="bsty-contact-h2">Noch eine Frage vorab?</h2>
+      <p class="bsty-contact-sub">
+        Schreib uns kurz, wir sind persönlich für dich da. Wir antworten in der Regel innerhalb weniger Stunden.
+      </p>
+      <a class="bsty-contact-mail" href="mailto:info@barbarascharrer.de">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        info@barbarascharrer.de
+      </a>
+    </div>
+  </section>
+
+  <!-- ====================== FOOTER ====================== -->
+  <footer class="bsty-footer" role="contentinfo">
+    <div class="bsty-footer-inner">
+
+      <a href="/" class="bsty-footer-logo" aria-label="Barbara Scharrer Startseite">
+        <img class="bsty-footer-logo-img" data-bsty-img="logo" src="https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg" alt="Barbara Scharrer, Aufrecht und Echt" />
+      </a>
+
+      <div class="bsty-footer-col">
+        <h3>Nützliche Links</h3>
+        <ul class="bsty-footer-list">
+          <li><a href="/">Startseite</a></li>
+          <li><a href="/kundenstimmen">Kundenstimmen</a></li>
+          <li><a href="/webinar">Webinar</a></li>
+          <li><a href="/videotraining">Kostenloses Videotraining</a></li>
+          <li><a href="https://barbara-scharrer.mymemberspot.de/auth/login?redirectTo=%2Fstartpage" target="_blank" rel="noopener">Mitglieder-Bereich</a></li>
+        </ul>
+      </div>
+
+      <div class="bsty-footer-col">
+        <h3>Rechtliches</h3>
+        <ul class="bsty-footer-list">
+          <li><a href="/impressum">Impressum</a></li>
+          <li><a href="/datenschutz">Datenschutzerklärung</a></li>
+          <li><a href="/agb">AGB</a></li>
+          <li><a href="/widerrufsbelehrung">Widerrufsbelehrung</a></li>
+          <li><a href="#" data-bsty-cookie>Cookie-Einstellungen</a></li>
+        </ul>
+      </div>
+
+      <div class="bsty-footer-col">
+        <h3>Social Media</h3>
+        <ul class="bsty-footer-list">
+          <li><a href="https://www.facebook.com/barbara.scharrer.92/" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="https://www.tiktok.com/@barbara_scharrer" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.instagram.com/barbara_scharrer/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.linkedin.com/in/barbara-scharrer-0b7352211/" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="https://www.youtube.com/@barbarascharrer517" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bsty-footer-bottom-wrap">
+      <div class="bsty-footer-bottom">
+        <p class="bsty-footer-copy">© 2026 Barbara Scharrer. All rights reserved.</p>
+        <div class="bsty-footer-socials" aria-label="Social Media">
+          <a href="https://www.facebook.com/barbara.scharrer.92/" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@barbara_scharrer" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.8a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.23z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/barbara_scharrer/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/barbara-scharrer-0b7352211/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@barbarascharrer517" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ============================================================
+     LOGIK: Config-Propagation + Testimonials + Countdown + Calendar
+     ============================================================ -->
+<script>
+  (function(){
+    var c = window.BSTY_CONFIG || {};
+
+    /* ---------- HTML-Escape für Testimonial-Rendering ---------- */
+    function esc(s){
+      return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    /* ---------- YouTube-ID aus URL oder ID extrahieren ---------- */
+    function extractYtId(input) {
+      var s = (input || '').toString().trim();
+      if (!s) return '';
+      var m = s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{6,})/);
+      if (m) return m[1];
+      if (/^[A-Za-z0-9_-]{6,}$/.test(s)) return s;
+      return '';
+    }
+
+    /* ---------- 1) Datum/Uhrzeit/Wochentag propagieren ---------- */
+    function setText(attr, val) {
+      if (!val) return;
+      document.querySelectorAll('[data-bsty-' + attr + ']').forEach(function(el){
+        el.textContent = val;
+      });
+    }
+    setText('weekday', c.weekday);
+    setText('date',    c.date);
+    setText('time',    c.time);
+
+    /* ---------- 2) Bilder ---------- */
+    var imgs = c.images || {};
+    Object.keys(imgs).forEach(function(key){
+      if (!imgs[key]) return;
+      document.querySelectorAll('[data-bsty-img="' + key + '"]').forEach(function(el){
+        el.src = imgs[key];
+      });
+    });
+
+    /* ---------- 3) Hero-Video ---------- */
+    var heroYt = extractYtId(c.heroVideo);
+    var heroWrap = document.querySelector('[data-bsty-hero-video]');
+    if (heroWrap) {
+      if (heroYt) {
+        heroWrap.setAttribute('data-yt', heroYt);
+        var thumbEl = heroWrap.querySelector('[data-bsty-hero-thumb]');
+        if (thumbEl) {
+          thumbEl.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(heroYt) + '/maxresdefault.jpg';
+          thumbEl.onerror = function(){
+            if (thumbEl.src.indexOf('maxresdefault') !== -1) {
+              thumbEl.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(heroYt) + '/hqdefault.jpg';
+            }
+          };
+        }
+      } else {
+        heroWrap.style.display = 'none';
+      }
+    }
+
+    /* ---------- 4) Testimonials rendern ---------- */
+    var starSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
+    var starsHtml = '<span class="bsty-test-stars" aria-label="5 von 5 Sternen">' + starSvg + starSvg + starSvg + starSvg + starSvg + '</span>';
+
+    function renderCard(t){
+      if (!t) return '';
+      var name    = esc(t.name || '');
+      var context = esc(t.context || '');
+      var quote   = esc(t.quote || '');
+      var ytId    = extractYtId(t.youtubeId);
+      var thumb   = ytId ? ('https://i.ytimg.com/vi/' + encodeURIComponent(ytId) + '/hqdefault.jpg') : '';
+      var videoBlock = ytId
+        ? '<div class="bsty-test-video" data-yt="' + esc(ytId) + '">' +
+            '<button class="bsty-test-play" type="button" aria-label="Video von ' + name + ' abspielen">' +
+              '<img class="bsty-test-thumb" src="' + esc(thumb) + '" alt="" loading="lazy" />' +
+              '<span class="bsty-test-play-icon" aria-hidden="true">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
+              '</span>' +
+            '</button>' +
+          '</div>'
+        : '';
+      return '<article class="bsty-test-card">' +
+               videoBlock +
+               '<div class="bsty-test-body">' +
+                 '<div class="bsty-test-meta">' +
+                   '<span class="bsty-test-meta-name">' + name + '</span>' +
+                   (context ? '<span class="bsty-test-meta-context">' + context + '</span>' : '') +
+                   starsHtml +
+                 '</div>' +
+                 (quote ? '<p class="bsty-test-quote">' + quote + '</p>' : '') +
+               '</div>' +
+             '</article>';
+    }
+    var grid = document.querySelector('[data-bsty-testimonials-grid]');
+    if (grid) {
+      var list = Array.isArray(c.testimonials) ? c.testimonials.slice(0, 4) : [];
+      if (list.length) grid.innerHTML = list.map(renderCard).join('');
+      else grid.parentElement.style.display = 'none';
+    }
+
+    /* ---------- 5) Lite-YT: Iframe erst beim Klick laden ---------- */
+    document.addEventListener('click', function(e){
+      var testPlay = e.target.closest('.bsty-test-play');
+      var heroPlay = e.target.closest('.bsty-hero-video-play');
+      var btn = testPlay || heroPlay;
+      if (!btn) return;
+      var wrap = testPlay
+        ? btn.closest('.bsty-test-video')
+        : btn.closest('[data-bsty-hero-video]');
+      if (!wrap || !wrap.dataset.yt) return;
+      e.preventDefault();
+      var id = wrap.dataset.yt;
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + id +
+                   '?autoplay=1&rel=0&modestbranding=1&playsinline=1&feature=oembed';
+      iframe.title = testPlay ? 'Kundenstimme Video' : 'Nachricht von Barbara';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;';
+      wrap.innerHTML = '';
+      wrap.appendChild(iframe);
+    }, false);
+
+    /* ---------- 6) Countdown-Timer ---------- */
+    /* Erwartet Datum als DD.MM.YYYY und Uhrzeit als HH:MM.
+       Bei ungültigem/leerem Datum wird der Countdown-Block ausgeblendet. */
+    function parseGermanDateTime(dateStr, timeStr) {
+      var d = (dateStr || '').toString().trim();
+      var t = (timeStr || '19:00').toString().trim();
+      var m = d.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+      if (!m) return null;
+      var tm = t.match(/^(\d{1,2}):(\d{2})$/);
+      var hh = tm ? parseInt(tm[1], 10) : 19;
+      var mm = tm ? parseInt(tm[2], 10) : 0;
+      var dt = new Date(
+        parseInt(m[3], 10),
+        parseInt(m[2], 10) - 1,
+        parseInt(m[1], 10),
+        hh, mm, 0, 0
+      );
+      return isNaN(dt.getTime()) ? null : dt;
+    }
+    var eventStart = parseGermanDateTime(c.date, c.time);
+    var cdRoot = document.querySelector('[data-bsty-countdown]');
+    if (cdRoot && eventStart) {
+      var cells = {
+        d: cdRoot.querySelector('[data-bsty-cd="d"]'),
+        h: cdRoot.querySelector('[data-bsty-cd="h"]'),
+        m: cdRoot.querySelector('[data-bsty-cd="m"]'),
+        s: cdRoot.querySelector('[data-bsty-cd="s"]')
+      };
+      function pad(n){ return (n < 10 ? '0' : '') + n; }
+      function tick() {
+        var now = Date.now();
+        var diff = Math.max(0, eventStart.getTime() - now);
+        if (diff <= 0) {
+          cdRoot.innerHTML = '<span class="bsty-countdown-live"><span class="bsty-live-dot" aria-hidden="true"></span> Der Live-Workshop läuft jetzt.</span>';
+          if (window._bstyCdTimer) clearInterval(window._bstyCdTimer);
+          return;
+        }
+        var s = Math.floor(diff / 1000);
+        var d = Math.floor(s / 86400); s -= d * 86400;
+        var h = Math.floor(s / 3600);  s -= h * 3600;
+        var m = Math.floor(s / 60);    s -= m * 60;
+        if (cells.d) cells.d.textContent = pad(d);
+        if (cells.h) cells.h.textContent = pad(h);
+        if (cells.m) cells.m.textContent = pad(m);
+        if (cells.s) cells.s.textContent = pad(s);
+      }
+      tick();
+      window._bstyCdTimer = setInterval(tick, 1000);
+    } else if (cdRoot) {
+      cdRoot.style.display = 'none';
+    }
+
+    /* ---------- 7) Calendar: Google + ICS ---------- */
+    /* Berechnet aus BSTY_CONFIG.date, .time, .durationMinutes (default 120)
+       einen Google-Calendar-Link und eine ICS-Datei (Europe/Berlin).       */
+    function pad2(n){ return (n < 10 ? '0' : '') + n; }
+    function formatLocal(dt) {
+      /* YYYYMMDDTHHMMSS ohne Zeitzone (floating, wird per TZID interpretiert). */
+      return dt.getFullYear() + pad2(dt.getMonth() + 1) + pad2(dt.getDate()) +
+             'T' + pad2(dt.getHours()) + pad2(dt.getMinutes()) + '00';
+    }
+    var duration = parseInt(c.durationMinutes, 10);
+    if (isNaN(duration) || duration <= 0) duration = 120;
+    var eventEnd = eventStart ? new Date(eventStart.getTime() + duration * 60000) : null;
+
+    var eventTitle = (c.eventTitle || 'Live-Workshop mit Barbara Scharrer, Blasenschwäche stoppen').toString();
+    var eventDesc  = (c.eventDescription ||
+      'Dein Zugangslink kommt per E-Mail. Bitte den Spam-Ordner prüfen. Rund zwei Stunden, ohne Kamera, vertraulich.').toString();
+    var eventLoc   = (c.eventLocation || 'Online, Zugangslink per E-Mail').toString();
+
+    function buildGoogleUrl() {
+      if (!eventStart || !eventEnd) return '#';
+      var url = 'https://www.google.com/calendar/render?action=TEMPLATE' +
+        '&text=' + encodeURIComponent(eventTitle) +
+        '&dates=' + formatLocal(eventStart) + '/' + formatLocal(eventEnd) +
+        '&details=' + encodeURIComponent(eventDesc) +
+        '&location=' + encodeURIComponent(eventLoc) +
+        '&ctz=Europe/Berlin';
+      return url;
+    }
+
+    function buildIcs() {
+      if (!eventStart || !eventEnd) return null;
+      var uid = 'bsty-' + eventStart.getTime() + '@barbarascharrer.de';
+      var now = new Date();
+      var dtstamp = now.getUTCFullYear() + pad2(now.getUTCMonth()+1) + pad2(now.getUTCDate()) +
+        'T' + pad2(now.getUTCHours()) + pad2(now.getUTCMinutes()) + pad2(now.getUTCSeconds()) + 'Z';
+      function icsEsc(s){
+        return String(s || '').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+      }
+      var lines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Barbara Scharrer//Live-Workshop//DE',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VTIMEZONE',
+        'TZID:Europe/Berlin',
+        'BEGIN:STANDARD',
+        'DTSTART:19701025T030000',
+        'TZOFFSETFROM:+0200',
+        'TZOFFSETTO:+0100',
+        'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+        'TZNAME:CET',
+        'END:STANDARD',
+        'BEGIN:DAYLIGHT',
+        'DTSTART:19700329T020000',
+        'TZOFFSETFROM:+0100',
+        'TZOFFSETTO:+0200',
+        'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+        'TZNAME:CEST',
+        'END:DAYLIGHT',
+        'END:VTIMEZONE',
+        'BEGIN:VEVENT',
+        'UID:' + uid,
+        'DTSTAMP:' + dtstamp,
+        'DTSTART;TZID=Europe/Berlin:' + formatLocal(eventStart),
+        'DTEND;TZID=Europe/Berlin:'   + formatLocal(eventEnd),
+        'SUMMARY:'  + icsEsc(eventTitle),
+        'DESCRIPTION:' + icsEsc(eventDesc),
+        'LOCATION:' + icsEsc(eventLoc),
+        'STATUS:CONFIRMED',
+        'BEGIN:VALARM',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:Erinnerung an deinen Live-Workshop',
+        'TRIGGER:-PT1H',
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ];
+      return lines.join('\r\n');
+    }
+
+    /* Buttons verdrahten */
+    var googleBtn = document.querySelector('[data-bsty-cal="google"]');
+    if (googleBtn) {
+      var url = buildGoogleUrl();
+      if (url && url !== '#') googleBtn.href = url;
+      else googleBtn.style.display = 'none';
+    }
+    var icsBtn = document.querySelector('[data-bsty-cal="ics"]');
+    if (icsBtn) {
+      if (eventStart && eventEnd) {
+        icsBtn.addEventListener('click', function(){
+          var ics = buildIcs();
+          if (!ics) return;
+          var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+          var link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'barbara-scharrer-live-workshop.ics';
+          document.body.appendChild(link);
+          link.click();
+          setTimeout(function(){
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+          }, 200);
+        });
+      } else {
+        icsBtn.style.display = 'none';
+      }
+    }
+  })();
+</script>

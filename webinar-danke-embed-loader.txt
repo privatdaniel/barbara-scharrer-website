@@ -1,0 +1,137 @@
+<!-- =====================================================================
+     WEBFLOW HTML EMBED, Loader für die Webinar-Danke-Seite
+     =====================================================================
+     SETUP:
+       1. webinar-danke-content.txt in Webflow Assets hochladen
+       2. Asset-URL kopieren und unten in CONTENT_URL einsetzen
+       3. Bilder in Webflow Assets hochladen und URLs in BSTY_CONFIG.images
+       4. Diesen Block in das HTML-Embed-Widget einfügen (in main-wrapper)
+
+     Was du hier steuern kannst:
+       - Datum, Uhrzeit, Wochentag (aus dem Webinar-CMS, dynamisch)
+       - heroVideo: YouTube-URL oder ID für die persönliche Nachricht von Barbara
+       - testimonials: bis zu 4 Fallstudien (Name, Kontext, YouTube-ID, Zitat)
+       - durationMinutes: Dauer für den Kalender-Eintrag (default 120)
+       - eventTitle, eventDescription, eventLocation: für Google-Kalender + .ics
+     ===================================================================== -->
+
+<script>
+  window.BSTY_CONFIG = {
+
+    /* ------- Datum + Uhrzeit + Wochentag (identisch zur Webinar-LP) ------- */
+    weekday: 'Dienstag',
+    date:    '{{wf:Webinar-Datum|Dynamo}}',
+    time:    '19:00',
+
+    /* ------- Bilder ---------------------------------------------------- */
+    images: {
+      logo: 'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg'
+    },
+
+    /* ------- Hero-Video (persönliche Nachricht von Barbara) -----------
+       Erlaubt: komplette YouTube-URL ODER nur die ID.
+       Zum Austauschen einfach die URL ändern.                            */
+    heroVideo: 'https://www.youtube.com/watch?v=BxY2sMQ4EDs',
+
+    /* ------- Kalender-Eintrag ------------------------------------------
+       durationMinutes wird in Google-Kalender + .ics übernommen.        */
+    durationMinutes:  120,
+    eventTitle:       'Live-Workshop mit Barbara Scharrer, Blasenschwäche stoppen',
+    eventDescription: 'Dein Zugangslink kommt per E-Mail (bitte auch im Spam-Ordner nachsehen). Rund zwei Stunden, ohne Kamera, vertraulich und diskret.',
+    eventLocation:    'Online, Zugangslink per E-Mail',
+
+    /* ------- Fallstudien / Testimonials (bis zu 4) ---------------------
+       Jedes Element:
+         name       : Vorname (Pflicht)
+         context    : Kontextzeile hinter dem Namen (optional)
+         youtubeId  : YouTube-URL oder -ID (optional)
+         quote      : Zitat/Text (Pflicht)
+       Weniger als 4 Einträge sind ok, dann werden nur so viele gerendert. */
+    testimonials: [
+      {
+        name:      'Anke',
+        context:   '98 % besser nach 8 Wochen',
+        youtubeId: 'https://youtu.be/1gH_EjTzASs',
+        quote:     'Nach nur 8 Wochen ist meine Inkontinenz zu 98 bis 99 % verschwunden. Heute fühle ich mich sicherer, aufrechter, und kann meinem Körper wieder vertrauen.'
+      },
+      {
+        name:      'Susanne',
+        context:   'Lebensqualität zurück',
+        youtubeId: 'https://youtu.be/0IKpeaJDAU4',
+        quote:     'Heute kann ich wieder stundenlang durch die Stadt laufen, schlafe meistens durch und habe meine Lebensqualität zurückgewonnen.'
+      },
+      {
+        name:      'Hannelore',
+        context:   'über 80, 75 bis 80 % besser',
+        youtubeId: 'https://youtu.be/Kfr3-wKZU7c',
+        quote:     'Innerhalb weniger Wochen hat sich meine Inkontinenz um 75 bis 80 % verbessert. Ich traue mich wieder unter Menschen.'
+      },
+      {
+        name:      'Inge',
+        context:   'Migräne und Inkontinenz weg nach 8 Wochen',
+        youtubeId: 'https://youtu.be/eEXh7JvBI0c',
+        quote:     'Schon nach dem 8-Wochen-Training waren die Hosen nicht mehr nass. Ich hatte eine viel bessere Haltung, und meine Migräne kam einfach nicht mehr.'
+      }
+    ]
+  };
+</script>
+
+<div id="bsty-mount" style="min-height:240px;">
+  <div style="padding:3rem 1.5rem;text-align:center;color:#888;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;">
+    <span style="display:inline-block;width:18px;height:18px;border:2px solid #ddd;border-top-color:#678ba5;border-radius:50%;animation:bsty-spin 0.7s linear infinite;vertical-align:middle;margin-right:0.5rem;"></span>
+    Die Seite lädt&hellip;
+  </div>
+</div>
+<style>@keyframes bsty-spin { to { transform: rotate(360deg); } }</style>
+
+<script>
+  (function(){
+    /* Content wird direkt aus dem GitHub-Repo via jsDelivr CDN geladen.
+       Bei git push ist die neue Version live, kein Webflow-Reupload nötig.
+       Bei Bedarf sofortiges Cache-Purge:
+       https://purge.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-danke-content.txt */
+    var CONTENT_URL = 'https://cdn.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-danke-content.txt';
+
+    var mount = document.getElementById('bsty-mount');
+    if (!mount) return;
+
+    function showError(msg, detail) {
+      mount.innerHTML =
+        '<div style="padding:2rem 1.5rem;text-align:center;color:#7b2020;background:#fff5f5;border:1px solid #d9534f;border-radius:8px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.5">' +
+          '<strong style="font-size:15px">Danke-Seite konnte nicht geladen werden.</strong><br>' +
+          '<span style="opacity:0.8">' + msg + '</span>' +
+          (detail ? '<br><small style="opacity:0.6;font-family:monospace;font-size:12px">' + detail + '</small>' : '') +
+        '</div>';
+    }
+
+    if (!window.fetch) { showError('Browser unterstützt fetch() nicht.', ''); return; }
+
+    fetch(CONTENT_URL, { credentials: 'omit', cache: 'no-cache' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
+        return r.text();
+      })
+      .then(function(html){
+        if (!html || html.length < 100) throw new Error('Empty response');
+        mount.innerHTML = html;
+
+        /* <script>-Tags aus innerHTML manuell re-aktivieren */
+        var scripts = mount.querySelectorAll('script');
+        scripts.forEach(function(oldScript){
+          var newScript = document.createElement('script');
+          for (var i = 0; i < oldScript.attributes.length; i++) {
+            var a = oldScript.attributes[i];
+            newScript.setAttribute(a.name, a.value);
+          }
+          newScript.textContent = oldScript.textContent;
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+
+        console.info('[Danke-Seite] geladen ('+ html.length +' Bytes, '+ scripts.length +' Scripts)');
+      })
+      .catch(function(err){
+        console.error('[Danke-Seite] Content-Load fehlgeschlagen:', err);
+        showError(err.message || 'Unbekannter Fehler', CONTENT_URL);
+      });
+  })();
+</script>

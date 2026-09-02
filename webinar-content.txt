@@ -58,52 +58,19 @@
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    background: var(--bslp-bg-color, #f5f8fb);
+    /* Dezenter, einladender Gradient – oben weicher Blau-Hauch aus der Marken-Palette,
+       nach unten in reines Weiß, damit die Trust-Card nahtlos übergeht. */
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 0%, rgba(135, 169, 194, 0.20) 0%, transparent 55%),
+      linear-gradient(180deg, #eef3f8 0%, #f5f8fb 40%, #ffffff 100%);
     /* Full-bleed Breakout: bricht aus container-padding aus, damit Hero
        bündig zu beiden Viewport-Kanten reicht (ohne weißen Rahmen). */
     width: 100vw;
     margin-left: calc(50% - 50vw);
   }
-  .bslp-root .bslp-stage-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    object-fit: cover;
-    object-position: 100% center;
-    /* moderater Right-Shift → Barbara sitzt mittig-rechts (~80 % Viewport),
-       ihr Gesicht bleibt vollständig sichtbar, Hintergrund-Frauen werden
-       weiter aus der Mitte verdrängt. */
-    transform: translateX(11%);
-    z-index: 0;
-  }
-  .bslp-stage-veil {
-    /* Gradient nie ganz solid: max 95 % → das Bild schimmert überall
-       sanft durch, auch hinter dem Text. */
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 38% 60% at 86% 55%, rgba(255,255,255,0) 0%, rgba(245, 248, 251, 0.08) 70%, rgba(245, 248, 251, 0.15) 100%),
-      linear-gradient(90deg,
-        rgba(245, 248, 251, 0.95) 0%,
-        rgba(245, 248, 251, 0.95) 52%,
-        rgba(245, 248, 251, 0.74) 64%,
-        rgba(245, 248, 251, 0.28) 78%,
-        rgba(245, 248, 251, 0)    94%);
-    z-index: 1;
-    pointer-events: none;
-  }
-  .bslp-stage-veil::after {
-    /* feiner Top- und Bottom-Glow, ebenfalls max 95 % */
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 16%),
-      linear-gradient(0deg,   rgba(245,248,251,0.50) 0%, rgba(245,248,251,0) 22%);
-    pointer-events: none;
-  }
+  /* Alte Hintergrund-Bild-Elemente ausblenden (Layout bleibt für JS-Kompat.) */
+  .bslp-root .bslp-stage-bg,
+  .bslp-stage-veil { display: none; }
   .bslp-stage > nav,
   .bslp-stage > section { position: relative; z-index: 2; }
 
@@ -111,17 +78,19 @@
   .bslp-nav {
     position: relative;
     z-index: 5;
-    background: transparent;
-    border-bottom: none;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid rgba(103, 139, 165, 0.15);
   }
   .bslp-nav-inner {
-    max-width: 80rem;
+    max-width: 76rem;
     margin: 0 auto;
-    padding: 0.875rem 5%;
+    padding: 0.75rem 2rem;
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
   .bslp-nav-logo {
     justify-self: start;
@@ -129,43 +98,45 @@
     align-items: center;
   }
   .bslp-root .bslp-logo-img {
-    height: 52px;
+    height: 44px;
     width: auto;
     max-width: none;
   }
   .bslp-nav-tagline {
-    justify-self: end;
+    justify-self: center;
     display: inline-flex;
     align-items: center;
-    gap: 0.7rem;
-    padding: 0.55rem 1.1rem 0.55rem 0.55rem;
-    background: rgba(255, 255, 255, 0.92);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    gap: 0.65rem;
+    padding: 0.4rem 1rem 0.4rem 0.45rem;
+    background: linear-gradient(135deg, rgba(135, 169, 194, 0.10) 0%, rgba(103, 139, 165, 0.06) 100%);
+    border: 1px solid rgba(103, 139, 165, 0.22);
     border-radius: var(--bslp-radius-pill);
-    font-size: 0.875rem;
-    line-height: 1.2;
+    font-size: 0.8125rem;
+    line-height: 1.25;
     color: var(--bslp-black);
     font-weight: 600;
     text-align: left;
     white-space: nowrap;
-    box-shadow: 0 6px 24px rgba(74, 112, 140, 0.12), 0 1px 0 rgba(255,255,255,0.6) inset;
+  }
+  /* Rechte Grid-Zelle bleibt leer → hält die Tagline optisch mittig */
+  .bslp-nav-inner::after {
+    content: "";
+    display: block;
   }
   .bslp-nav-tagline .bslp-blau { color: var(--bslp-blau-3); }
   .bslp-nav-tagline-icon {
     flex: 0 0 auto;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--bslp-blau-2), var(--bslp-blau-3));
     color: #fff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(74, 112, 140, 0.30);
+    box-shadow: 0 2px 6px rgba(74, 112, 140, 0.25);
   }
-  .bslp-nav-tagline-icon svg { width: 15px; height: 15px; }
+  .bslp-nav-tagline-icon svg { width: 12px; height: 12px; }
 
   .bslp-live-dot {
     width: 8px;
@@ -187,45 +158,48 @@
     position: relative;
   }
   .bslp-hero-inner {
-    max-width: 80rem;
+    max-width: 76rem;
     margin: 0 auto;
-    padding: 2.25rem 5% 5rem;       /* deutlich mehr Atem unten zur Trust-Card */
-    display: grid;
-    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
-    gap: 2.5rem;
+    padding: 1.75rem 2rem 3.5rem;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    min-height: clamp(440px, 60vh, 580px);
+    text-align: center;
+    gap: 1.25rem;
   }
   .bslp-hero-copy {
     position: relative;
-    max-width: 42rem;
+    max-width: 52rem;
+    text-align: center;
+    width: 100%;
   }
   .bslp-hero-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.4rem 0.85rem;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(103, 139, 165, 0.25);
+    padding: 0.35rem 0.85rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(103, 139, 165, 0.22);
     border-radius: var(--bslp-radius-pill);
     font-size: 0.8125rem;
     font-weight: 600;
     color: var(--bslp-blau-3);
     letter-spacing: 0.005em;
     box-shadow: 0 4px 16px rgba(74, 112, 140, 0.08);
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
   }
   .bslp-hero-eyebrow .bslp-live-dot { width: 7px; height: 7px; }
 
   .bslp-h1 {
     font-family: Manrope, sans-serif;
-    font-size: clamp(1.75rem, 2.7vw, 2.5rem);
+    font-size: clamp(1.875rem, 3.2vw, 2.75rem);
     font-weight: 700;
     line-height: 1.1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.022em;
     color: var(--bslp-black);
-    margin: 0 0 1.1rem;
-    text-wrap: balance;
+    margin: 0 0 1rem;
+    text-wrap: pretty;
+    max-width: 52rem;
   }
   .bslp-h1-accent {
     background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
@@ -239,22 +213,668 @@
     font-weight: 500;
     line-height: 1.45;
     color: var(--bslp-ink);
-    margin: 0 0 1.1rem;
-    max-width: 34rem;
+    margin: 0 auto 1.1rem;
+    max-width: 40rem;
   }
   .bslp-lead {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--bslp-muted);
+    margin: 0 auto;
+    max-width: 48rem;
+  }
+  .bslp-lead strong { color: var(--bslp-black); font-weight: 700; }
+  .bslp-hero-subh1 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.125rem, 1.5vw, 1.4375rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--bslp-blau-3);
+    margin: -0.25rem auto 1.5rem;
+    max-width: 48rem;
+    font-style: italic;
+    text-wrap: balance;
+  }
+  .bslp-hero-values {
+    list-style: none;
+    padding: 1.5rem 1.75rem;
+    margin: 1.5rem auto 0;
+    max-width: 46rem;
+    display: grid;
+    gap: 0.85rem;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(103, 139, 165, 0.18);
+    border-radius: var(--bslp-radius-lg);
+    text-align: left;
+  }
+  .bslp-hero-values li {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--bslp-ink);
+  }
+  .bslp-hero-value-check {
+    flex: 0 0 auto;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d1fadf 0%, #a6f4c5 100%);
+    color: #027a48;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .bslp-hero-value-check svg { width: 13px; height: 13px; }
+  .bslp-hero-values li strong { color: var(--bslp-black); font-weight: 700; }
+  .bslp-hero-values li em { font-style: italic; color: var(--bslp-muted); font-weight: 400; }
+
+  /* ============================ SEKTION 3 · KENNST DU DAS? ==========================
+     3 Cards mit smoothem Farb-Fade (kein harter Cut), verbunden durch
+     Pfeile: Alltag → Gedanken → Auswirkungen. Auf Mobile Pfeile nach unten. */
+  .bslp-kennst-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: stretch;
+    gap: 0;
+    margin: 0 auto 2.5rem;
+    max-width: 72rem;
+  }
+  .bslp-kennst-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    color: var(--bslp-blau-3);
+    opacity: 0.55;
+    padding: 0 0.15rem;
+  }
+  .bslp-kennst-arrow svg { width: 24px; height: 24px; }
+  .bslp-kennst-card {
+    position: relative;
+    background:
+      /* Farbverlauf über die GANZE Card, smooth von oben (farbig) nach unten (weiß) */
+      linear-gradient(180deg,
+        var(--bslp-kennst-tint-strong, rgba(135, 169, 194, 0.16)) 0%,
+        var(--bslp-kennst-tint-mid,    rgba(135, 169, 194, 0.06)) 40%,
+        rgba(255, 255, 255, 0.85) 78%,
+        #ffffff 100%);
+    border-radius: var(--bslp-radius-lg);
+    padding: 1.85rem 1.75rem 1.75rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid var(--bslp-kennst-border, rgba(10, 10, 10, 0.06));
+    box-shadow: 0 1px 2px rgba(10, 10, 10, 0.03), 0 14px 32px -8px var(--bslp-kennst-shadow, rgba(10, 10, 10, 0.06));
+  }
+  .bslp-kennst-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 1px 2px rgba(10, 10, 10, 0.03), 0 22px 44px -10px var(--bslp-kennst-shadow, rgba(10, 10, 10, 0.10));
+  }
+  /* Kategorie-Farben (mit smoothen Tints statt harter Deko-Wolken) */
+  .bslp-kennst-card--alltag {
+    --bslp-kennst-tint-strong: rgba(135, 169, 194, 0.20);
+    --bslp-kennst-tint-mid:    rgba(135, 169, 194, 0.07);
+    --bslp-kennst-shadow: rgba(74, 112, 140, 0.14);
+    --bslp-kennst-border: rgba(103, 139, 165, 0.20);
+    --bslp-kennst-icon-bg: linear-gradient(135deg, #dbe6ef 0%, #b8ceda 100%);
+    --bslp-kennst-icon-color: #4a708c;
+    --bslp-kennst-bullet: #678ba5;
+  }
+  .bslp-kennst-card--gedanken {
+    --bslp-kennst-tint-strong: rgba(193, 166, 141, 0.22);
+    --bslp-kennst-tint-mid:    rgba(193, 166, 141, 0.08);
+    --bslp-kennst-shadow: rgba(172, 143, 117, 0.18);
+    --bslp-kennst-border: rgba(193, 166, 141, 0.26);
+    --bslp-kennst-icon-bg: linear-gradient(135deg, #f2e6d5 0%, #e0c9a8 100%);
+    --bslp-kennst-icon-color: #8a6a45;
+    --bslp-kennst-bullet: #b89670;
+  }
+  .bslp-kennst-card--auswirkung {
+    --bslp-kennst-tint-strong: rgba(217, 125, 112, 0.18);
+    --bslp-kennst-tint-mid:    rgba(217, 125, 112, 0.06);
+    --bslp-kennst-shadow: rgba(180, 60, 45, 0.14);
+    --bslp-kennst-border: rgba(217, 125, 112, 0.24);
+    --bslp-kennst-icon-bg: linear-gradient(135deg, #fadfd9 0%, #f0b8ac 100%);
+    --bslp-kennst-icon-color: #b04a3d;
+    --bslp-kennst-bullet: #d17d70;
+  }
+  /* Header ohne harte Trennlinie (der Farbverlauf macht die visuelle Trennung) */
+  .bslp-kennst-head {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding-bottom: 0.5rem;
+  }
+  .bslp-kennst-emoji {
+    flex: 0 0 auto;
+    width: 54px; height: 54px;
+    border-radius: 14px;
+    background: var(--bslp-kennst-icon-bg);
+    color: var(--bslp-kennst-icon-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+    box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
+  }
+  .bslp-kennst-h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--bslp-black);
+    margin: 0;
+    line-height: 1.25;
+  }
+  .bslp-kennst-list {
+    position: relative;
+    z-index: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .bslp-kennst-list li {
+    position: relative;
+    padding-left: 1.65rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bslp-ink);
+  }
+  .bslp-kennst-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bslp-kennst-bullet, var(--bslp-blau-2));
+  }
+
+  /* "Das Schlimmste" — dramatisch als Full-Width-Hero-Statement */
+  .bslp-story-critical-hero {
+    position: relative;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 3rem 3rem;
+    background:
+      radial-gradient(ellipse 60% 80% at 100% 0%, rgba(217, 83, 79, 0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 80% at 0% 100%, rgba(217, 83, 79, 0.10) 0%, transparent 60%),
+      linear-gradient(180deg, #1a1a1a 0%, #2a1e1e 100%);
+    color: #ffffff;
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(26, 26, 26, 0.30);
+  }
+  .bslp-story-critical-hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #e0322a 50%, transparent 100%);
+  }
+  .bslp-story-critical-hero-inner {
+    position: relative;
+    max-width: 46rem;
+    margin: 0 auto;
+  }
+  .bslp-story-critical-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.95rem;
+    background: rgba(224, 50, 42, 0.16);
+    border: 1px solid rgba(224, 50, 42, 0.35);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #ff8b82;
+    margin-bottom: 1.5rem;
+  }
+  .bslp-story-critical-hero-badge svg { width: 14px; height: 14px; }
+  .bslp-story-critical-hero-lead {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.018em;
+    color: #ffffff;
+    margin: 0 0 1.25rem;
+    text-wrap: balance;
+  }
+  .bslp-story-critical-hero-lead em {
+    font-style: italic;
+    font-weight: 700;
+    background: linear-gradient(180deg, #f0b8ac 0%, #e8a89e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bslp-story-critical-hero-body {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .bslp-story-critical-hero-body strong { color: #ffffff; font-weight: 700; }
+
+  /* ============================ SEKTION 4 · EMPATHIE-BRÜCKE ============================ */
+  .bslp-empathy {
+    max-width: 76rem;
+    margin: 1.5rem auto;
+    padding: 0 2rem;
+    text-align: center;
+  }
+  .bslp-empathy-inner {
+    position: relative;
+    background: linear-gradient(180deg, rgba(135, 169, 194, 0.07) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border: 1px solid rgba(103, 139, 165, 0.16);
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+  }
+  /* Foto oben. Fadeout beginnt sehr früh und ist über die gesamte Bildhöhe smooth.
+     Das Bild verschwindet vollständig ins Weiß, ohne jede sichtbare Kante. */
+  .bslp-empathy-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    margin: 0;
+    overflow: hidden;
+  }
+  .bslp-empathy-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    display: block;
+    /* Ultra-smooth Multi-Stop-Fade: Fadeout startet schon bei ~10%, endet bei 100% komplett transparent */
+    -webkit-mask-image: linear-gradient(180deg,
+      rgba(0,0,0,1)    0%,
+      rgba(0,0,0,0.95) 10%,
+      rgba(0,0,0,0.85) 25%,
+      rgba(0,0,0,0.70) 40%,
+      rgba(0,0,0,0.50) 55%,
+      rgba(0,0,0,0.30) 70%,
+      rgba(0,0,0,0.15) 82%,
+      rgba(0,0,0,0.05) 92%,
+      rgba(0,0,0,0)    100%);
+    mask-image: linear-gradient(180deg,
+      rgba(0,0,0,1)    0%,
+      rgba(0,0,0,0.95) 10%,
+      rgba(0,0,0,0.85) 25%,
+      rgba(0,0,0,0.70) 40%,
+      rgba(0,0,0,0.50) 55%,
+      rgba(0,0,0,0.30) 70%,
+      rgba(0,0,0,0.15) 82%,
+      rgba(0,0,0,0.05) 92%,
+      rgba(0,0,0,0)    100%);
+  }
+  /* Zusätzlicher Farb-Wash, matcht 1:1 zum Card-Background für nahtlosen Übergang */
+  .bslp-empathy-photo-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0)    0%,
+      rgba(255, 255, 255, 0)    40%,
+      rgba(255, 255, 255, 0.15) 65%,
+      rgba(255, 255, 255, 0.45) 85%,
+      rgba(255, 255, 255, 0.85) 100%);
+    pointer-events: none;
+  }
+  .bslp-empathy-content {
+    padding: 0 3rem 2.75rem;
+    position: relative;
+    z-index: 2;
+    margin-top: -5rem;
+  }
+  /* Card-BG als sanfter Weiß-zu-Hellblau-Gradient */
+  .bslp-empathy-inner {
+    background: linear-gradient(180deg, #ffffff 0%, #ffffff 50%, #f5f8fb 100%) !important;
+  }
+  .bslp-empathy-eyebrow {
+    display: inline-block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--bslp-blau-3);
+    margin-bottom: 1rem;
+  }
+  .bslp-empathy-lead {
+    font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--bslp-black);
+    margin: 0 auto 1.25rem;
+    max-width: 44rem;
+    text-wrap: balance;
+  }
+  .bslp-empathy-inner p {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--bslp-ink);
+    margin: 0 auto 1rem;
+    max-width: 44rem;
+  }
+  .bslp-empathy-inner p strong { color: var(--bslp-black); font-weight: 700; }
+  .bslp-empathy-signoff {
+    margin-top: 1.5rem !important;
+    font-weight: 600 !important;
+    color: var(--bslp-black) !important;
+    display: inline-flex !important;
+    align-items: baseline;
+    gap: 0.5rem;
+    max-width: 44rem !important;
+  }
+  .bslp-empathy-pointer {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  /* ============================ SEKTION 6 · FÜR WEN? (Chips) ============================ */
+  .bslp-forwho {
+    max-width: 76rem;
+    margin: 1.5rem auto;
+    padding: 0 2rem;
+  }
+  .bslp-forwho-inner {
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
+    border-radius: var(--bslp-radius-lg);
+    padding: 2.75rem 2.75rem 2.5rem;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(10, 10, 10, 0.06);
+    text-align: center;
+  }
+  .bslp-forwho-eyebrow {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--bslp-blau-3);
+    margin-bottom: 0.85rem;
+  }
+  .bslp-forwho-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.25rem, 1.9vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--bslp-black);
+    margin: 0 auto 1.75rem;
+    max-width: 60rem;
+    text-wrap: balance;
+  }
+  .bslp-forwho-h2 em {
+    font-style: italic;
+    font-weight: 700;
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bslp-forwho-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0.55rem;
+    margin: 0 auto 1.5rem;
+    max-width: 66rem;
+  }
+  .bslp-forwho-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f5f7f9 100%);
+    border: 1.5px solid rgba(103, 139, 165, 0.30);
+    border-radius: var(--bslp-radius-pill);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--bslp-blau-3);
+    letter-spacing: -0.005em;
+    box-shadow: 0 1px 2px rgba(103, 139, 165, 0.06);
+    white-space: nowrap;
+  }
+  .bslp-forwho-note {
     font-size: 0.9375rem;
     line-height: 1.55;
     color: var(--bslp-muted);
-    margin: 0 0 1.5rem;
-    max-width: 32rem;
+    margin: 0 auto;
+    max-width: 46rem;
+    text-wrap: balance;
   }
+  .bslp-forwho-note em { font-style: italic; color: var(--bslp-ink); font-weight: 500; }
+  /* Chips ansprechender: Icon + Hover-Lift */
+  .bslp-forwho-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .bslp-forwho-chip::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    flex: 0 0 auto;
+  }
+  .bslp-forwho-chip:hover {
+    transform: translateY(-2px);
+    border-color: var(--bslp-blau-3);
+    box-shadow: 0 6px 16px rgba(103, 139, 165, 0.20);
+    background: linear-gradient(180deg, #ffffff 0%, #f0f5fa 100%);
+  }
+
+  /* ============================ SEKTION 12 · VS-VERGLEICH ============================ */
+  .bslp-vs {
+    max-width: 76rem;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  }
+  .bslp-vs-inner {
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
+    border-radius: var(--bslp-radius-lg);
+    padding: 3rem 3rem 3.25rem;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(10, 10, 10, 0.06),
+      0 28px 60px rgba(10, 10, 10, 0.04);
+  }
+  .bslp-vs-header { text-align: center; margin-bottom: 2rem; }
+  .bslp-vs-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.018em;
+    color: var(--bslp-black);
+    margin: 0 auto;
+    max-width: 42rem;
+    text-wrap: balance;
+  }
+  .bslp-vs-h2 em {
+    font-style: italic;
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bslp-vs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .bslp-vs-col {
+    padding: 2rem 2rem 2.25rem;
+    border-radius: var(--bslp-radius-lg);
+    border: 1px solid transparent;
+    position: relative;
+  }
+  .bslp-vs-col--no {
+    background: linear-gradient(180deg, rgba(217, 83, 79, 0.06) 0%, rgba(217, 83, 79, 0.02) 100%);
+    border-color: rgba(217, 83, 79, 0.20);
+  }
+  .bslp-vs-col--yes {
+    background: linear-gradient(180deg, rgba(2, 122, 72, 0.06) 0%, rgba(2, 122, 72, 0.02) 100%);
+    border-color: rgba(2, 122, 72, 0.20);
+  }
+  .bslp-vs-col-h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bslp-black);
+    margin: 0 0 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed rgba(10, 10, 10, 0.08);
+    letter-spacing: -0.01em;
+  }
+  .bslp-vs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .bslp-vs-list li {
+    position: relative;
+    padding: 0 0 0 2rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bslp-ink);
+  }
+  .bslp-vs-list li em { font-style: italic; color: var(--bslp-muted); }
+  .bslp-vs-list li strong { color: var(--bslp-black); font-weight: 700; }
+  .bslp-vs-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.15rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: block;
+  }
+  .bslp-vs-col--no .bslp-vs-list li::before {
+    background:
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23b42318' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E") center/11px 11px no-repeat,
+      #fee4e2;
+  }
+  .bslp-vs-col--yes .bslp-vs-list li::before {
+    background:
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23027a48' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/12px 12px no-repeat,
+      #d1fadf;
+  }
+
+  /* ============================ SEKTION 13 · LERNE AUS MEINEN FEHLERN ============================ */
+  .bslp-lesson {
+    max-width: 76rem;
+    margin: 1.5rem auto;
+    padding: 0 2rem;
+    text-align: center;
+  }
+  .bslp-lesson-inner {
+    position: relative;
+    background: linear-gradient(180deg, rgba(193, 166, 141, 0.10) 0%, rgba(255, 255, 255, 0.5) 100%);
+    border: 1px solid rgba(172, 143, 117, 0.25);
+    border-radius: var(--bslp-radius-lg);
+    padding: 3rem 3rem 2.5rem;
+  }
+  /* Barbara-Bild überlappt die Card oben (zeigt nach unten AUF die Card).
+     Bild ist absolute → wenn zu groß, kein Layout-Shift. */
+  .bslp-lesson-photo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    margin: 0;
+    width: 170px;
+    height: auto;
+    z-index: 3;
+    pointer-events: none;
+  }
+  /* Wenn Bild vorhanden ist, mehr Padding oben in der Card, damit das Bild nicht den Text überdeckt */
+  .bslp-lesson-inner:has(.bslp-lesson-photo-img[src]:not([src=""])) {
+    padding-top: 5rem;
+  }
+  @supports not selector(:has(*)) {
+    /* Fallback für alte Browser: JS setzt .has-lesson-photo Klasse */
+    .bslp-lesson-inner.has-lesson-photo { padding-top: 5rem; }
+  }
+  .bslp-lesson-photo-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  /* Ausblendung bei fehlendem src erfolgt via Config-JS (siehe unten). */
+
+  /* Headline statt kleiner Eyebrow: prominent, Story-artig */
+  .bslp-lesson-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--bslp-black);
+    margin: 0 auto 1.5rem;
+    max-width: 42rem;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .bslp-lesson-h2 em {
+    font-style: italic;
+    font-weight: 700;
+    background: linear-gradient(180deg, var(--bslp-beige-1) 0%, var(--bslp-beige-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bslp-lesson-inner p {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--bslp-ink);
+    margin: 0 auto 1rem;
+    max-width: 44rem;
+  }
+  .bslp-lesson-inner p strong { color: var(--bslp-black); font-weight: 700; }
+  .bslp-lesson-signoff {
+    margin-top: 1.5rem !important;
+    font-weight: 700 !important;
+    color: var(--bslp-black) !important;
+    display: inline-flex !important;
+    align-items: baseline;
+    gap: 0.5rem;
+    max-width: 44rem !important;
+  }
+  .bslp-lesson-pointer { font-size: 1.25rem; line-height: 1; }
 
   /* CTA */
   .bslp-cta-wrap {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 0.85rem;
   }
   .bslp-cta {
@@ -305,6 +925,77 @@
     padding-left: 0.25rem;
   }
   .bslp-cta-meta strong { color: var(--bslp-ink); font-weight: 700; }
+  .bslp-hero .bslp-cta-meta { text-align: center; opacity: 0.8; }
+
+  /* ============================ HERO-VIDEO ============================ */
+  .bslp-hero-video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 44rem;
+    margin: 0.25rem auto 0;
+    border-radius: var(--bslp-radius-lg);
+    overflow: hidden;
+    background: #0a0a0a;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.08),
+      0 20px 44px rgba(10, 10, 10, 0.20),
+      0 40px 84px rgba(10, 10, 10, 0.14);
+  }
+  /* Dezenter Glow-Ring beim Hover */
+  .bslp-hero-video::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: 0 0 0 1px rgba(103, 139, 165, 0.10) inset;
+    pointer-events: none;
+    transition: box-shadow 0.3s ease;
+  }
+  .bslp-hero-video:hover::after {
+    box-shadow: 0 0 0 3px rgba(103, 139, 165, 0.20) inset;
+  }
+  .bslp-hero-video-play {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+  }
+  .bslp-hero-video-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .bslp-hero-video-play:hover .bslp-hero-video-thumb { transform: scale(1.03); }
+  .bslp-hero-video-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--bslp-blau-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 32px rgba(10, 10, 10, 0.28);
+    transition: transform 0.25s ease, background 0.2s ease;
+  }
+  .bslp-hero-video-play:hover .bslp-hero-video-icon {
+    transform: translate(-50%, -50%) scale(1.08);
+    background: #fff;
+  }
+  .bslp-hero-video-icon svg { width: 36px; height: 36px; margin-left: 4px; }
 
   /* ============================ TRUST-SEKTION ============================ */
   /* Inset-Card: schwebt zwischen Hero und nachfolgendem Content,
@@ -312,8 +1003,8 @@
   .bslp-trust {
     position: relative;
     z-index: 3;
-    max-width: 76rem;
-    margin: -1rem auto 2rem;        /* dezenter Overlap → mehr sichtbarer Atem im Hero */
+    max-width: 72rem;                /* visuelle Card-Breite identisch zu Story/Forwho/VS/Qualify */
+    margin: -1rem auto 2rem;
     background: #ffffff;
     border: 1px solid rgba(10, 10, 10, 0.05);
     border-radius: var(--bslp-radius-lg);
@@ -410,12 +1101,14 @@
   .bslp-story {
     position: relative;
     background: #ffffff;
-    padding: 5rem 5% 6rem;
+    padding: 5rem 0 6rem;
   }
   .bslp-story-inner {
-    max-width: 44rem;
+    max-width: 76rem;
     margin: 0 auto;
+    padding: 0 2rem;
   }
+  /* (alte Critical-Aside-Regel entfernt, "Das Schlimmste" ist jetzt bslp-story-critical-hero) */
   .bslp-story-h2 {
     font-family: Manrope, sans-serif;
     font-size: clamp(1.625rem, 2.6vw, 2.375rem);
@@ -423,8 +1116,10 @@
     line-height: 1.18;
     letter-spacing: -0.018em;
     color: var(--bslp-black);
-    margin: 0 0 3rem;
+    margin: 0 auto 3rem;
+    max-width: 72rem;
     text-wrap: balance;
+    text-align: center;
   }
   .bslp-story-h2-stat {
     background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
@@ -544,8 +1239,10 @@
     line-height: 1.3 !important;
     color: var(--bslp-black) !important;
     letter-spacing: -0.012em;
-    text-wrap: balance;
+    text-wrap: pretty;
   }
+  .bslp-story-problem p { text-wrap: pretty; }
+  .bslp-story-body p { text-wrap: pretty; }
   .bslp-story-statement em {
     font-style: italic;
     font-weight: 700;
@@ -670,34 +1367,80 @@
   }
   .bslp-cta-mega:hover .bslp-cta-mega-arrow { transform: translateX(4px); }
 
-  /* AUFricht-Bild im Lösungs-Card – nur Visual mit weichem Bottom-Fade */
+  /* AUFricht-Bild im Lösungs-Card – kompakt, zentriert, mit weichem Multi-Stop-Bottom-Fade */
   .bslp-story-aufricht {
     position: relative;
     z-index: 1;
-    margin: 2.5rem -1rem 0;
+    margin: 2.25rem auto 0;
     padding: 0;
+    max-width: 28rem;
     overflow: hidden;
-    /* sanfter Verlauf nach unten in transparent → das Bild verschmilzt
-       mit dem Card-Hintergrund, ohne harte Kante */
-    -webkit-mask-image: linear-gradient(180deg, black 0%, black 82%, transparent 100%);
-    mask-image: linear-gradient(180deg, black 0%, black 82%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg,
+      rgba(0,0,0,1) 0%,
+      rgba(0,0,0,1) 55%,
+      rgba(0,0,0,0.7) 75%,
+      rgba(0,0,0,0.3) 90%,
+      rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(180deg,
+      rgba(0,0,0,1) 0%,
+      rgba(0,0,0,1) 55%,
+      rgba(0,0,0,0.7) 75%,
+      rgba(0,0,0,0.3) 90%,
+      rgba(0,0,0,0) 100%);
   }
   .bslp-root .bslp-story-aufricht-img {
     width: 100%;
     height: auto;
     max-width: none;
     display: block;
-    /* Bild hat dunklen Hintergrund + helle Striche → invertieren, damit
-       der schwarze Bg zu weiß wird (matched zur hellen Card), und die
-       Striche als dunkle Skizze sichtbar werden */
     filter: invert(1) brightness(0.92) contrast(1.18);
   }
+  .bslp-story-aufricht-caption {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--bslp-muted);
+    font-style: italic;
+    margin: 0.5rem 1rem 0;
+    padding: 0 1rem;
+  }
 
-  /* Lösungs-Card — neu gestaltet: dimensionaler Hintergrund, mehr Atem */
+  /* Problem-Cards: Zwischenüberschrift + Body in einer dezent roten Card */
+  .bslp-story-problem {
+    position: relative;
+    margin: 2rem auto;
+    /* Content-Padding großzügig, sodass Text nicht am Rand klebt und trotzdem
+       links-bündig sitzt (keine Auto-Margin-Einrückung mehr) */
+    padding: 2.5rem 4rem 2.25rem;
+    background:
+      linear-gradient(180deg, rgba(217, 83, 79, 0.05) 0%, rgba(217, 83, 79, 0.02) 100%);
+    border: 1px solid rgba(217, 83, 79, 0.16);
+    border-radius: var(--bslp-radius-lg);
+  }
+  .bslp-story-subh {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.25rem, 1.9vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.22;
+    letter-spacing: -0.015em;
+    color: var(--bslp-black);
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+  .bslp-story-problem > p:last-child { margin-bottom: 0 !important; }
+  .bslp-story-problem .bslp-story-statement {
+    margin: 1.5rem 0 0 !important;
+    font-size: clamp(1.125rem, 1.5vw, 1.3125rem) !important;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.55);
+    border-left: 3px solid rgba(217, 83, 79, 0.35);
+    border-radius: 8px;
+  }
+
+  /* Lösungs-Card — dimensionaler Hintergrund, volle Card-Breite, Content links-bündig */
   .bslp-story-solution {
     position: relative;
-    margin: 3rem 0 0;
-    padding: 3rem 2.5rem 0;
+    margin: 2rem auto 0;
+    padding: 3rem 4rem 0;
     background:
       radial-gradient(ellipse 80% 50% at 50% 0%, rgba(135, 169, 194, 0.14) 0%, transparent 65%),
       linear-gradient(180deg, rgba(135, 169, 194, 0.05) 0%, #ffffff 55%);
@@ -706,21 +1449,19 @@
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(74, 112, 140, 0.04), 0 24px 60px -20px rgba(74, 112, 140, 0.10);
   }
-  /* Mega-CTA als kompletter Card-Boden – wirkt wie ein riesiger Button-Bereich */
+  /* Mega-CTA in Solution-Card: kompakter, zentriert, richtiger Button (kein Full-Width-Streifen) */
   .bslp-story-solution .bslp-cta-mega-wrap {
-    margin: 2.5rem -2.5rem 0;
+    margin: 2rem 0 3rem;
+    display: flex;
+    justify-content: center;
   }
   .bslp-story-solution .bslp-cta-mega {
-    width: 100%;
-    max-width: none;
-    border: 0;
-    border-radius: 0;
-    padding: 1.65rem 2.25rem;
-    box-shadow: 0 -1px 0 rgba(255,255,255,.5) inset;
-  }
-  .bslp-story-solution .bslp-cta-mega:hover {
-    transform: none;
-    box-shadow: 0 -1px 0 rgba(255,255,255,.5) inset;
+    width: auto;
+    max-width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 1.35rem 2rem 1.35rem 2.25rem;
+    border-radius: var(--bslp-radius-lg);
+    text-align: left;
   }
   .bslp-story-solution .bslp-cta-mega-arrow { width: 26px; height: 26px; }
   /* Header-Zeile: Statement links, "DIE LÖSUNG"-Pille rechts auf gleicher Höhe */
@@ -757,8 +1498,8 @@
   /* ===================== WORKSHOP-INHALTE (farbige Sektion als Card) ===================== */
   .bslp-content {
     position: relative;
-    max-width: 80rem;
-    margin: 3rem auto;
+    max-width: 72rem;
+    margin: 1.5rem auto;
     padding: 4.5rem 5%;
     background:
       radial-gradient(ellipse 60% 80% at 90% 10%, rgba(135, 169, 194, 0.35) 0%, transparent 60%),
@@ -849,6 +1590,69 @@
   }
   .bslp-content-check svg { width: 14px; height: 14px; }
 
+  /* Nummerierte Takeaway-Liste (Doc-Sektion 10, ersetzt Bullet-Liste) */
+  .bslp-takeaway-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.5rem;
+    display: grid;
+    gap: 0.85rem;
+    text-align: left;
+  }
+  .bslp-takeaway-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.15rem;
+    align-items: flex-start;
+    padding: 1.35rem 1.5rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--bslp-radius-md);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition: background-color .25s ease, border-color .25s ease;
+  }
+  .bslp-takeaway-item:hover {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+  .bslp-takeaway-num {
+    flex: 0 0 auto;
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #c1a68d 0%, #ac8f75 100%);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Manrope, sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+    box-shadow: 0 3px 10px rgba(140, 113, 88, 0.35);
+  }
+  .bslp-takeaway-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+  .bslp-takeaway-h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    color: #ffffff;
+    margin: 0;
+  }
+  .bslp-takeaway-body p {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.90);
+    margin: 0;
+  }
+  .bslp-takeaway-body p strong { color: #ffffff; font-weight: 700; }
+
   .bslp-content-cta-wrap {
     display: flex;
     flex-direction: column;
@@ -856,12 +1660,19 @@
     gap: 0.85rem;
     margin-top: 2.5rem;
   }
+  .bslp-content-cta-meta {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    text-align: center;
+    max-width: 40rem;
+  }
 
   /* ===================== SIGNUP-SEKTION (finaler CTA + Formular) ===================== */
   .bslp-signup {
     position: relative;
-    max-width: 80rem;
-    margin: 3rem auto 4rem;
+    max-width: 72rem;
+    margin: 1.5rem auto 3rem;
     padding: 4.5rem 5%;
     background:
       radial-gradient(ellipse 70% 80% at 90% 10%, rgba(255, 255, 255, 0.18) 0%, transparent 60%),
@@ -944,12 +1755,12 @@
   .bslp-signup-form-card {
     background: #ffffff;
     border-radius: var(--bslp-radius-lg);
-    padding: 2.25rem 2rem;
+    padding: 2rem 2rem 1.75rem;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
     text-align: left;
     color: var(--bslp-ink);
     margin: 0 auto;
-    max-width: 36rem;
+    max-width: 44rem;
   }
   /* Privacy-Footer-Text unter dem Formular (innerhalb der Section, außerhalb der Card) */
   .bslp-signup-privacy {
@@ -1063,8 +1874,8 @@
   /* ===================== TESTIMONIALS (Das sagen andere) ===================== */
   .bslp-testimonials {
     position: relative;
-    max-width: 80rem;
-    margin: 3rem auto 0;
+    max-width: 72rem;
+    margin: 1.5rem auto 0;
     padding: 4.5rem 5% 1.5rem;
   }
   .bslp-testimonials-header {
@@ -1247,8 +2058,8 @@
   /* ===================== HOST-SEKTION (Card – einheitlich mit Workshop-Card) ===================== */
   .bslp-host {
     position: relative;
-    max-width: 80rem;
-    margin: 3rem auto;
+    max-width: 72rem;
+    margin: 1.5rem auto;
     padding: 0;
     background: #ffffff;
     border: 1px solid rgba(10, 10, 10, 0.05);
@@ -1367,17 +2178,170 @@
     margin-top: 1.75rem !important;
     margin-bottom: 0 !important;
   }
-  /* Beiger CTA-Band am Card-Boden */
-  .bslp-host-cta-band {
-    padding: 1.5rem 2.5rem;
-    background: linear-gradient(135deg, #f5e9da 0%, #ede0ce 50%, #e6d4bd 100%);
-    border-top: 1px solid rgba(193, 166, 141, 0.30);
+  /* ============================ VORQUALIFIZIERUNG ============================ */
+  .bslp-qualify {
+    max-width: 76rem;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  }
+  .bslp-qualify-inner {
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
+    border-radius: var(--bslp-radius-lg);
+    padding: 3rem 3rem 3.25rem;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(10, 10, 10, 0.06),
+      0 28px 60px rgba(10, 10, 10, 0.04);
+  }
+  .bslp-qualify-eyebrow {
+    display: block;
     text-align: center;
-    font-size: 1.0625rem;
-    font-weight: 600;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--bslp-blau-3);
+    margin: 0 auto 0.75rem;
+  }
+  .bslp-qualify-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.4rem, 2.1vw, 1.875rem);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
     color: var(--bslp-black);
-    line-height: 1.5;
-    letter-spacing: -0.005em;
+    text-align: center;
+    margin: 0 auto 2.5rem;
+    max-width: 42rem;
+    text-wrap: balance;
+  }
+  .bslp-qualify-h2 em {
+    display: block;
+    margin-top: 0.5rem;
+    font-style: italic;
+    font-weight: 600;
+    background: linear-gradient(180deg, var(--bslp-blau-2) 0%, var(--bslp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Stack-Layout: Cards untereinander (erst Ausschluss, dann Match + CTA) */
+  .bslp-qualify-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  /* Listen in Spalten aufteilen, damit die Cards nicht zu hoch werden */
+  .bslp-qualify-list--two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+  }
+  /* Bei „falsch"-Card mit genau 3 Items: 3 gleich große Spalten → kein Leerraum */
+  .bslp-qualify-col--no .bslp-qualify-list--two-col {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 2rem;
+  }
+  @media (max-width: 900px) {
+    .bslp-qualify-col--no .bslp-qualify-list--two-col { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .bslp-qualify-list--two-col,
+    .bslp-qualify-col--no .bslp-qualify-list--two-col { grid-template-columns: 1fr; }
+  }
+  /* Inline-CTA am Ende der „Richtig"-Card */
+  .bslp-qualify-cta {
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px dashed rgba(2, 122, 72, 0.22);
+    display: flex;
+    justify-content: center;
+  }
+  .bslp-qualify-col {
+    padding: 2rem 2rem 2.25rem;
+    border-radius: var(--bslp-radius-lg);
+    border: 1px solid transparent;
+    position: relative;
+  }
+  .bslp-qualify-col--yes {
+    background: linear-gradient(180deg, rgba(2, 122, 72, 0.06) 0%, rgba(2, 122, 72, 0.02) 100%);
+    border-color: rgba(2, 122, 72, 0.20);
+  }
+  .bslp-qualify-col--no {
+    background: linear-gradient(180deg, rgba(217, 83, 79, 0.06) 0%, rgba(217, 83, 79, 0.02) 100%);
+    border-color: rgba(217, 83, 79, 0.20);
+  }
+  .bslp-qualify-col-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin: 0 0 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px dashed rgba(10, 10, 10, 0.08);
+  }
+  .bslp-qualify-col-icon {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(10, 10, 10, 0.05);
+  }
+  .bslp-qualify-col--yes .bslp-qualify-col-icon {
+    background: linear-gradient(135deg, #d1fadf 0%, #a6f4c5 100%);
+    color: #027a48;
+  }
+  .bslp-qualify-col--no .bslp-qualify-col-icon {
+    background: linear-gradient(135deg, #fee4e2 0%, #fecaca 100%);
+    color: #b42318;
+  }
+  .bslp-qualify-col-icon svg { width: 22px; height: 22px; }
+  .bslp-qualify-col-h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bslp-black);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .bslp-qualify-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .bslp-qualify-list li {
+    position: relative;
+    padding: 0 0 0 2rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bslp-ink);
+  }
+  /* Marker als SVG-like Icon per ::before */
+  .bslp-qualify-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.15rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: block;
+  }
+  .bslp-qualify-col--yes .bslp-qualify-list li::before {
+    background:
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23027a48' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/12px 12px no-repeat,
+      #d1fadf;
+  }
+  .bslp-qualify-col--no .bslp-qualify-list li::before {
+    background:
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b42318' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E") center/11px 11px no-repeat,
+      #fee4e2;
   }
 
   /* ============================ RESPONSIVE ============================ */
@@ -1388,14 +2352,15 @@
   }
   @media (max-width: 1023px) {
     /* unter 1024: Tagline-Text wäre für eine Zeile zu lang → Mobile-Banner-Modus aktivieren */
-    .bslp-nav { padding: 0; }
+    .bslp-nav { padding: 0; background: rgba(255, 255, 255, 0.85); }
     .bslp-nav-inner {
       display: flex;
       flex-direction: column;
       padding: 0;
       gap: 0;
     }
-    .bslp-nav-logo { order: 2; padding: 0.75rem 5%; }
+    .bslp-nav-inner::after { display: none; }
+    .bslp-nav-logo { order: 2; padding: 0.6rem 5%; }
     .bslp-nav-tagline {
       order: 1;
       width: 100%;
@@ -1404,7 +2369,7 @@
       border-left: 0;
       border-right: 0;
       border-top: 0;
-      border-bottom: 1px solid rgba(103, 139, 165, 0.25);
+      border-bottom: 1px solid rgba(103, 139, 165, 0.20);
       justify-content: center;
       padding: 0.55rem 5%;
       font-size: 0.8125rem;
@@ -1413,9 +2378,9 @@
       text-align: center;
       white-space: normal;
     }
-    .bslp-nav-tagline-icon { width: 24px; height: 24px; }
-    .bslp-nav-tagline-icon svg { width: 13px; height: 13px; }
-    .bslp-root .bslp-logo-img { height: 44px; }
+    .bslp-nav-tagline-icon { width: 22px; height: 22px; }
+    .bslp-nav-tagline-icon svg { width: 12px; height: 12px; }
+    .bslp-root .bslp-logo-img { height: 38px; }
   }
   @media (max-width: 1280px) {
     /* Trust-, Workshop-, Host- und Signup-Card auf Tablet/Desktop-S inset */
@@ -1451,27 +2416,26 @@
       -webkit-mask-image: linear-gradient(180deg, black 0%, black 80%, transparent 100%);
       mask-image: linear-gradient(180deg, black 0%, black 80%, transparent 100%);
     }
-    .bslp-stage-veil { display: none; }
-    .bslp-hero { order: 3; }
+    .bslp-hero { order: 1; }
     .bslp-hero-inner {
-      grid-template-columns: 1fr;
-      gap: 0;
-      padding: 0.75rem 5% 1.5rem;
-      min-height: 0;
+      gap: 1.5rem;
+      padding: 1.5rem 5% 2rem;
     }
     .bslp-hero-copy { max-width: none; }
-    .bslp-hero-eyebrow { margin-bottom: 0.7rem; font-size: 0.75rem; padding: 0.35rem 0.75rem; }
-    .bslp-h1 { font-size: clamp(1.4rem, 5vw, 1.75rem); margin-bottom: 0.7rem; line-height: 1.15; }
-    .bslp-subheadline { font-size: 0.875rem; margin-bottom: 0.7rem; line-height: 1.4; }
-    .bslp-lead { font-size: 0.8125rem; line-height: 1.5; margin-bottom: 1rem; }
-    .bslp-cta-meta { display: none; }
+    .bslp-hero-eyebrow { margin-bottom: 1rem; font-size: 0.75rem; padding: 0.35rem 0.75rem; }
+    .bslp-h1 { font-size: clamp(1.5rem, 6.5vw, 2rem); margin-bottom: 0.85rem; line-height: 1.12; }
+    .bslp-subheadline { font-size: 0.9375rem; margin-bottom: 0.9rem; line-height: 1.45; }
+    .bslp-lead { font-size: 0.9375rem; line-height: 1.55; margin-bottom: 0; }
+    .bslp-hero-video-icon { width: 64px; height: 64px; }
+    .bslp-hero-video-icon svg { width: 26px; height: 26px; }
+    .bslp-hero .bslp-cta-meta { font-size: 0.75rem; padding: 0 1rem; }
   }
   @media (max-width: 767px) {
-    .bslp-hero-inner { padding: 0.85rem 5% 1.5rem; }
-    .bslp-h1 { letter-spacing: -0.015em; }
-    .bslp-cta { width: 100%; padding: 0.95rem 1.25rem; font-size: 1rem; }
-    .bslp-cta-wrap { align-items: stretch; gap: 0.5rem; }
-    .bslp-cta-meta { display: none; }
+    .bslp-hero-inner { padding: 1.25rem 5% 2rem; }
+    .bslp-h1 { letter-spacing: -0.018em; }
+    .bslp-hero .bslp-cta { width: 100%; padding: 0.95rem 1.25rem; font-size: 1rem; }
+    .bslp-hero .bslp-cta-wrap { align-items: stretch; gap: 0.5rem; width: 100%; }
+    .bslp-hero .bslp-cta-meta { font-size: 0.75rem; }
 
     .bslp-trust { margin: -0.75rem 1rem 1.5rem; }
     .bslp-trust-inner { padding: 1.75rem 1.5rem 2rem; }
@@ -1566,7 +2530,6 @@
     .bslp-host-stat { padding: 0 0.35rem; }
     .bslp-host-stat-num { font-size: 1rem; }
     .bslp-host-stat-label { font-size: 0.625rem; }
-    .bslp-host-cta-band { padding: 1.25rem 1.5rem; font-size: 0.9375rem; }
     .bslp-trust-grid { grid-template-columns: 1fr; gap: 0; }
     .bslp-trust-card {
       padding: 1.25rem 0;
@@ -1574,9 +2537,139 @@
       border-top: 1px solid rgba(103, 139, 165, 0.12);
     }
     .bslp-trust-card:first-child { border-top: 0; padding-top: 0; }
+
+    .bslp-qualify { margin: 2.5rem 0; padding: 0 1rem; }
+    .bslp-qualify-inner { padding: 2rem 1.5rem 2.25rem; }
+    .bslp-qualify-h2 { margin-bottom: 1.75rem; }
+    .bslp-qualify-stack { gap: 1rem; }
+    .bslp-qualify-col { padding: 1.5rem 1.25rem 1.75rem; }
   }
   @media (max-width: 479px) {
-    .bslp-hero-inner { padding: 2rem 5% 12rem; }
+    .bslp-hero-inner { padding: 1rem 5% 1.5rem; }
+    .bslp-h1 { font-size: clamp(1.375rem, 6.5vw, 1.75rem); }
+    .bslp-hero-eyebrow { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
+    .bslp-lead { font-size: 0.875rem; line-height: 1.5; }
+  }
+
+  /* ============================ TABLET-BEREICH (768–1199px) ============================
+     Explizite Anpassungen für iPad-Größen, sonst würden Sektionen entweder zu
+     schmal wirken (Mobile-Modus greift ab 767px) oder Desktop-Padding zu groß. */
+  @media (min-width: 992px) and (max-width: 1199px) {
+    .bslp-hero-inner { padding: 1.75rem 5% 3rem; gap: 1.25rem; }
+    .bslp-h1 { font-size: clamp(1.75rem, 3.6vw, 2.375rem); }
+    .bslp-hero-video { max-width: 42rem; }
+
+    .bslp-content { padding: 3.5rem 4%; }
+    .bslp-content-h2 { margin-bottom: 2.25rem; }
+    .bslp-content-list { gap: 1rem; }
+
+    .bslp-story { padding: 4rem 0 5rem; }
+    .bslp-story-inner { padding: 0 2rem; }
+
+    .bslp-qualify { margin: 1.5rem auto; padding: 0 2rem; }
+    .bslp-qualify-inner { padding: 2.5rem 2.25rem 2.75rem; }
+
+    .bslp-signup { padding: 3rem 2rem 4rem; }
+    .bslp-signup-form-card { padding: 2rem 1.75rem; max-width: 44rem; }
+  }
+  /* Kleine Tablets / iPad-Portrait (768–991px) — noch etwas kompakter */
+  @media (min-width: 768px) and (max-width: 991px) {
+    .bslp-hero-inner { padding: 1.5rem 5% 2.5rem; gap: 1.25rem; }
+    .bslp-h1 { font-size: clamp(1.625rem, 4vw, 2.125rem); max-width: 42rem; }
+    .bslp-lead { max-width: 42rem; font-size: 0.9375rem; }
+    .bslp-hero-video { max-width: 38rem; }
+    .bslp-hero-video-icon { width: 72px; height: 72px; }
+    .bslp-hero-video-icon svg { width: 28px; height: 28px; }
+
+    .bslp-trust-inner { padding: 2rem 1.75rem; }
+    .bslp-content { padding: 3rem 5%; }
+    .bslp-story { padding: 3.5rem 0 4rem; }
+    .bslp-story-inner { padding: 0 1.5rem; }
+    .bslp-qualify { margin: 2.5rem auto; padding: 0 1.5rem; }
+    .bslp-qualify-inner { padding: 2rem 1.75rem 2.25rem; }
+    .bslp-signup { padding: 3rem 1.5rem; }
+    .bslp-signup-form-card { padding: 2rem 1.5rem; max-width: 40rem; }
+  }
+
+  /* ========== STORY-PROBLEM-CARDS: Mobile-Anpassungen ========== */
+  @media (max-width: 767px) {
+    .bslp-story-problem {
+      padding: 1.5rem 1.25rem;
+      margin: 2rem 0;
+    }
+    .bslp-story-problem .bslp-story-statement {
+      padding: 0.85rem 1rem;
+      margin: 1.25rem 0 0 !important;
+      font-size: 1.0625rem !important;
+    }
+    .bslp-story-subh { margin-bottom: 0.85rem; }
+  }
+
+  /* ========== QUALIFY: kleinere Icons + Header auf Mobile ========== */
+  @media (max-width: 767px) {
+    .bslp-qualify-col-header {
+      gap: 0.7rem;
+      margin: 0 0 1.25rem;
+      padding-bottom: 1rem;
+    }
+    .bslp-qualify-col-icon { width: 36px; height: 36px; border-radius: 10px; }
+    .bslp-qualify-col-icon svg { width: 18px; height: 18px; }
+    .bslp-qualify-col-h3 { font-size: 1.0625rem; }
+    .bslp-qualify-list li { font-size: 0.9375rem; padding-left: 1.75rem; }
+    .bslp-qualify-list li::before { width: 18px; height: 18px; }
+  }
+
+  /* ========== KENNST/EMPATHY/FORWHO: Mobile + Tablet ========== */
+  @media (max-width: 991px) {
+    .bslp-kennst-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+      max-width: 32rem;
+    }
+    .bslp-kennst-arrow { width: 100%; padding: 0.5rem 0; transform: rotate(90deg); transform-origin: center; }
+    .bslp-empathy { margin: 2.5rem auto; padding: 0 1.5rem; }
+    .bslp-empathy-inner { padding: 2.25rem 1.75rem 2rem; }
+    .bslp-forwho { margin: 2.5rem auto; padding: 0 1.5rem; }
+    .bslp-forwho-inner { padding: 2.25rem 1.75rem 2rem; }
+  }
+  @media (max-width: 767px) {
+    .bslp-kennst-card { padding: 1.5rem 1.35rem 1.5rem; gap: 1rem; }
+    .bslp-kennst-emoji { width: 46px; height: 46px; font-size: 22px; border-radius: 12px; }
+    .bslp-kennst-h3 { font-size: 1.0625rem; }
+    .bslp-story-critical-hero { padding: 2rem 1.35rem; }
+    .bslp-story-critical-hero-lead { font-size: 1.25rem; }
+    .bslp-story-critical-hero-body { font-size: 0.9375rem; }
+    .bslp-story-problem { padding: 1.75rem 1.25rem; }
+    .bslp-story-problem > * { max-width: none; }
+    .bslp-story-solution { padding: 2rem 1.25rem 0; }
+    .bslp-story-solution > p,
+    .bslp-story-solution > .bslp-story-solution-header,
+    .bslp-story-solution > .bslp-story-stat { max-width: none; }
+    .bslp-empathy { padding: 0 1rem; }
+    .bslp-empathy-inner { padding: 2rem 1.35rem 1.75rem; }
+    .bslp-empathy-lead { font-size: 1rem; }
+    .bslp-empathy-inner p { font-size: 0.9375rem; }
+    .bslp-forwho { padding: 0 1rem; }
+    .bslp-forwho-inner { padding: 2rem 1.35rem 1.75rem; }
+    .bslp-forwho-h2 { font-size: 1.125rem; margin-bottom: 1.35rem; }
+    .bslp-forwho-chip { font-size: 0.875rem; padding: 0.45rem 0.95rem; }
+    .bslp-hero-subh1 { font-size: 1rem; margin: 0 auto 1rem; }
+    .bslp-hero-values { padding: 1.25rem 1.25rem; margin: 1.25rem auto 0; }
+    .bslp-hero-values li { font-size: 0.9375rem; }
+
+    .bslp-vs { margin: 2.5rem auto; padding: 0 1rem; }
+    .bslp-vs-inner { padding: 2rem 1.35rem 2.25rem; }
+    .bslp-vs-header { margin-bottom: 1.5rem; }
+    .bslp-vs-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .bslp-vs-col { padding: 1.5rem 1.25rem 1.75rem; }
+    .bslp-vs-col-h3 { font-size: 1.0625rem; margin-bottom: 1.25rem; padding-bottom: 0.85rem; }
+
+    .bslp-lesson { margin: 2.5rem auto; padding: 0 1rem; }
+    .bslp-lesson-inner { padding: 2rem 1.35rem 1.75rem; }
+    .bslp-lesson-inner p { font-size: 1rem; }
+    .bslp-lesson-photo { width: 130px; transform: translate(-50%, -55%); }
+    .bslp-lesson-inner:has(.bslp-lesson-photo-img[src]:not([src=""])) { padding-top: 4rem; }
+    .bslp-lesson-h2 { font-size: 1.375rem; }
   }
 
   /* Reduced motion */
@@ -1613,275 +2706,173 @@
               <path d="M4.93 19.07a10 10 0 0 1 0-14.14"/>
             </svg>
           </span>
-          <span><span class="bslp-blau">Live Workshop</span> für alle Frauen, die wieder <span class="bslp-blau">rausgehen wollen</span>, ohne ständig an die <span class="bslp-blau">nächste Toilette</span> zu denken</span>
+          <span><span class="bslp-blau">Live-Workshop</span> für Frauen, die ihre <span class="bslp-blau">Blasenschwäche</span> nicht mehr <span class="bslp-blau">hinnehmen</span> wollen</span>
         </div>
       </div>
     </nav>
 
     <!-- ========================= HERO ========================= -->
+    <!-- Layout: zentriert. Reihenfolge: Eyebrow · H1 · Sub-H1 · Lead · Video · CTA · Value-Bullets -->
     <section class="bslp-hero" aria-labelledby="bslp-hero-heading">
       <div class="bslp-hero-inner">
 
         <div class="bslp-hero-copy">
           <span class="bslp-hero-eyebrow">
             <span class="bslp-live-dot" aria-hidden="true"></span>
-            <span>Live am <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>19.05.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+            <span>0&nbsp;€ Live-Workshop <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>15.09.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
           </span>
 
           <h1 id="bslp-hero-heading" class="bslp-h1">
-            Inkontinenz stoppen: Wie du mit dem <span class="bslp-h1-accent">AUFricht-Prinzip</span> in kürzester Zeit wieder Kontrolle über deine Blase bekommst
+            Was, wenn deine <span class="bslp-h1-accent">Blase</span> gar nicht das eigentliche Problem ist?
           </h1>
-
-          <p class="bslp-subheadline">
-            – ohne ständiges Beckenboden-Anspannen, Medikamente oder Einlagen <em>(bequem von Zuhause aus)</em>.
+          <p class="bslp-hero-subh1">
+            Was, wenn Einlagen und Geräte dein Problem sogar am Leben halten?
           </p>
 
           <p class="bslp-lead">
-            Die meisten Frauen trainieren die falsche Beckenbodenschicht – und machen ihre Beschwerden dadurch oft noch schlimmer. Im kostenlosen Live-Workshop zeige ich dir, was wirklich hinter deinen Beschwerden steckt, wie du an der Ursache ansetzt und deine Lebensfreude zurückgewinnst – ohne ständige Angst vor plötzlichem Urinverlust.
+            Einlagen, Beckenbodenübungen, Arztbesuche, vielleicht schon der Gedanke an eine OP. <strong>Du hast alles versucht und trotzdem bestimmt die Blase noch immer deinen Alltag?</strong> Erfahre, warum bisher nichts dauerhaft geholfen hat und was wirklich zählt, um aus dem Symptom-Kreislauf auszubrechen. Vorkenntnisse brauchst du keine. <strong>Die Bereitschaft, selbst zu arbeiten, schon.</strong>
           </p>
+        </div>
 
-          <div class="bslp-cta-wrap">
-            <a class="bslp-cta" href="#webinar-anmeldung">
-              Jetzt für 0 € anmelden
-              <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-            <div class="bslp-cta-meta">
-              <strong>100&nbsp;% kostenfrei.</strong><br/>
-              Begrenzte Teilnehmerzahl.
-            </div>
+        <!-- ================= HERO-VIDEO (Mittelpunkt) ================= -->
+        <!-- YouTube-ID wird via BSLP_CONFIG.heroVideo aus dem Embed-Code gesetzt. -->
+        <div class="bslp-hero-video" data-bslp-hero-video>
+          <button class="bslp-hero-video-play" type="button" aria-label="Video von Barbara abspielen">
+            <img class="bslp-hero-video-thumb" data-bslp-hero-thumb alt="" loading="lazy" />
+            <span class="bslp-hero-video-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
+        </div>
+
+        <div class="bslp-cta-wrap">
+          <a class="bslp-cta" href="#webinar-anmeldung">
+            Jetzt zum Workshop anmelden
+            <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <div class="bslp-cta-meta">
+            <strong>Kostenfrei und diskret.</strong> Rund 2 Stunden, plane sie dir direkt ein.
           </div>
         </div>
+
+        <!-- Value-Bullets direkt unter dem CTA -->
+        <ul class="bslp-hero-values" aria-label="Was dich erwartet">
+          <li>
+            <span class="bslp-hero-value-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <span>Der Ansatz, der bereits <strong>über 300 Frauen</strong> geholfen hat</span>
+          </li>
+          <li>
+            <span class="bslp-hero-value-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <span>Ohne ständiges Beckenboden-Anspannen, Medikamente oder Einlagen <em>(bequem von Zuhause aus)</em></span>
+          </li>
+          <li>
+            <span class="bslp-hero-value-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <span>Praktisch anwendbar für viele Arten von <strong>Blasen- und Beckenbodenbeschwerden</strong></span>
+          </li>
+        </ul>
 
       </div>
     </section>
 
   </div>
 
-  <!-- ========================= TRUST-SEKTION ========================= -->
-  <section class="bslp-trust" aria-labelledby="bslp-trust-heading">
-    <div class="bslp-trust-inner">
-
-      <header class="bslp-trust-header">
-        <h2 id="bslp-trust-heading" class="bslp-h2">Inkontinenz stoppen mit Barbara Scharrer</h2>
-        <p class="bslp-trust-sub">
-          <span class="bslp-live-dot" aria-hidden="true"></span>
-          <span>LIVE und Online am <span data-bslp-date>19.05.2026</span> um <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
-        </p>
-      </header>
-
-      <div class="bslp-trust-grid">
-
-        <div class="bslp-trust-card">
-          <div class="bslp-trust-icon" aria-hidden="true">
-            <!-- users / group icon -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-          </div>
-          <p class="bslp-trust-value">250</p>
-          <p class="bslp-trust-label">Frauen bereits begleitet</p>
-        </div>
-
-        <div class="bslp-trust-card">
-          <div class="bslp-trust-icon" aria-hidden="true">
-            <!-- trending up icon -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-              <polyline points="17 6 23 6 23 12"/>
-            </svg>
-          </div>
-          <p class="bslp-trust-value">75–85<sup>%</sup></p>
-          <p class="bslp-trust-label">Verbesserung in 8 Wochen</p>
-        </div>
-
-        <div class="bslp-trust-card">
-          <div class="bslp-trust-icon" aria-hidden="true">
-            <!-- home icon -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-          </div>
-          <p class="bslp-trust-value">100<sup>%</sup></p>
-          <p class="bslp-trust-label">von zuhause aus</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================= STORY-SEKTION ========================= -->
+  <!-- ========================= 3 · KENNST DU DAS? ========================= -->
   <section class="bslp-story" aria-labelledby="bslp-story-heading">
     <div class="bslp-story-inner">
 
       <h2 id="bslp-story-heading" class="bslp-story-h2">
-        <span class="bslp-story-h2-stat">10 Millionen Menschen</span> in Deutschland leiden an Inkontinenz. Und die meisten sprechen nie darüber.
-        <span class="bslp-story-h2-emph">Du bist nicht allein.</span>
+        Rund <span class="bslp-story-h2-stat">10 Millionen Menschen</span> in Deutschland leiden an einer Blasenschwäche. Die allermeisten finden sich damit ab.
+        <span class="bslp-story-h2-emph">Du offensichtlich nicht.</span>
       </h2>
 
-      <div class="bslp-story-body">
+      <!-- 3 Kategorien nebeneinander, verbunden durch Pfeile (Story-Progression) -->
+      <div class="bslp-kennst-grid">
 
-        <p class="bslp-story-intro">Vielleicht erkennst du dich hier wieder:</p>
-
-        <ul class="bslp-story-checklist">
-          <li>
-            <span class="bslp-story-check" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </span>
-            <span>Dein Alltag dreht sich nur noch um eine Frage: <em>„Wo ist das nächste Klo?"</em></span>
-          </li>
-          <li>
-            <span class="bslp-story-check" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </span>
-            <span>Wenn du das Haus verlässt, hast du Angst, dass es passiert – beim Lachen, Husten oder Niesen.</span>
-          </li>
-          <li>
-            <span class="bslp-story-check" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </span>
-            <span>Du traust dich kaum noch an Urlaub, Sport oder Spielen mit den Kindern zu denken. Beim Einkaufen, im Bus, bei Familienfeiern hast du immer Angst, dass etwas in die Hose geht.</span>
-          </li>
-          <li>
-            <span class="bslp-story-check" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </span>
-            <span>Du sagst Einladungen ab, die du früher geliebt hast.</span>
-          </li>
-          <li>
-            <span class="bslp-story-check" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </span>
-            <span>Du meidest Menschen, die dir wichtig sind. Nicht weil du nicht willst – sondern weil du Angst hast, dass es jemand bemerkt. Oder riecht.</span>
-          </li>
-        </ul>
-
-        <aside class="bslp-story-critical" role="note">
-          <p class="bslp-story-critical-eyebrow">Das Schlimmste</p>
-          <p>Du trägst das komplett allein. <strong>Nicht mal deine beste Freundin weiß davon.</strong> Vielleicht nicht mal dein Partner.</p>
-        </aside>
-
-        <p>Kein Arzt nimmt sich Zeit, dein Problem wirklich zu verstehen. Die meisten verschreiben Medikamente, empfehlen Physiotherapie oder sagen: <em>„Das ist halt so in Ihrem Alter."</em> Und du stehst wieder da – allein, frustriert und ohne echte Lösung.</p>
-
-        <p>Gleichzeitig gibt die Hilfsmittel-Industrie Milliarden aus, um dir Einlagen, Windeln und Beckenbodengeräte zu verkaufen. <em>„Diskret. Sicher. Für ein aktives Leben."</em></p>
-
-        <p class="bslp-story-statement">Aber wenn diese Produkte das Problem wirklich lösen würden – warum steigt die Zahl der Betroffenen dann jedes Jahr weiter? Weil Einlagen dein Problem verstecken. <em>Nicht lösen.</em></p>
-
-        <p>Und vielleicht hast du sogar versucht, es selbst in die Hand zu nehmen.</p>
-
-        <p>Beckenbodenübungen gemacht, wie es in jeder Zeitschrift steht. Anspannen, halten, loslassen. Wochenlang, vielleicht sogar monatelang. Und es wurde nicht besser. Vielleicht sogar schlimmer.</p>
-
-        <p>Nicht weil du etwas falsch gemacht hast – sondern weil <strong>klassisches Beckenbodentraining die falsche Muskelschicht trainiert</strong>. Und damit das Problem oft noch verschärft, statt es zu lösen.</p>
-
-        <div class="bslp-story-solution">
-          <div class="bslp-story-solution-header">
-            <p class="bslp-story-statement"><em>Es gibt einen anderen Weg.</em></p>
-            <p class="bslp-story-solution-eyebrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M5 12l5 5L20 7"/>
-              </svg>
-              Die Lösung
-            </p>
+        <article class="bslp-kennst-card bslp-kennst-card--alltag">
+          <div class="bslp-kennst-head">
+            <span class="bslp-kennst-emoji" aria-hidden="true">🙍‍♀️</span>
+            <h3 class="bslp-kennst-h3">Dein Alltag</h3>
           </div>
+          <ul class="bslp-kennst-list">
+            <li>Du planst deine Wege nach Toiletten, nicht nach dem, worauf du Lust hast</li>
+            <li>Beim Laufen, Tanzen, Toben mit den Kindern hältst du dich zurück</li>
+            <li>Du trinkst vor Verabredungen bewusst weniger und ärgerst dich hinterher</li>
+            <li>Übungen, Geräte, Physiotherapien und trotzdem stehst du wieder genau da, wo du angefangen hast</li>
+          </ul>
+        </article>
 
-          <p>Einen Weg, der nicht an den Symptomen herumdoktert, sondern an der Ursache ansetzt. Das <strong>AUFricht-Prinzip</strong> betrachtet deinen Körper als das, was er ist: ein zusammenhängendes System.</p>
-
-          <p>Beckenboden, Tiefenmuskulatur, Körperhaltung, Rumpf und Nervensystem – alles hängt zusammen. Erst wenn du deinen Körper wieder aufrichtest, von innen und von außen, kann dein Beckenboden seine eigentliche Aufgabe wieder übernehmen.</p>
-
-          <figure class="bslp-story-aufricht">
-            <img class="bslp-story-aufricht-img" data-bslp-img="aufricht" src="aufrechtprinzip.png" alt="Drei Skelett-Skizzen: Übergang von gekrümmter zu aufrechter Körperhaltung" />
-          </figure>
-
-          <div class="bslp-story-stat">
-            <span class="bslp-story-stat-value">75–85<sup>%</sup></span>
-            <p class="bslp-story-stat-text">Verbesserung innerhalb von 8 Wochen — egal ob 20 oder über 80 Jahre alt. Egal, ob du seit Monaten oder seit Jahrzehnten betroffen bist.</p>
-          </div>
-
-          <p>Wenn dir diese Situationen bekannt vorkommen, dann zeige ich dir im kostenlosen Live-Workshop, warum bisherige Ansätze bei dir nicht funktioniert haben – und was stattdessen funktioniert.</p>
-
-          <div class="bslp-cta-mega-wrap">
-            <a class="bslp-cta-mega" href="#webinar-anmeldung">
-              <span class="bslp-cta-mega-text">
-                <span class="bslp-cta-mega-label">Jetzt für 0&nbsp;€ anmelden</span>
-                <span class="bslp-cta-mega-sub">LIVE-Workshop am <span data-bslp-date>19.05.2026</span> um <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
-              </span>
-              <svg class="bslp-cta-mega-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"/>
-                <polyline points="12 5 19 12 12 19"/>
-              </svg>
-            </a>
-          </div>
+        <div class="bslp-kennst-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
         </div>
 
+        <article class="bslp-kennst-card bslp-kennst-card--gedanken">
+          <div class="bslp-kennst-head">
+            <span class="bslp-kennst-emoji" aria-hidden="true">🧠</span>
+            <h3 class="bslp-kennst-h3">Deine Gedanken</h3>
+          </div>
+          <ul class="bslp-kennst-list">
+            <li>„Ist das jetzt einfach so, mein Leben lang?"</li>
+            <li>„Ich habe doch alles Mögliche längst getan."</li>
+            <li>„Das ist in Ihrem Alter normal" und du denkst: nicht mit mir.</li>
+          </ul>
+        </article>
+
+        <div class="bslp-kennst-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </div>
+
+        <article class="bslp-kennst-card bslp-kennst-card--auswirkung">
+          <div class="bslp-kennst-head">
+            <span class="bslp-kennst-emoji" aria-hidden="true">⚠️</span>
+            <h3 class="bslp-kennst-h3">Die Auswirkungen</h3>
+          </div>
+          <ul class="bslp-kennst-list">
+            <li>Dein Leben wird leiser und kleiner, ohne dass du dich je bewusst dafür entschieden hast</li>
+            <li>Erst fällt die längere Wanderung weg, dann die Reise ohne durchgeplante Route, dann der Kurs, auf den du dich gefreut hattest</li>
+            <li>Jede Entscheidung wirkt für sich vernünftig, zusammen ergeben sie ein deutlich kleineres Leben als das, das du dir für diese Jahre vorgenommen hast</li>
+          </ul>
+        </article>
+
       </div>
-    </div>
-  </section>
 
-  <!-- ===================== WORKSHOP-INHALTE ===================== -->
-  <section class="bslp-content" aria-labelledby="bslp-content-heading">
-    <div class="bslp-content-inner">
+      <!-- „Das Schlimmste": dramatisch, full-width, prominente Statement-Card -->
+      <aside class="bslp-story-critical-hero" role="note">
+        <div class="bslp-story-critical-hero-inner">
+          <span class="bslp-story-critical-hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 9v4"/>
+              <path d="M12 17h.01"/>
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            </svg>
+            Das Schlimmste
+          </span>
+          <p class="bslp-story-critical-hero-lead">
+            Es ist nicht der Urinverlust selbst. Es ist, dass du dir <em>diese Jahre deines Lebens anders vorgestellt hast</em>.
+          </p>
+          <p class="bslp-story-critical-hero-body">
+            Die Wanderung, die Fernreise ohne Route, der Tanzabend, die Kinder auf dem Trampolin. <strong>Das ist kein Luxus.</strong> Das ist der Grund, warum du dich all die Jahre um deinen Körper gekümmert hast.
+          </p>
+        </div>
+      </aside>
 
-      <span class="bslp-content-tagline">
-        <span class="bslp-live-dot" aria-hidden="true"></span>
-        <span>LIVE-Workshop am <span data-bslp-date>19.05.2026</span> um <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
-      </span>
-
-      <h2 id="bslp-content-heading" class="bslp-content-h2">Die Inhalte des Workshops</h2>
-
-      <ul class="bslp-content-list">
-        <li>
-          <span class="bslp-content-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span><strong>Warum die Hilfsmittel-Industrie Milliarden verdient</strong>, dein Problem aber nie verschwindet – und was du stattdessen tun kannst.</span>
-        </li>
-        <li>
-          <span class="bslp-content-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span>Warum <strong>Einlagen, Beckenboden-Übungen und Medikamente</strong> nur Symptome verwalten – aber nicht die Ursache in deinem Körper lösen.</span>
-        </li>
-        <li>
-          <span class="bslp-content-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span>Warum <strong>dein Alter keine Rolle spielt</strong> – und echte Verbesserungen auch nach jahrelanger Inkontinenz in wenigen Wochen möglich sind.</span>
-        </li>
-        <li>
-          <span class="bslp-content-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span>Das <strong>AUFricht-Prinzip</strong>, mit dem Frauen innerhalb von 8 Wochen ihre Beschwerden um bis zu 75–85&nbsp;% verbessern – anstatt den Beckenboden weiter anzuspannen.</span>
-        </li>
-        <li>
-          <span class="bslp-content-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span>Warum deine <strong>Beckenboden-App es wahrscheinlich schlimmer macht</strong> – und 5 weitere Denkfehler, die dafür sorgen, dass es nicht besser wird.</span>
-        </li>
-        <li>
-          <span class="bslp-content-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span>Wie du in wenigen Wochen die <strong>Angst vor plötzlichem Urinverlust</strong> hinter dir lässt – mit einem Ansatz, der deinen ganzen Körper einbezieht statt nur „unten" zu arbeiten.</span>
-        </li>
-        <li>
-          <span class="bslp-content-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span>Wie du mit <strong>wenigen Minuten am Tag</strong>, bequem und anonym von zuhause aus, deinen Beckenboden wirklich richtig trainierst.</span>
-        </li>
-      </ul>
-
-      <div class="bslp-content-cta-wrap">
+      <div class="bslp-cta-wrap" style="margin: 2.5rem auto 0; align-items: center;">
         <a class="bslp-cta" href="#webinar-anmeldung">
-          Jetzt für 0&nbsp;€ anmelden
+          Jetzt verstehen, warum
           <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -1892,125 +2883,326 @@
     </div>
   </section>
 
-  <!-- ===================== TESTIMONIALS (Das sagen andere) ===================== -->
-  <section class="bslp-testimonials" aria-labelledby="bslp-test-heading">
+  <!-- ========================= 4 · EMPATHIE-BRÜCKE ========================= -->
+  <section class="bslp-empathy" aria-labelledby="bslp-empathy-heading">
+    <div class="bslp-empathy-inner">
 
-    <header class="bslp-testimonials-header">
-      <span class="bslp-testimonials-eyebrow">Echte Erfolge</span>
-      <h2 id="bslp-test-heading" class="bslp-testimonials-h2">Das sagen andere</h2>
-    </header>
+      <!-- Barbara-Foto oben, mit weichem Gradient-Fade in den Card-Hintergrund -->
+      <figure class="bslp-empathy-photo">
+        <img class="bslp-empathy-photo-img" data-bslp-img="empathy" src="https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f8672353d856ffc85c759d_barbara-scharrer-bg.jpg" alt="Barbara Scharrer" loading="lazy" />
+        <span class="bslp-empathy-photo-fade" aria-hidden="true"></span>
+      </figure>
 
-    <div class="bslp-testimonials-grid">
+      <div class="bslp-empathy-content">
+        <span class="bslp-empathy-eyebrow" id="bslp-empathy-heading">Ein Wort von Barbara</span>
 
-      <article class="bslp-test-card">
-        <div class="bslp-test-video" data-yt="1gH_EjTzASs">
-          <button class="bslp-test-play" type="button" aria-label="Video von Anke abspielen">
-            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/1gH_EjTzASs/hqdefault.jpg" alt="" loading="lazy" />
-            <span class="bslp-test-play-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </span>
-          </button>
-        </div>
-        <div class="bslp-test-body">
-          <div class="bslp-test-meta">
-            <span class="bslp-test-meta-name">Anke</span>
-            <span class="bslp-test-meta-context">— 98 % besser nach 8 Wochen</span>
-            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            </span>
+        <p class="bslp-empathy-lead">
+          Seit über 7 Jahren begleite ich Frauen dabei, wieder Kontrolle über ihren Beckenboden und plötzlichen Urinverlust zu bekommen, mit einem ganzheitlichen Ansatz, der an der Statik des ganzen Körpers ansetzt und arbeitet.
+        </p>
+
+        <p>Aus eigener Erfahrung mit einem schwachen Beckenboden nach einer Zwillingsgeburt und jahrelangen chronischen Rückenschmerzen, kenne ich das Gefühl, nach Jahren voller Übungen und Arztbesuche langsam die Hoffnung zu verlieren.</p>
+
+        <p>Genau deshalb habe ich diesen kostenlosen Live-Workshop entwickelt: um dir einen Weg zu zeigen, der nicht nur den Alltag erträglicher macht, sondern <strong>wirklich an der Ursache ansetzt</strong>.</p>
+
+        <p class="bslp-empathy-signoff">
+          <span class="bslp-empathy-pointer" aria-hidden="true">👉</span>
+          Nach über 300 begleiteten Frauen weiß ich: <strong>Veränderung ist möglich, auch für dich.</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= 5 · ZAHLEN ========================= -->
+  <section class="bslp-trust" aria-label="Zahlen zum AUFricht-Prinzip">
+    <div class="bslp-trust-inner">
+      <div class="bslp-trust-grid">
+
+        <div class="bslp-trust-card">
+          <div class="bslp-trust-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
           </div>
-          <p class="bslp-test-quote">Nach nur 8 Wochen ist meine Inkontinenz zu 98–99 % verschwunden. Heute fühle ich mich sicherer, aufrechter — und kann meinem Körper wieder vertrauen.</p>
+          <p class="bslp-trust-value">über 300</p>
+          <p class="bslp-trust-label">Frauen persönlich begleitet</p>
         </div>
-      </article>
 
-      <article class="bslp-test-card">
-        <div class="bslp-test-video" data-yt="0IKpeaJDAU4">
-          <button class="bslp-test-play" type="button" aria-label="Video von Susanne abspielen">
-            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/0IKpeaJDAU4/hqdefault.jpg" alt="" loading="lazy" />
-            <span class="bslp-test-play-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </span>
-          </button>
-        </div>
-        <div class="bslp-test-body">
-          <div class="bslp-test-meta">
-            <span class="bslp-test-meta-name">Susanne</span>
-            <span class="bslp-test-meta-context">— Lebensqualität zurück</span>
-            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            </span>
+        <div class="bslp-trust-card">
+          <div class="bslp-trust-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
           </div>
-          <p class="bslp-test-quote">Heute kann ich wieder stundenlang durch die Stadt laufen, schlafe meistens durch und habe meine Lebensqualität zurückgewonnen.</p>
+          <p class="bslp-trust-value">75–85<sup>%</sup></p>
+          <p class="bslp-trust-label">Verbesserung im Schnitt in 8 Wochen</p>
         </div>
-      </article>
 
-      <article class="bslp-test-card">
-        <div class="bslp-test-video" data-yt="Kfr3-wKZU7c">
-          <button class="bslp-test-play" type="button" aria-label="Video von Hannelore abspielen">
-            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/Kfr3-wKZU7c/hqdefault.jpg" alt="" loading="lazy" />
-            <span class="bslp-test-play-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </span>
-          </button>
-        </div>
-        <div class="bslp-test-body">
-          <div class="bslp-test-meta">
-            <span class="bslp-test-meta-name">Hannelore</span>
-            <span class="bslp-test-meta-context">— über 80, 75–80 % besser</span>
-            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            </span>
+        <div class="bslp-trust-card">
+          <div class="bslp-trust-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
           </div>
-          <p class="bslp-test-quote">Innerhalb weniger Wochen hat sich meine Inkontinenz um 75–80 % verbessert. Ich traue mich wieder unter Menschen.</p>
+          <p class="bslp-trust-value">7+ Jahre</p>
+          <p class="bslp-trust-label">Erfahrung mit dem AUFricht-Prinzip</p>
         </div>
-      </article>
 
-      <article class="bslp-test-card">
-        <div class="bslp-test-video" data-yt="RwpErizob00">
-          <button class="bslp-test-play" type="button" aria-label="Video von Caro abspielen">
-            <img class="bslp-test-thumb" src="https://i.ytimg.com/vi/RwpErizob00/hqdefault.jpg" alt="" loading="lazy" />
-            <span class="bslp-test-play-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </span>
-          </button>
-        </div>
-        <div class="bslp-test-body">
-          <div class="bslp-test-meta">
-            <span class="bslp-test-meta-name">Caro</span>
-            <span class="bslp-test-meta-context">— 20 Jahre, sicher im Alltag</span>
-            <span class="bslp-test-stars" aria-label="5 von 5 Sternen">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            </span>
-          </div>
-          <p class="bslp-test-quote">Keine unkontrollierten Urinverluste mehr — selbst bei Erkältung oder starkem Husten. Mehr Freiheit, mehr Selbstbewusstsein.</p>
-        </div>
-      </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= 6 · FÜR WEN DIESER WORKSHOP IST ========================= -->
+  <section class="bslp-forwho" aria-labelledby="bslp-forwho-heading">
+    <div class="bslp-forwho-inner">
+      <span class="bslp-forwho-eyebrow">Für wen dieser Workshop ist</span>
+      <h2 id="bslp-forwho-heading" class="bslp-forwho-h2">
+        Im Live-Workshop bekommst du <em>alltagstaugliches Wissen</em> aus meiner täglichen Arbeit mit Frauen bei:
+      </h2>
+
+      <div class="bslp-forwho-chips">
+        <span class="bslp-forwho-chip">Belastungs- und Stressinkontinenz</span>
+        <span class="bslp-forwho-chip">Dranginkontinenz</span>
+        <span class="bslp-forwho-chip">Beckenbodenschwäche nach Geburt</span>
+        <span class="bslp-forwho-chip">Beckenbodenschwäche in den Wechseljahren</span>
+        <span class="bslp-forwho-chip">Organsenkungen</span>
+      </div>
+
+      <p class="bslp-forwho-note">
+        sowie anderen Blasen- und Beckenbodenbeschwerden, bei denen bisher <em>„nichts geholfen hat"</em>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================= 7 · WARUM BISHER NICHTS GEHOLFEN HAT ========================= -->
+  <section class="bslp-story" aria-label="Warum bisher nichts geholfen hat">
+    <div class="bslp-story-inner">
+
+      <div class="bslp-story-problem">
+        <h3 class="bslp-story-subh">Warum bisher nichts geholfen hat</h3>
+
+        <p>Das liegt selten an schlechten Ärzten. Es liegt daran, dass die Schulmedizin vor allem darauf ausgelegt ist, Symptome zu behandeln und zu lindern. Das funktioniert gut bei akuten Erkrankungen. Bei chronischen Beschwerden wie Inkontinenz braucht es aber mehr: <strong>Wird nur das Symptom behandelt und nicht die Ursache, kommt es immer wieder.</strong> Ein paar Einheiten Physiotherapie, eine Broschüre mit Übungen. Danach bist du wieder auf dich gestellt. Und ein Termin im Beckenbodenzentrum dauert gern acht Monate.</p>
+
+        <p>Die Produkte, auf die du dann angewiesen bist, sind genau dafür gemacht: Hilfsmittel und Geräte, die dir überall begegnen. Der Markt dafür lag 2025 bei rund <strong>700 Millionen Euro</strong> und wächst weiter. Wenn diese Produkte das Problem lösen würden, müsste die Zahl der Betroffenen sinken. <em>Sie steigt.</em></p>
+
+        <p class="bslp-story-statement">Diese Produkte machen deinen Alltag erträglicher. Sie ändern nichts an der Ursache. Wenn dir das reichen würde, würdest du diese Seite nicht lesen.</p>
+      </div>
+
+      <div class="bslp-story-problem">
+        <h3 class="bslp-story-subh">Wahrscheinlich hast du es längst selbst versucht</h3>
+
+        <p>Anspannen, halten, loslassen, so wie es überall steht. Wochenlang, vielleicht jahrelang. Und es wurde nicht besser, manchmal sogar schlechter.</p>
+
+        <p>Das lag nicht an deiner Disziplin. <strong>Klassisches Beckenbodentraining stammt aus den 1950er-Jahren</strong> und spricht vor allem die äußere Schicht an und genau die ist bei den meisten Frauen ohnehin schon zu fest. Du hast mit viel Fleiß das Gegenteil von dem trainiert, was dein Körper gebraucht hätte.</p>
+
+        <p class="bslp-story-statement">Darin steckt die gute Nachricht: <em>Wenn Fleiß nie dein Problem war, dann fehlt dir auch kein Fleiß.</em> Dir fehlt das Verständnis für den Körper, damit du ihn endlich richtig trainieren kannst.</p>
+      </div>
 
     </div>
   </section>
 
-  <!-- Lite-YT-Embed: lädt YouTube-iframe erst beim Klick (privacy-friendly + schnell).
-       Hinweis: Falls Error 153 erscheint, bedeutet das, dass der YouTube-Channel
-       Embedding nur für bestimmte Domains erlaubt. Auf barbarascharrer.de (Webflow)
-       sollte es funktionieren – im lokalen file://-Preview ggf. nicht. -->
+  <!-- ========================= 8 · DER ANDERE WEG: DAS AUFRICHT-PRINZIP ========================= -->
+  <section class="bslp-story" aria-label="Der andere Weg: Das AUFricht-Prinzip">
+    <div class="bslp-story-inner">
+
+        <div class="bslp-story-solution">
+          <div class="bslp-story-solution-header">
+            <p class="bslp-story-statement"><em>Der andere Weg: Das AUFricht-Prinzip.</em></p>
+            <p class="bslp-story-solution-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12l5 5L20 7"/>
+              </svg>
+              Das AUFricht-Prinzip
+            </p>
+          </div>
+
+          <p>Das <strong>AUFricht-Prinzip</strong> setzt an der Statik deines Körpers an, nicht am Symptom. Beckenboden, Tiefenmuskulatur, Haltung, Atmung und Nervensystem hängen zusammen. Ein Beckenboden kann nicht halten, wenn der Körper über ihm zusammengesunken ist. <strong>Erst wenn du dich wieder von innen aufrichtest, kann er die Aufgabe übernehmen, für die er gebaut ist.</strong></p>
+
+          <p>Durch dieses Training lernst du, deinen Körper als eine Einheit zu verstehen und auch so zu trainieren, dass sich deine <strong>Tiefenmuskulatur wieder vernetzt</strong>. Dadurch wird deine Körperhaltung so gestützt, dass dein Beckenboden vom Druck entlastet wird. Und du lernst das Ganze in deinen Alltag zu integrieren, anstatt weiterhin isolierte Übungen zu machen.</p>
+
+          <p class="bslp-story-statement">Die Frauen, bei denen es funktioniert, haben eines gemeinsam: <em>Sie machen es wirklich.</em> Sie haben die Verantwortung für ihren Körper und ihre Gesundheit selbst in die Hand genommen.</p>
+
+          <figure class="bslp-story-aufricht">
+            <img class="bslp-story-aufricht-img" data-bslp-img="aufricht" src="aufrechtprinzip.png" alt="Drei Skelett-Skizzen: Übergang von gekrümmter zu aufrechter Körperhaltung" />
+            <figcaption class="bslp-story-aufricht-caption">Drei Skelett-Skizzen: Übergang von gekrümmter zu aufrechter Körperhaltung.</figcaption>
+          </figure>
+
+          <div class="bslp-story-stat">
+            <span class="bslp-story-stat-value">75–85<sup>%</sup></span>
+            <p class="bslp-story-stat-text">Verbesserung innerhalb von acht Wochen. Auch dann, wenn deine Beschwerden seit Jahrzehnten bestehen. Vorausgesetzt, du trainierst und setzt das Training konsequent um.</p>
+          </div>
+
+          <div class="bslp-cta-mega-wrap">
+            <a class="bslp-cta-mega" href="#webinar-anmeldung">
+              <span class="bslp-cta-mega-text">
+                <span class="bslp-cta-mega-label">Jetzt zum Live-Workshop anmelden</span>
+                <span class="bslp-cta-mega-sub">LIVE am <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>15.09.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+              </span>
+              <svg class="bslp-cta-mega-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- ========================= 10 · DAS NIMMST DU AUS DEN ZWEI STUNDEN MIT ========================= -->
+  <section class="bslp-content" aria-labelledby="bslp-content-heading">
+    <div class="bslp-content-inner">
+
+      <span class="bslp-content-tagline">
+        <span class="bslp-live-dot" aria-hidden="true"></span>
+        <span>LIVE-Workshop am <span data-bslp-date>15.09.2026</span> um <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
+      </span>
+
+      <h2 id="bslp-content-heading" class="bslp-content-h2">Das nimmst du aus den zwei Stunden mit</h2>
+
+      <ol class="bslp-takeaway-list">
+        <li class="bslp-takeaway-item">
+          <span class="bslp-takeaway-num" aria-hidden="true">1</span>
+          <div class="bslp-takeaway-body">
+            <h3 class="bslp-takeaway-h3">Der Denkfehler hinter jedem bisherigen Training</h3>
+            <p>Warum dein Beckenboden meistens nicht zu schwach ist, sondern <strong>falsch angesteuert</strong> wird und was das für jedes Training bedeutet, das du bisher gemacht hast.</p>
+          </div>
+        </li>
+        <li class="bslp-takeaway-item">
+          <span class="bslp-takeaway-num" aria-hidden="true">2</span>
+          <div class="bslp-takeaway-body">
+            <h3 class="bslp-takeaway-h3">Die drei Schichten deines Beckenbodens</h3>
+            <p>Warum fast jedes klassische Beckenboden-Training an der <strong>falschen Schicht</strong> ansetzt und woran du merkst, ob du deine Tiefenmuskulatur überhaupt erreichst.</p>
+          </div>
+        </li>
+        <li class="bslp-takeaway-item">
+          <span class="bslp-takeaway-num" aria-hidden="true">3</span>
+          <div class="bslp-takeaway-body">
+            <h3 class="bslp-takeaway-h3">Haltung, Atmung, Fußstellung</h3>
+            <p>Warum diese drei <strong>mehr über deine Blase entscheiden</strong> als jede einzelne Anspannungsübung und was Geräte, Stühle und Apps wirklich bewirken.</p>
+          </div>
+        </li>
+        <li class="bslp-takeaway-item">
+          <span class="bslp-takeaway-num" aria-hidden="true">4</span>
+          <div class="bslp-takeaway-body">
+            <h3 class="bslp-takeaway-h3">Übungen zum Mitmachen</h3>
+            <p>An denen du noch im Workshop spürst, ob du auf dem richtigen Weg bist. Plus ein Überblick über die <strong>sechs Bereiche des AUFricht-Prinzips</strong>.</p>
+          </div>
+        </li>
+        <li class="bslp-takeaway-item">
+          <span class="bslp-takeaway-num" aria-hidden="true">5</span>
+          <div class="bslp-takeaway-body">
+            <h3 class="bslp-takeaway-h3">Warum jahrzehntelange Beschwerden kein Ausschlusskriterium sind</h3>
+            <p>Eine zu bequeme <strong>Erwartungshaltung aber schon</strong>.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="bslp-content-cta-wrap">
+        <a class="bslp-cta" href="#webinar-anmeldung">
+          Endlich Klarheit
+          <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+        <p class="bslp-content-cta-meta">
+          Dauer: ca. 2 Stunden · flexibel online · eine Kamera ist nicht zwingend notwendig, aber von Vorteil
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS (Kundenstimmen) ===================== -->
+  <!-- Cards werden aus BSLP_CONFIG.testimonials (im Embed-Code) gerendert. -->
+  <section class="bslp-testimonials" aria-labelledby="bslp-test-heading">
+
+    <header class="bslp-testimonials-header">
+      <span class="bslp-testimonials-eyebrow">Echte Erfolge</span>
+      <h2 id="bslp-test-heading" class="bslp-testimonials-h2">Das berichten ehemalige Kundinnen</h2>
+    </header>
+
+    <div class="bslp-testimonials-grid" data-bslp-testimonials-grid>
+      <!-- Cards werden per JS aus BSLP_CONFIG.testimonials gerendert. -->
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS RENDER + LITE-YT ===================== -->
+  <!--
+    Rendert bis zu 4 Testimonial-Cards aus BSLP_CONFIG.testimonials.
+    Jedes Element: { name, context, youtubeId, quote }.
+    Klick auf das Thumbnail lädt YouTube-nocookie iframe (privacy-friendly + schnell).
+    Hinweis: Falls Error 153 erscheint, bedeutet das, dass der YouTube-Channel
+    Embedding nur für bestimmte Domains erlaubt. Auf barbarascharrer.de (Webflow)
+    sollte es funktionieren – im lokalen file://-Preview ggf. nicht.
+  -->
   <script>
     (function(){
+      /* ---------- 1) Testimonial-Cards aus BSLP_CONFIG rendern ---------- */
+      function esc(s){
+        return String(s == null ? '' : s)
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      }
+      var starSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
+      var starsHtml = '<span class="bslp-test-stars" aria-label="5 von 5 Sternen">' + starSvg + starSvg + starSvg + starSvg + starSvg + '</span>';
+
+      function extractYtId(input) {
+        var s = (input || '').toString().trim();
+        if (!s) return '';
+        var m = s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{6,})/);
+        if (m) return m[1];
+        if (/^[A-Za-z0-9_-]{6,}$/.test(s)) return s;
+        return '';
+      }
+
+      function renderCard(t){
+        if (!t) return '';
+        var name    = esc(t.name || '');
+        var context = esc(t.context || '');
+        var quote   = esc(t.quote || '');
+        var ytId    = extractYtId(t.youtubeId);
+        var thumb   = ytId ? ('https://i.ytimg.com/vi/' + encodeURIComponent(ytId) + '/hqdefault.jpg') : '';
+        var videoBlock = ytId
+          ? '<div class="bslp-test-video" data-yt="' + esc(ytId) + '">' +
+              '<button class="bslp-test-play" type="button" aria-label="Video von ' + name + ' abspielen">' +
+                '<img class="bslp-test-thumb" src="' + esc(thumb) + '" alt="" loading="lazy" />' +
+                '<span class="bslp-test-play-icon" aria-hidden="true">' +
+                  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
+                '</span>' +
+              '</button>' +
+            '</div>'
+          : '';
+        return '<article class="bslp-test-card">' +
+                 videoBlock +
+                 '<div class="bslp-test-body">' +
+                   '<div class="bslp-test-meta">' +
+                     '<span class="bslp-test-meta-name">' + name + '</span>' +
+                     (context ? '<span class="bslp-test-meta-context">' + context + '</span>' : '') +
+                     starsHtml +
+                   '</div>' +
+                   (quote ? '<p class="bslp-test-quote">' + quote + '</p>' : '') +
+                 '</div>' +
+               '</article>';
+      }
+
+      function renderTestimonials(){
+        var grid = document.querySelector('[data-bslp-testimonials-grid]');
+        if (!grid) return;
+        var list = (window.BSLP_CONFIG && Array.isArray(window.BSLP_CONFIG.testimonials))
+          ? window.BSLP_CONFIG.testimonials.slice(0, 4)
+          : [];
+        if (!list.length) { grid.innerHTML = ''; return; }
+        grid.innerHTML = list.map(renderCard).join('');
+      }
+      renderTestimonials();
+
+      /* ---------- 2) Lite-YT: Iframe erst beim Klick laden ---------- */
       document.addEventListener('click', function(e){
         var btn = e.target.closest('.bslp-test-play');
         if (!btn) return;
@@ -2022,6 +3214,26 @@
         iframe.src = 'https://www.youtube-nocookie.com/embed/' + id +
                      '?autoplay=1&rel=0&modestbranding=1&playsinline=1&feature=oembed';
         iframe.title = 'Kundenstimme Video';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;';
+        wrap.innerHTML = '';
+        wrap.appendChild(iframe);
+      }, false);
+
+      /* ---------- 3) Hero-Video: Iframe erst beim Klick laden ---------- */
+      document.addEventListener('click', function(e){
+        var btn = e.target.closest('.bslp-hero-video-play');
+        if (!btn) return;
+        var wrap = btn.closest('[data-bslp-hero-video]');
+        if (!wrap || !wrap.dataset.yt) return;
+        e.preventDefault();
+        var id = wrap.dataset.yt;
+        var iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube-nocookie.com/embed/' + id +
+                     '?autoplay=1&rel=0&modestbranding=1&playsinline=1&feature=oembed';
+        iframe.title = 'Video von Barbara Scharrer';
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
         iframe.allowFullscreen = true;
         iframe.referrerPolicy = 'strict-origin-when-cross-origin';
@@ -2042,16 +3254,16 @@
           <img class="bslp-host-photo" data-bslp-img="host" src="barbara-scharrer-host.jpg" alt="Barbara Scharrer" />
           <div class="bslp-host-stats" aria-label="Social Proof">
             <div class="bslp-host-stat">
-              <span class="bslp-host-stat-num">250</span>
-              <span class="bslp-host-stat-label">Frauen begleitet</span>
+              <span class="bslp-host-stat-num">über 300</span>
+              <span class="bslp-host-stat-label">Frauen persönlich begleitet</span>
             </div>
             <div class="bslp-host-stat">
               <span class="bslp-host-stat-num">75–85&thinsp;%</span>
-              <span class="bslp-host-stat-label">in 8 Wochen besser</span>
+              <span class="bslp-host-stat-label">Verbesserung im Schnitt</span>
             </div>
             <div class="bslp-host-stat">
-              <span class="bslp-host-stat-num">100&thinsp;%</span>
-              <span class="bslp-host-stat-label">von zuhause aus</span>
+              <span class="bslp-host-stat-num">7+ Jahre</span>
+              <span class="bslp-host-stat-label">Erfahrung AUFricht-Prinzip</span>
             </div>
           </div>
         </div>
@@ -2062,15 +3274,17 @@
           </h2>
 
           <div class="bslp-host-letter">
-            <p>Wenn ich nicht gerade daran arbeite, Frauen dabei zu unterstützen, ihren Körper wieder besser zu verstehen um ihre Beschwerden wieder loszuwerden, dann reise ich am liebsten um die Welt, tanze leidenschaftlich gerne Kizomba oder verbringe Zeit mit meiner Familie und unserem Hund.</p>
+            <p>Mein Name ist Barbara Scharrer, und ich habe über 20 Jahre lang selbst mit chronischen Beschwerden gelebt. Rückenschmerzen ab 20, ein schiefes Becken, eine Skoliose, nach der Zwillingsgeburt ein schwacher Beckenboden. Ich habe in dieser Zeit ungefähr alles ausprobiert und bezahlt, was du vermutlich auch schon bezahlt hast: Physiotherapie, Osteopathie, Heilpraktiker, Akupunktur, Yoga, Pilates, Reha, Fitnessstudio.</p>
 
-            <p>Mein Name ist Barbara Scharrer – und ich unterstütze Frauen dabei, ihre Inkontinenz nachhaltig zu verbessern und wieder Vertrauen in ihren Körper zu gewinnen.</p>
+            <p>Nichts davon war falsch. Es hat nur alles an den Symptomen gearbeitet, nicht an der Ursache. <strong>Niemand hat sich je meinen ganzen Körper angesehen.</strong> Immer nur die Stelle, an der es wehtat.</p>
 
-            <p>Seit über 7 Jahren arbeite ich in diesem Bereich – nach mehr als 20 Jahren eigener Beschwerden als Patientin. In dieser Zeit habe ich über 250 Frauen begleitet und das AUFricht-Prinzip entwickelt.</p>
+            <p>Als ich das verstanden und angefangen habe, die richtige Muskulatur zu trainieren und meinen Körper endlich als eine Einheit zu sehen, war ich innerhalb von drei Monaten schmerzfrei. Seitdem war ich bei keinem Orthopäden mehr und auch sonst bei keinem Arzt.</p>
 
-            <p>Mit diesem ganzheitlichen Programm erreichen viele meiner Kundinnen schon nach wenigen Wochen spürbare Verbesserungen – mehr Kontrolle, weniger Druck und ein ganz neues Körpergefühl.</p>
+            <p>Daraus ist das AUFricht-Prinzip entstanden. Seit über sieben Jahren arbeite ich damit und habe inzwischen <strong>mehr als 300 Frauen</strong> persönlich begleitet. Viele davon hatten vorher jahrelang das Gefühl, alles Vernünftige schon getan zu haben.</p>
 
-            <p>In meinem kostenlosen Live-Workshop zeige ich dir, wie dein Beckenboden wirklich funktioniert und wie du ihn im Alltag richtig nutzt.</p>
+            <p>Was ich dir nicht anbiete, ist eine Behandlung, bei der du dich hinlegst und jemand anderes die Arbeit macht. Was ich dir anbiete, ist ein <strong>Weg, deinen eigenen Körper wieder zu verstehen und selbst zu steuern.</strong> Das ist anstrengender. Aber es bleibt.</p>
+
+            <p>Und genau das lebe ich selbst: Wenn ich nicht gerade arbeite, reise ich am liebsten, tanze Kizomba oder bin mit meiner Familie und unserem Hund unterwegs.</p>
 
             <p class="bslp-host-signoff">Deine Barbara</p>
           </div>
@@ -2079,14 +3293,125 @@
       </div>
     </div>
 
-    <div class="bslp-host-cta-band">
-      Melde dich jetzt kostenlos an – und erfahre, wie du deine Inkontinenz wirklich stoppen kannst.
-    </div>
+  </section>
 
+  <!-- ========================= 12 · DEIN LEBEN MUSS KEIN ENDLOSER KREISLAUF SEIN (VS-Vergleich) ========================= -->
+  <section class="bslp-vs" aria-labelledby="bslp-vs-heading">
+    <div class="bslp-vs-inner">
+      <header class="bslp-vs-header">
+        <h2 id="bslp-vs-heading" class="bslp-vs-h2">
+          Dein Leben muss kein endloser <em>Kreislauf</em> sein.
+        </h2>
+      </header>
+
+      <div class="bslp-vs-grid">
+
+        <article class="bslp-vs-col bslp-vs-col--no">
+          <h3 class="bslp-vs-col-h3">Ohne diesen Workshop …</h3>
+          <ul class="bslp-vs-list">
+            <li>Du planst weiter jeden Weg nach der nächsten Toilette</li>
+            <li>Du lässt die Wanderung, die Reise, den Kurs <em>„lieber"</em> ausfallen und redest es dir schön</li>
+            <li>Du hörst weiter <em>„das ist normal in Ihrem Alter"</em> und schluckst es runter</li>
+            <li>In einem Jahr stehst du genau da, wo du heute stehst</li>
+          </ul>
+        </article>
+
+        <article class="bslp-vs-col bslp-vs-col--yes">
+          <h3 class="bslp-vs-col-h3">Nach dem Workshop …</h3>
+          <ul class="bslp-vs-list">
+            <li>Du verstehst zum ersten Mal, warum bisher nichts geholfen hat und was stattdessen wirkt</li>
+            <li>Du hast die ersten Übungen in der Hand, mit denen du sofort loslegen kannst</li>
+            <li>Du weißt endlich, welche der drei Beckenboden-Schichten du trainieren musst und welche nicht</li>
+            <li>Du triffst eine <strong>Entscheidung über die nächsten zwanzig Jahre</strong>, statt weiterhin die Kontrolle an deine Blase abzugeben</li>
+          </ul>
+        </article>
+
+      </div>
+
+      <div class="bslp-cta-wrap" style="margin: 2rem auto 0; align-items: center;">
+        <a class="bslp-cta" href="#webinar-anmeldung">
+          Jetzt anmelden
+          <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= 13 · LERNE AUS MEINEN FEHLERN ========================= -->
+  <section class="bslp-lesson" aria-labelledby="bslp-lesson-heading">
+    <div class="bslp-lesson-inner">
+
+      <!-- Barbara zeigt nach unten auf die Card -->
+      <figure class="bslp-lesson-photo">
+        <img class="bslp-lesson-photo-img" data-bslp-img="lesson" src="" alt="" loading="lazy" />
+      </figure>
+
+      <h2 id="bslp-lesson-heading" class="bslp-lesson-h2">
+        Lerne aus <em>meinen Fehlern</em>.
+      </h2>
+
+      <p>Ich habe Jahre damit verbracht, jedes neue Gerät zu kaufen, das auf den Markt kam, und noch disziplinierter zu trainieren, wenn keins davon geholfen hat.</p>
+
+      <p>Heute weiß ich: <strong>Nicht mehr Fleiß führt zur Veränderung, sondern die richtige Methode.</strong> Genau die zeige ich dir in diesem Workshop.</p>
+
+      <p class="bslp-lesson-signoff">
+        <span class="bslp-lesson-pointer" aria-hidden="true">👉</span>
+        Vermeide die Umwege, die mich Jahre gekostet haben.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== VORQUALIFIZIERUNG (Für wen · Nicht für wen) ===================== -->
+  <section class="bslp-qualify" aria-labelledby="bslp-qualify-heading">
+    <div class="bslp-qualify-inner">
+
+      <h2 id="bslp-qualify-heading" class="bslp-qualify-h2">
+        Ich arbeite nicht mit jeder Frau, die Beschwerden hat.
+        <em>Ich arbeite mit Frauen, die eine bestimmte Haltung mitbringen.</em>
+      </h2>
+
+      <!-- Zuerst NEGATIV (Ausschluss), dann POSITIV mit direktem CTA -->
+      <div class="bslp-qualify-stack">
+
+        <div class="bslp-qualify-col bslp-qualify-col--no">
+          <div class="bslp-qualify-col-header">
+            <span class="bslp-qualify-col-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </span>
+            <h3 class="bslp-qualify-col-h3">Du bist hier falsch, wenn:</h3>
+          </div>
+          <ul class="bslp-qualify-list bslp-qualify-list--two-col">
+            <li>du eine Behandlung suchst, bei der du dich hinlegst und jemand anderes die Arbeit macht</li>
+            <li>deine erste Frage ist, ob die Kasse das bezahlt</li>
+            <li>du hoffst, dass es diesmal in zwei Wochen mit zehn Minuten am Tag klappt</li>
+          </ul>
+        </div>
+
+        <div class="bslp-qualify-col bslp-qualify-col--yes">
+          <div class="bslp-qualify-col-header">
+            <span class="bslp-qualify-col-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <h3 class="bslp-qualify-col-h3">Du bist hier richtig, wenn:</h3>
+          </div>
+          <ul class="bslp-qualify-list bslp-qualify-list--two-col">
+            <li>deine Physiotherapie-Rezepte längst aufgebraucht sind und du danach privat weitergemacht hast, weil du nicht auf die Kasse warten wolltest</li>
+            <li>du gewohnt bist, dass gute Betreuung etwas kostet, und dich das nicht überrascht</li>
+            <li>du bereit bist, über acht Wochen mehrere Stunden pro Woche fest einzuplanen und dich auch dann hinzustellen, wenn dir gerade nicht danach ist</li>
+            <li>du deinen Körper verstehen willst und nicht nur ein Symptom loswerden</li>
+            <li>du in den nächsten zwanzig Jahren noch einiges vorhast und nicht bereit bist, davon etwas an eine Blase abzugeben</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
   </section>
 
   <!-- ===================== SIGNUP / FINALER CTA + FORMULAR ===================== -->
-  <section class="bslp-signup" id="webinar-anmeldung" aria-labelledby="bslp-signup-heading">
+  <section class="bslp-signup" id="webinar-anmeldung" aria-label="Anmeldung zum Live-Workshop">
     <div class="bslp-signup-inner">
 
       <span class="bslp-signup-eyebrow">
@@ -2094,29 +3419,26 @@
         <span>Live am <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>19.05.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
       </span>
 
-      <h2 id="bslp-signup-heading" class="bslp-signup-h2">
-        Sichere dir deinen Platz.
-      </h2>
-
       <ul class="bslp-signup-trust" aria-label="Trust-Hinweise">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Für Frauen, die selbst trainieren wollen
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Rund 2 Stunden, mit Übungen
+        </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="11" width="18" height="11" rx="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
-          Streng vertraulich
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11h-2z"/>
-          </svg>
-          Diskret behandelt
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          Unverbindlich
+          Ohne Kamera, deine Daten bleiben bei uns
         </li>
       </ul>
 
@@ -2141,18 +3463,18 @@
           <!-- Zeitstempel -->
           <input type="hidden" id="formStartTime" name="formStartTime" value="">
 
-          <!-- Vorname -->
-          <div class="form_field-wrap">
-            <label class="form_field-label" for="first_name">Vorname <span aria-hidden="true">*</span></label>
-            <input class="form_field_input" type="text" id="first_name" name="first_name" placeholder="Max" autocomplete="given-name" required aria-required="true" aria-describedby="err_first_name">
-            <span class="field-error" id="err_first_name" role="alert" aria-live="polite"></span>
-          </div>
-
-          <!-- Nachname -->
-          <div class="form_field-wrap">
-            <label class="form_field-label" for="last_name">Nachname <span aria-hidden="true">*</span></label>
-            <input class="form_field_input" type="text" id="last_name" name="last_name" placeholder="Mustermann" autocomplete="family-name" required aria-required="true" aria-describedby="err_last_name">
-            <span class="field-error" id="err_last_name" role="alert" aria-live="polite"></span>
+          <!-- Vorname + Nachname nebeneinander -->
+          <div class="form_row-2">
+            <div class="form_field-wrap">
+              <label class="form_field-label" for="first_name">Vorname <span aria-hidden="true">*</span></label>
+              <input class="form_field_input" type="text" id="first_name" name="first_name" placeholder="Max" autocomplete="given-name" required aria-required="true" aria-describedby="err_first_name">
+              <span class="field-error" id="err_first_name" role="alert" aria-live="polite"></span>
+            </div>
+            <div class="form_field-wrap">
+              <label class="form_field-label" for="last_name">Nachname <span aria-hidden="true">*</span></label>
+              <input class="form_field_input" type="text" id="last_name" name="last_name" placeholder="Mustermann" autocomplete="family-name" required aria-required="true" aria-describedby="err_last_name">
+              <span class="field-error" id="err_last_name" role="alert" aria-live="polite"></span>
+            </div>
           </div>
 
           <!-- E-Mail -->
@@ -2166,6 +3488,12 @@
           <div class="form_field-wrap">
             <label class="form_field-label" for="phone">Deine Telefonnummer <span aria-hidden="true">*</span></label>
             <div class="phone-input-group" id="phone-group">
+              <div class="phone-prefix-wrap">
+                <span class="phone-prefix-display" aria-hidden="true">
+                  <span class="phone-prefix-flag">🇩🇪</span>
+                  <span class="phone-prefix-code">+49</span>
+                  <span class="phone-prefix-caret">▾</span>
+                </span>
               <select id="phone_prefix" class="phone-prefix-select" aria-label="Ländervorwahl">
                 <optgroup label="Häufig">
                   <option value="+49" selected>🇩🇪 Deutschland (+49)</option>
@@ -2235,10 +3563,76 @@
                   <option value="+357">🇨🇾 Zypern (+357)</option>
                 </optgroup>
               </select>
-              <input class="form_field_input phone-number-input" type="tel" id="phone" name="phone" placeholder="151 51 00 00 55" autocomplete="tel-national" required aria-required="true" aria-describedby="err_phone">
+              </div>
+              <input class="form_field_input phone-number-input" type="tel" id="phone" name="phone" placeholder="151 51 00 00 55" autocomplete="tel-national" required aria-required="true" aria-describedby="err_phone phone-hint">
             </div>
+            <span class="field-hint" id="phone-hint">z. B. für den Fall, dass die Mail mit dem Zugang nicht ankommt.</span>
             <span class="field-error" id="err_phone" role="alert" aria-live="polite"></span>
           </div>
+
+          <!-- Vorqualifizierung (Pflicht, Mehrfachauswahl) — als Chip-Design -->
+          <fieldset class="form_field-wrap qualify-group" id="prev_invest-wrap" aria-describedby="err_prev_invest">
+            <legend class="form_field-label qualify-legend">Was hast du bisher schon selbst bezahlt, um das in den Griff zu bekommen? <span aria-hidden="true">*</span></legend>
+            <p class="qualify-hint">Mehrfachauswahl möglich.</p>
+
+            <div class="qualify-chips">
+              <label class="qualify-chip">
+                <input type="checkbox" name="prev_invest[]" value="Physiotherapie über das Rezept hinaus">
+                <span class="qualify-chip-inner">
+                  <span class="qualify-chip-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span class="qualify-chip-label">Physiotherapie (extra)</span>
+                </span>
+              </label>
+              <label class="qualify-chip">
+                <input type="checkbox" name="prev_invest[]" value="Osteopathie oder Heilpraktikerin">
+                <span class="qualify-chip-inner">
+                  <span class="qualify-chip-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span class="qualify-chip-label">Osteopathie / Heilpraktikerin</span>
+                </span>
+              </label>
+              <label class="qualify-chip">
+                <input type="checkbox" name="prev_invest[]" value="Beckenbodengerät oder Trainingsstuhl">
+                <span class="qualify-chip-inner">
+                  <span class="qualify-chip-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span class="qualify-chip-label">Beckenbodengerät / -stuhl</span>
+                </span>
+              </label>
+              <label class="qualify-chip">
+                <input type="checkbox" name="prev_invest[]" value="Kur oder Privatklinik">
+                <span class="qualify-chip-inner">
+                  <span class="qualify-chip-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span class="qualify-chip-label">Kur / Privatklinik</span>
+                </span>
+              </label>
+              <label class="qualify-chip">
+                <input type="checkbox" name="prev_invest[]" value="Personal Training oder Kurse">
+                <span class="qualify-chip-inner">
+                  <span class="qualify-chip-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span class="qualify-chip-label">Personal Training / Kurse</span>
+                </span>
+              </label>
+              <label class="qualify-chip qualify-chip--none">
+                <input type="checkbox" name="prev_invest[]" value="Bisher noch nichts" data-qualify-none>
+                <span class="qualify-chip-inner">
+                  <span class="qualify-chip-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span class="qualify-chip-label">Bisher noch nichts</span>
+                </span>
+              </label>
+            </div>
+            <span class="field-error" id="err_prev_invest" role="alert" aria-live="polite"></span>
+          </fieldset>
 
           <!-- Hidden-Felder -->
           <input type="hidden" name="touchpoint" value="Anmeldung_Webinar">
@@ -2279,7 +3673,7 @@
 
           <!-- Absenden -->
           <button type="submit" id="form-submit-btn" class="form_button">
-            Jetzt zum Webinar anmelden
+            Platz im Live-Workshop sichern
           </button>
         </form>
 
@@ -2301,10 +3695,17 @@
                 ".make.com/",
                 "19ab4lb143ysbgij7jre3x803te2ia4e"
               ].join(""),
+              /* Optionaler Zweit-Webhook (fire-and-forget). Fehler hier
+                 blockieren die Anmeldung nicht und werden ignoriert. */
+              endpointSecondary: [
+                "https://hook.eu2",
+                ".make.com/",
+                "px0qqhlwcy2gzby2nrw35prl9sxo69dq"
+              ].join(""),
               trackingEndpoint: "https://barbara-scharrer-tracking.vercel.app/api/lead",
               redirect: [
                 "https://www.barbarascharrer.de",
-                "/webinar-teilnahme-danke"
+                "/webinar-video-danke"
               ].join(""),
               minFillTime: 3000
             };
@@ -2318,7 +3719,8 @@
               email: "Bitte gib eine gültige E-Mail-Adresse ein.",
               phone: "Bitte gib deine Telefonnummer ein.",
               datenschutz: "Bitte stimme der Datenschutzerklärung zu.",
-              captcha: "Bitte bestätige, dass du kein Roboter bist."
+              captcha: "Bitte bestätige, dass du kein Roboter bist.",
+              prev_invest: "Bitte wähle mindestens eine Option aus."
             };
 
             /* ------------------------------------------------------------------
@@ -2362,6 +3764,10 @@
               if (name === "phone") {
                 var grp = $id("phone-group");
                 if (grp) grp.classList.toggle("is-invalid", !!msg);
+              }
+              if (name === "prev_invest") {
+                var pw = $id("prev_invest-wrap");
+                if (pw) pw.classList.toggle("is-invalid-wrap", !!msg);
               }
             }
 
@@ -2499,6 +3905,18 @@
                 }
               }
 
+              /* Vorqualifizierung: mindestens eine Checkbox muss ausgewählt sein. */
+              var prevChecked = form.querySelectorAll('input[name="prev_invest[]"]:checked').length;
+              if (prevChecked === 0) {
+                setFieldError("prev_invest", _errMsg.prev_invest);
+                valid = false;
+                if (!firstInvalid) {
+                  firstInvalid = form.querySelector('input[name="prev_invest[]"]');
+                }
+              } else {
+                clearFieldError("prev_invest");
+              }
+
               if (firstInvalid) {
                 try { firstInvalid.focus(); } catch (e) {}
               }
@@ -2544,6 +3962,18 @@
                 var t = e.target;
                 if (t.type === "checkbox" && t.name === "datenschutz" && t.checkValidity()) {
                   clearFieldError("datenschutz");
+                }
+                /* Vorqualifizierung: sobald eine Option ausgewählt ist, Fehler ausblenden.
+                   „Bisher noch nichts" ist wechselseitig ausschließend zu allen anderen. */
+                if (t.type === "checkbox" && t.name === "prev_invest[]") {
+                  var others = form.querySelectorAll('input[name="prev_invest[]"]');
+                  if (t.dataset.qualifyNone && t.checked) {
+                    others.forEach(function(o){ if (o !== t) o.checked = false; });
+                  } else if (t.checked) {
+                    others.forEach(function(o){ if (o.dataset.qualifyNone) o.checked = false; });
+                  }
+                  var anyChecked = form.querySelectorAll('input[name="prev_invest[]"]:checked').length > 0;
+                  if (anyChecked) clearFieldError("prev_invest");
                 }
               });
 
@@ -2629,11 +4059,15 @@
                   return v;
                 }
 
+                /* Vorqualifizierung: alle angehakten Werte einsammeln. */
+                var prevInvest = fd.getAll("prev_invest[]").map(function(v){ return v.toString(); });
+
                 var trackingPayload = {
                   first_name:   (fd.get("first_name")   || "").toString(),
                   last_name:    (fd.get("last_name")    || "").toString(),
                   email:        (fd.get("email")        || "").toString(),
                   phone:        (fd.get("phone")        || "").toString() || null,
+                  prev_invest:  prevInvest.length ? prevInvest : null,
                   webinar_date: (function(d){
                     d = (d || "").toString().trim();
                     if (!d) return null;
@@ -2663,14 +4097,20 @@
                   window.location.href = _cfg.redirect;
                 }, 4000);
 
-                // Make (FormData, no-cors) + Tracking (JSON) parallel.
-                // Tracking-Fehler dürfen die Anmeldung nie blockieren.
+                // Make (FormData, no-cors) + optionaler Zweit-Hook + Tracking (JSON) parallel.
+                // Nur der primäre Make-Hook ist required; Zweit-Hook und Tracking
+                // sind fire-and-forget und dürfen die Anmeldung nie blockieren.
                 Promise.allSettled([
                   fetch(_cfg.endpoint, {
                     method: "POST",
                     mode: "no-cors",
                     body: fd
                   }),
+                  fetch(_cfg.endpointSecondary, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: fd
+                  }).catch(function(){ /* Zweit-Hook-Fehler ignorieren */ }),
                   fetch(_cfg.trackingEndpoint, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -2690,6 +4130,27 @@
             /* ------------------------------------------------------------------
                INIT
             ------------------------------------------------------------------ */
+            /* Vorwahl-Anzeige (Flag + Code) mit dem aktuellen Select-Value synchron halten. */
+            function wirePhonePrefixDisplay(form) {
+              var sel = $id("phone_prefix");
+              if (!sel) return;
+              var wrap = sel.closest(".phone-prefix-wrap");
+              if (!wrap) return;
+              var flagEl = wrap.querySelector(".phone-prefix-flag");
+              var codeEl = wrap.querySelector(".phone-prefix-code");
+              function sync() {
+                var opt = sel.options[sel.selectedIndex];
+                if (!opt) return;
+                // Erste "Wort"-Gruppe im Option-Text ist das Flag-Emoji (z. B. "🇩🇪")
+                var firstSpace = opt.textContent.trim().indexOf(" ");
+                var flag = firstSpace > 0 ? opt.textContent.trim().slice(0, firstSpace) : "";
+                if (flagEl && flag) flagEl.textContent = flag;
+                if (codeEl) codeEl.textContent = sel.value;
+              }
+              sel.addEventListener("change", sync);
+              sync();
+            }
+
             function bslpFormInit() {
               var form = $id("form-webinar");
               if (!form) return;
@@ -2698,6 +4159,7 @@
               fillUtm(form);
               wireRealtimeValidation(form);
               wireFormSubmit(form);
+              wirePhonePrefixDisplay(form);
             }
             if (document.readyState === 'loading') {
               document.addEventListener("DOMContentLoaded", bslpFormInit);
@@ -2712,16 +4174,27 @@
         <!-- ===== STYLING ======================================================= -->
         <style>
           #form-webinar {
-            max-width: 500px;
+            max-width: 640px;
             margin: 0 auto;
           }
-          .form_field-wrap { margin-bottom: 18px; }
+          .form_field-wrap { margin-bottom: 14px; }
+          /* Vorname + Nachname nebeneinander */
+          #form-webinar .form_row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+          }
+          #form-webinar .form_row-2 > .form_field-wrap { margin-bottom: 0; }
+          @media (max-width: 520px) {
+            #form-webinar .form_row-2 { grid-template-columns: 1fr; }
+            #form-webinar .form_row-2 > .form_field-wrap:first-child { margin-bottom: 14px; }
+          }
           #form-webinar .form_field-label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             font-weight: 600;
             color: #222;
-            font-size: 15px;
+            font-size: 14px;
           }
           #form-webinar .form_field-label span {
             color: #BBA087;
@@ -2729,7 +4202,7 @@
           }
           #form-webinar .form_field_input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 11px 13px;
             border: 1.5px solid #d1d1d1;
             border-radius: 8px;
             font-size: 15px;
@@ -2763,24 +4236,63 @@
             border-color: #d9534f;
             box-shadow: 0 0 0 3px rgba(217, 83, 79, 0.15);
           }
-          .phone-prefix-select {
+          /* Kompakter Prefix-Wrap: nur Flag + Code sichtbar, natives Select transparent darüber */
+          .phone-prefix-wrap {
+            position: relative;
             flex-shrink: 0;
-            padding: 12px 8px 12px 12px;
-            border: none;
+            width: 108px;
             border-right: 1.5px solid #d1d1d1;
             background: #f7f4f1;
+            display: flex;
+            align-items: stretch;
+          }
+          .phone-prefix-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 10px 12px 12px;
+            width: 100%;
             font-size: 15px;
             color: #222;
+            pointer-events: none;
+            box-sizing: border-box;
+            line-height: 1;
+          }
+          .phone-prefix-flag {
+            font-size: 17px;
+            line-height: 1;
+            flex: 0 0 auto;
+          }
+          .phone-prefix-code {
+            font-weight: 500;
+            flex: 0 0 auto;
+          }
+          .phone-prefix-caret {
+            margin-left: auto;
+            font-size: 10px;
+            opacity: 0.55;
+            transform: translateY(1px);
+          }
+          .phone-prefix-select {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: transparent;
+            font-size: 16px; /* verhindert iOS-Auto-Zoom */
             cursor: pointer;
             appearance: none;
             -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-            padding-right: 26px;
             outline: none;
+            /* Nativer Chevron ausblenden — wir haben einen eigenen im Display */
+            background-image: none;
           }
-          .phone-prefix-select:focus { background-color: #f0ebe6; }
+          /* Select-Options behalten normale Textfarbe im Dropdown */
+          .phone-prefix-select option { color: #222; background: #fff; }
+          .phone-prefix-wrap:focus-within { background: #f0ebe6; }
           .phone-number-input {
             flex: 1;
             border: none !important;
@@ -2799,6 +4311,13 @@
             margin-top: 4px;
           }
           .field-error:empty { display: none; }
+          .field-hint {
+            display: block;
+            font-size: 12.5px;
+            color: #6a6a6a;
+            margin-top: 5px;
+            line-height: 1.4;
+          }
           .checkbox-wrap {
             padding: 12px 14px;
             border-radius: 8px;
@@ -2810,13 +4329,131 @@
             border-color: #d9534f;
             background: #fff8f8;
           }
+          /* Vorqualifizierung als Chip-Design (Mehrfachauswahl) */
+          #form-webinar .qualify-group {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            margin: 4px 0 18px;
+          }
+          #form-webinar .qualify-group.is-invalid-wrap { background: transparent; }
+          #form-webinar .qualify-group.is-invalid-wrap .qualify-chip {
+            box-shadow: 0 0 0 1px #d9534f;
+          }
+          #form-webinar .qualify-legend {
+            display: block;
+            padding: 0;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #222;
+            font-size: 15px;
+            line-height: 1.35;
+          }
+          #form-webinar .qualify-hint {
+            font-size: 12.5px;
+            color: #6a6a6a;
+            margin: 0 0 12px;
+          }
+          #form-webinar .qualify-chips {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+          }
+          #form-webinar .qualify-chip {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+          }
+          /* Nativen Checkbox unsichtbar, aber tastatur-erreichbar */
+          #form-webinar .qualify-chip input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            width: 1px;
+            height: 1px;
+            margin: 0;
+          }
+          #form-webinar .qualify-chip-inner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            min-height: 46px;
+            border-radius: 10px;
+            border: 1.5px solid #e0e0e0;
+            background: #ffffff;
+            font-size: 12.5px;
+            line-height: 1.25;
+            color: #222;
+            transition: border-color 0.15s, background 0.15s, box-shadow 0.2s, transform 0.1s;
+            height: 100%;
+          }
+          #form-webinar .qualify-chip:hover .qualify-chip-inner {
+            border-color: #BBA087;
+            background: #fbf8f5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(187, 160, 135, 0.14);
+          }
+          #form-webinar .qualify-chip:active .qualify-chip-inner { transform: scale(0.985); }
+          #form-webinar .qualify-chip input[type="checkbox"]:focus-visible + .qualify-chip-inner {
+            box-shadow: 0 0 0 3px rgba(187, 160, 135, 0.30);
+            border-color: #BBA087;
+          }
+          /* Custom-Check-Marker links */
+          #form-webinar .qualify-chip-check {
+            flex: 0 0 auto;
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 1.5px solid #cfcfcf;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            background: #ffffff;
+            transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.15s;
+          }
+          #form-webinar .qualify-chip-check svg { width: 12px; height: 12px; opacity: 0; transition: opacity 0.15s; }
+          #form-webinar .qualify-chip-label { flex: 1 1 auto; font-weight: 500; }
+          /* Checked-Zustand — visuelles Feedback */
+          #form-webinar .qualify-chip input[type="checkbox"]:checked + .qualify-chip-inner {
+            border-color: #BBA087;
+            background: linear-gradient(180deg, #fdf9f4 0%, #fbf5ee 100%);
+            box-shadow: 0 4px 14px rgba(187, 160, 135, 0.20);
+          }
+          #form-webinar .qualify-chip input[type="checkbox"]:checked + .qualify-chip-inner .qualify-chip-check {
+            border-color: #BBA087;
+            background: #BBA087;
+            color: #ffffff;
+            transform: scale(1.05);
+          }
+          #form-webinar .qualify-chip input[type="checkbox"]:checked + .qualify-chip-inner .qualify-chip-check svg { opacity: 1; }
+          #form-webinar .qualify-chip input[type="checkbox"]:checked + .qualify-chip-inner .qualify-chip-label { font-weight: 600; }
+          /* "Bisher noch nichts" — volle Breite, dezent abgesetzt */
+          #form-webinar .qualify-chip--none { grid-column: 1 / -1; }
+          #form-webinar .qualify-chip--none .qualify-chip-inner {
+            border-style: dashed;
+            justify-content: center;
+            color: #6a6a6a;
+            min-height: 46px;
+          }
+          #form-webinar .qualify-chip--none input[type="checkbox"]:checked + .qualify-chip-inner {
+            border-style: solid;
+            color: #222;
+          }
+          @media (max-width: 720px) {
+            #form-webinar .qualify-chips { grid-template-columns: 1fr 1fr; }
+          }
+          @media (max-width: 480px) {
+            #form-webinar .qualify-chips { grid-template-columns: 1fr; }
+          }
           #form-webinar .datenschutzhinweis {
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            font-size: 13px;
-            line-height: 1.6;
-            color: #333;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: #4a4a4a;
             cursor: pointer;
           }
           #form-webinar .datenschutzhinweis input[type="checkbox"] {
@@ -2842,19 +4479,22 @@
           }
           #form-webinar .form_button {
             width: 100%;
-            padding: 16px;
+            padding: 16px 22px;
             font-size: 16px;
-            font-weight: 600;
-            border: none;
+            font-weight: 700;
+            border: 0.5px solid rgba(255,255,255,0.25);
             border-radius: 50px;
-            background: #BBA087;
+            background-image: radial-gradient(circle farthest-corner at 50% 100%, #ac8f75, #c1a68d);
             color: #fff;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s, opacity 0.2s;
-            margin-top: 6px;
+            transition: transform 0.2s ease, box-shadow 0.25s ease, opacity 0.2s;
+            margin-top: 8px;
+            box-shadow: 0 10px 26px rgba(172, 143, 117, .4), 0 1px 0 rgba(255,255,255,.4) inset;
+            letter-spacing: 0.005em;
           }
           #form-webinar .form_button:hover:not(:disabled) {
-            background: #a48f78;
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px rgba(172, 143, 117, .45), 0 1px 0 rgba(255,255,255,.4) inset;
           }
           #form-webinar .form_button:active:not(:disabled) {
             transform: scale(0.98);
@@ -2963,14 +4603,53 @@
     setText('date',    c.date);
     setText('time',    c.time);
 
-    /* Bild-URLs propagieren */
+    /* Bild-URLs propagieren. Setzt src wenn URL in Config vorhanden.
+       Wenn weder Config-URL noch HTML-Default vorhanden → Bild + eltern-figure ausblenden. */
     var imgs = c.images || {};
-    Object.keys(imgs).forEach(function(key){
-      if (!imgs[key]) return;
-      document.querySelectorAll('[data-bslp-img="' + key + '"]').forEach(function(el){
-        el.src = imgs[key];
-      });
+    document.querySelectorAll('[data-bslp-img]').forEach(function(el){
+      var key = el.getAttribute('data-bslp-img');
+      var url = imgs[key];
+      var htmlSrc = (el.getAttribute('src') || '').trim();
+      if (url) {
+        el.src = url;
+      } else if (!htmlSrc) {
+        el.style.display = 'none';
+        var fig = el.closest('figure');
+        if (fig) fig.style.display = 'none';
+      }
     });
+
+    /* Hero-Video: YouTube-ID + Thumbnail aus BSLP_CONFIG.heroVideo setzen.
+       Erlaubt sind: reine ID ("NcKMslGQJyQ") oder komplette youtube.com/youtu.be-URL. */
+    function extractYouTubeId(input) {
+      var s = (input || '').toString().trim();
+      if (!s) return '';
+      // youtu.be/<ID>  |  youtube.com/watch?v=<ID>  |  youtube.com/embed/<ID>  |  reine ID
+      var m = s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{6,})/);
+      if (m) return m[1];
+      if (/^[A-Za-z0-9_-]{6,}$/.test(s)) return s;
+      return '';
+    }
+    var heroYt = extractYouTubeId(c.heroVideo);
+    var heroWrap = document.querySelector('[data-bslp-hero-video]');
+    if (heroWrap) {
+      if (heroYt) {
+        heroWrap.setAttribute('data-yt', heroYt);
+        var thumbEl = heroWrap.querySelector('[data-bslp-hero-thumb]');
+        if (thumbEl) {
+          thumbEl.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(heroYt) + '/maxresdefault.jpg';
+          thumbEl.onerror = function(){
+            /* Fallback auf hqdefault, falls maxres nicht existiert */
+            if (thumbEl.src.indexOf('maxresdefault') !== -1) {
+              thumbEl.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(heroYt) + '/hqdefault.jpg';
+            }
+          };
+        }
+      } else {
+        /* Kein Video konfiguriert → Hero-Video-Block ausblenden. */
+        heroWrap.style.display = 'none';
+      }
+    }
 
     /* Form-Hidden-Felder: Datum + Uhrzeit aus BSLP_CONFIG übernehmen */
     var fdate = document.querySelector('#form-webinar [name="datum"]');

@@ -1,0 +1,147 @@
+<!-- =====================================================================
+     WEBFLOW HTML EMBED — Loader für die Webinar-Landingpage (v2)
+     =====================================================================
+     SETUP:
+       1. webinar-content.txt in Webflow Assets hochladen
+       2. Asset-URL kopieren und unten in CONTENT_URL einsetzen
+       3. Bilder ebenfalls in Webflow Assets hochladen + URLs in BSLP_CONFIG.images
+       4. Diesen Block in das HTML-Embed-Widget einfügen (in main-wrapper)
+
+     NEU in dieser Version:
+       - heroVideo:    YouTube-URL oder -ID → wird als Video in der Hero-Sektion
+                       (rechte Spalte) ausgespielt. Zum Austauschen einfach unten
+                       den Wert ändern und in Webflow neu veröffentlichen.
+       - testimonials: Bis zu 4 Testimonial-Cards. Jede Card kann hier direkt
+                       angepasst werden (Name, Kontext-Zeile, YouTube-Video, Zitat).
+     ===================================================================== -->
+
+<script>
+  /* === ZENTRALE KONFIG (Datum, Uhrzeit, Bilder, Hero-Video, Testimonials) ===
+     Alles hier änderbar → kein Re-Upload der Content-Datei nötig.            */
+  window.BSLP_CONFIG = {
+
+    /* ------- Datum & Uhrzeit ---------------------------------------- */
+    weekday: 'Dienstag',
+    date:    '{{wf:Webinar-Datum|Dynamo}}',
+    time:    '19:00',
+
+    /* ------- Bild-URLs (Webflow Asset URLs einsetzen) --------------- */
+    images: {
+      logo:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg',
+      hero:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f8672353d856ffc85c759d_barbara-scharrer-bg.jpg',
+      host:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f867224de8d3c6c89408ea_barbara-scharrer-host.jpg',
+      aufricht: 'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f867226accedec2291e6be_aufrechtprinzip.png',
+      /* Empathie-Brücke, Bild oben in der Card mit weichem Gradient-Fade nach unten */
+      empathy:  'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f8672353d856ffc85c759d_barbara-scharrer-bg.jpg',
+      /* Lerne aus meinen Fehlern, Barbara zeigt nach unten auf die Card.
+         Barbara-Bild mit transparentem Hintergrund (PNG) in Webflow hochladen
+         und URL hier einsetzen. Leer lassen → Bild wird ausgeblendet. */
+      lesson:   ''
+    },
+
+    /* ------- Hero-Video (YouTube) ----------------------------------
+       Erlaubt: komplette YouTube-URL ODER nur die ID.
+       Beispiele:
+         'https://www.youtube.com/watch?v=NcKMslGQJyQ'
+         'https://youtu.be/NcKMslGQJyQ'
+         'NcKMslGQJyQ'
+       Zum Entfernen des Hero-Videos leeren String setzen: ''            */
+    heroVideo: 'https://www.youtube.com/watch?v=NcKMslGQJyQ',
+
+    /* ------- Testimonial-Cards (bis zu 4) --------------------------
+       Jedes Element:
+         name       : Vorname (Pflicht)
+         context    : Kontextzeile hinter dem Namen (optional, wird mit "— " angezeigt)
+         youtubeId  : YouTube-URL oder -ID (optional; ohne wird kein Video angezeigt)
+         quote      : Zitat/Text (Pflicht)
+       Zum Austauschen einfach hier den entsprechenden Eintrag überschreiben.
+       Weniger als 4 Einträge sind ok — dann werden nur so viele gerendert. */
+    testimonials: [
+      {
+        name:      'Anke',
+        context:   '98 % besser nach 8 Wochen',
+        youtubeId: 'https://youtu.be/1gH_EjTzASs',
+        quote:     'Nach nur 8 Wochen ist meine Inkontinenz zu 98–99 % verschwunden. Heute fühle ich mich sicherer, aufrechter — und kann meinem Körper wieder vertrauen.'
+      },
+      {
+        name:      'Susanne',
+        context:   '',
+        youtubeId: 'https://youtu.be/0IKpeaJDAU4',
+        quote:     'Heute kann ich wieder stundenlang durch die Stadt laufen, schlafe meistens durch und habe meine Lebensqualität zurückgewonnen.'
+      },
+      {
+        name:      'Hannelore',
+        context:   'über 80, 75 bis 80 % besser',
+        youtubeId: 'https://youtu.be/Kfr3-wKZU7c',
+        quote:     'Innerhalb weniger Wochen hat sich meine Inkontinenz um 75 bis 80 % verbessert. Ich traue mich wieder unter Menschen.'
+      },
+      {
+        name:      'Inge',
+        context:   '',
+        youtubeId: 'https://youtu.be/eEXh7JvBI0c',
+        quote:     'Bessere Haltung, weniger Beschwerden, und nebenbei kam meine Migräne einfach nicht mehr wieder.'
+      }
+    ]
+  };
+</script>
+
+<div id="bslp-mount" style="min-height:240px;">
+  <div style="padding:3rem 1.5rem;text-align:center;color:#888;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;">
+    <span style="display:inline-block;width:18px;height:18px;border:2px solid #ddd;border-top-color:#678ba5;border-radius:50%;animation:bslp-spin 0.7s linear infinite;vertical-align:middle;margin-right:0.5rem;"></span>
+    Die Seite lädt…
+  </div>
+</div>
+<style>@keyframes bslp-spin { to { transform: rotate(360deg); } }</style>
+
+<script>
+  (function(){
+    /* Content wird direkt aus dem GitHub-Repo via jsDelivr CDN geladen.
+       Vorteil: bei jeder Änderung (git push) ist die neue Version live,
+       kein Re-Upload in Webflow nötig. jsDelivr purged Cache automatisch bei push.
+       Bei Bedarf sofortiges Cache-Purge:
+       https://purge.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-content.txt */
+    var CONTENT_URL = 'https://cdn.jsdelivr.net/gh/privatdaniel/barbara-scharrer-website@main/webinar-content.txt';
+
+    var mount = document.getElementById('bslp-mount');
+    if (!mount) return;
+
+    function showError(msg, detail) {
+      mount.innerHTML =
+        '<div style="padding:2rem 1.5rem;text-align:center;color:#7b2020;background:#fff5f5;border:1px solid #d9534f;border-radius:8px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.5">' +
+          '<strong style="font-size:15px">Webinar-LP konnte nicht geladen werden.</strong><br>' +
+          '<span style="opacity:0.8">' + msg + '</span>' +
+          (detail ? '<br><small style="opacity:0.6;font-family:monospace;font-size:12px">' + detail + '</small>' : '') +
+        '</div>';
+    }
+
+    if (!window.fetch) { showError('Browser unterstützt fetch() nicht.', ''); return; }
+
+    fetch(CONTENT_URL, { credentials: 'omit', cache: 'no-cache' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
+        return r.text();
+      })
+      .then(function(html){
+        if (!html || html.length < 100) throw new Error('Empty response');
+        mount.innerHTML = html;
+
+        /* <script>-Tags aus innerHTML manuell re-aktivieren */
+        var scripts = mount.querySelectorAll('script');
+        scripts.forEach(function(oldScript){
+          var newScript = document.createElement('script');
+          for (var i = 0; i < oldScript.attributes.length; i++) {
+            var a = oldScript.attributes[i];
+            newScript.setAttribute(a.name, a.value);
+          }
+          newScript.textContent = oldScript.textContent;
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+
+        console.info('[Webinar-LP] geladen ('+ html.length +' Bytes, '+ scripts.length +' Scripts)');
+      })
+      .catch(function(err){
+        console.error('[Webinar-LP] Content-Load fehlgeschlagen:', err);
+        showError(err.message || 'Unbekannter Fehler', CONTENT_URL);
+      });
+  })();
+</script>
