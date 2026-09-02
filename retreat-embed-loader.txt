@@ -1,0 +1,239 @@
+<!-- =====================================================================
+     WEBFLOW HTML EMBED — Loader für die Retreat-Landingpage
+     =====================================================================
+     SETUP:
+       - Content wird direkt aus GitHub via raw.githubusercontent.com geladen
+         (5-Min-Cache → Änderungen sind nach jedem git push automatisch live,
+         kein Webflow-Reupload nötig)
+       - Bilder liegen weiterhin auf Webflow Assets (kein CDN-Wechsel nötig)
+       - Diesen Block in das HTML-Embed-Widget einfügen (in main-wrapper)
+     ===================================================================== -->
+
+<script>
+  /* =============================================================
+     ZENTRALE KONFIG  -  hier alles pflegen
+     ============================================================= */
+  window.BSRP_CONFIG = {
+
+    /* Content-URL: direkt aus GitHub (5-Min-Cache statt Webflow-Reupload) */
+    contentUrl: 'https://raw.githubusercontent.com/privatdaniel/barbara-scharrer-website/main/retreat-content.txt',
+
+    /* Bild-URLs (Webflow Asset URLs) ----------------------------- */
+    images: {
+      logo:       'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg',
+      heroBanner: 'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe24050cb4e7040c8d147_f046b0f7ab4fbd03b8b36197baa0d775_bild-1.jpg',   /* bild-1 · Gruppe im Wald */
+      story:      'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23fe697e71acd4218ed_bild-3.jpg',   /* bild-3 · Barbara persönlich */
+      location:   'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a33d41f28a1a6237b439ff8_kloster.avif',  /* bild-12 · Schnitzmühle Drohne */
+      bento1:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23fc257715c4dcda7cb_bild-10.jpg',  /* bild-5 · Gruppentraining */
+      bento2:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23fc544e27b9e2ed913_bild-2.jpg',   /* bild-2 · Gesprächsrunde */
+      bento3:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23f6855a94cc691e2d1_bild-11.jpg',  /* bild-7 · Plank */
+      bento4:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23fe697e71acd4218da_bild-4.jpg',   /* bild-6 · Hand-Detail Schulter */
+      bento5:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23f0999801b253a67e8_bild-5.jpg',   /* bild-9 · Suppe / Essen */
+      bento6:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23fd5a5bdc5cdc34171_bild-6.jpg',   /* bild-11 · Barbara anleitend */
+      bento7:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23f5dea8574d1284843_bild-7.jpg',   /* bild-8 · Esstisch */
+      bento8:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/6a1fe23f7cfb09bb6b06d806_bild-8.jpg'    /* bild-4 · Training auf Hocker */
+    },
+
+    /* Link-Ziele ------------------------------------------------- */
+    urls: {
+      home:            'https://www.barbarascharrer.de/',
+      beratung:        'https://www.barbarascharrer.de/beratung',
+      retreatBeratung: 'https://www.barbarascharrer.de/retreat-beratung',
+      /* Redirect nach erfolgreicher Warteliste-Eintragung (Bestandskundinnen): */
+      warteliste:      'https://www.barbarascharrer.de/retreat-warteliste'
+      /* Nicht-Kundinnen-Submits routen automatisch auf retreatBeratung. */
+    },
+
+    /* Termine (Reihenfolge = Reihenfolge auf der Seite) ---------- */
+    termine: [
+      {
+        title:    '22. bis 25. April 2027 · Kloster Schweinheim',
+        sub:      '53881 Euskirchen, Deutschland. Anmeldung exklusiv für Programm-Teilnehmerinnen.',
+        tag:      'Nächster Termin',
+        upcoming: true
+      }
+    ]
+  };
+</script>
+
+<!-- =====================================================================
+     STRUCTURED DATA (JSON-LD) - vor dem Mount, damit es vom Crawler
+     auch bei langsamem fetch des Contents sofort gefunden wird.
+     Termin-Daten gespiegelt aus BSRP_CONFIG.termine[0] (Hauptevent).
+     Pflege: bei Datum-Update auch hier startDate aktualisieren.
+     ===================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.barbarascharrer.de/#person",
+      "name": "Barbara Scharrer",
+      "jobTitle": "Beckenboden-Trainerin",
+      "url": "https://www.barbarascharrer.de/",
+      "knowsAbout": ["Beckenbodentraining", "AUFricht-Prinzip", "Inkontinenz", "Ganzkörpertraining"]
+    },
+    {
+      "@type": "Place",
+      "@id": "https://www.barbarascharrer.de/retreat#location-kloster-schweinheim",
+      "name": "Kloster Schweinheim",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Euskirchen",
+        "postalCode": "53881",
+        "addressRegion": "Nordrhein-Westfalen",
+        "addressCountry": "DE"
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://www.barbarascharrer.de/retreat#service",
+      "name": "Beckenboden-Retreat",
+      "serviceType": "Gesundheits-Retreat",
+      "description": "Mehrtägiges Retreat mit Beckenboden- und Ganzkörpertraining nach dem AUFricht-Prinzip, exklusiv für Programm-Teilnehmerinnen von Barbara Scharrer.",
+      "provider": { "@id": "https://www.barbarascharrer.de/#person" },
+      "areaServed": [
+        { "@type": "Country", "name": "Deutschland" },
+        { "@type": "Country", "name": "Österreich" },
+        { "@type": "Country", "name": "Schweiz" }
+      ],
+      "audience": {
+        "@type": "PeopleAudience",
+        "audienceType": "Frauen im Programm von Barbara Scharrer"
+      }
+    },
+    {
+      "@type": "Event",
+      "@id": "https://www.barbarascharrer.de/retreat#event-2027-04-kloster-schweinheim",
+      "name": "Beckenboden-Retreat Kloster Schweinheim April 2027",
+      "description": "Viertägiges Retreat mit Beckenboden- und Ganzkörpertraining nach dem AUFricht-Prinzip. Exklusiv für Programm-Teilnehmerinnen.",
+      "startDate": "2027-04-22",
+      "endDate": "2027-04-25",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": { "@id": "https://www.barbarascharrer.de/retreat#location-kloster-schweinheim" },
+      "organizer": { "@id": "https://www.barbarascharrer.de/#person" },
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/LimitedAvailability",
+        "url": "https://www.barbarascharrer.de/retreat-warteliste",
+        "category": "Exklusiv für Programm-Teilnehmerinnen"
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Mount-Punkt für den geladenen Content -->
+<div id="bsrp-mount" style="background:#faf8f5;min-height:80vh"></div>
+
+<script>
+  /* =============================================================
+     LOADER · Performance-optimiert
+     -----------------------------------------------------------------
+     Ladekette für sofortige Sichtbarkeit:
+       1) Resource Hints sofort in <head> injizieren
+          - preconnect zu Webflow-CDN (TLS-Handshake parallel)
+          - dns-prefetch zu YouTube (für Video-Facade später)
+          - preload retreat-content.txt (parallel zum HTML-Parse)
+          - preload Hero-Banner-Bild (fetchpriority=high)
+       2) Skeleton sofort im Mount (kein 700ms Spinner-Delay)
+       3) fetch + DocumentFragment-Inject (1 Reflow statt mehrerer)
+       4) <script>-Tags manuell re-aktivieren (Hot-Swap im Content)
+     ============================================================= */
+  (function(){
+    var mount = document.getElementById('bsrp-mount');
+    if (!mount) return;
+
+    var cfg = window.BSRP_CONFIG || {};
+    var CONTENT_URL = cfg.contentUrl;
+    var CONFIGURED  = CONTENT_URL && CONTENT_URL.indexOf('CONTENT_URL_HIER') !== 0;
+
+    /* --- 1) Resource Hints sofort ----------------------------- */
+    var head = document.head || document.getElementsByTagName('head')[0];
+    function hint(rel, href, attrs){
+      if (!head || !href) return;
+      var l = document.createElement('link');
+      l.rel  = rel;
+      l.href = href;
+      if (attrs) for (var k in attrs) l.setAttribute(k, attrs[k]);
+      head.appendChild(l);
+    }
+    hint('preconnect',   'https://cdn.prod.website-files.com', { crossorigin: 'anonymous' });
+    hint('preconnect',   'https://raw.githubusercontent.com',  { crossorigin: 'anonymous' });
+    hint('dns-prefetch', 'https://i.ytimg.com');
+    hint('dns-prefetch', 'https://www.youtube.com');
+    if (CONFIGURED) {
+      hint('preload', CONTENT_URL, { as: 'fetch', crossorigin: 'anonymous' });
+    }
+    if (cfg.images && cfg.images.heroBanner) {
+      hint('preload', cfg.images.heroBanner, { as: 'image', fetchpriority: 'high' });
+    }
+    if (cfg.images && cfg.images.logo) {
+      hint('preload', cfg.images.logo, { as: 'image', fetchpriority: 'high' });
+    }
+
+    /* --- 2) Skeleton sofort, kein Spinner-Delay --------------- */
+    if (!CONFIGURED) {
+      mount.innerHTML =
+        '<div style="padding:1.5rem;border:1px solid #d9534f;background:#fff5f5;color:#7b2020;border-radius:8px;font-family:system-ui,sans-serif;font-size:14px;line-height:1.5">' +
+          '<strong>Retreat-LP nicht konfiguriert.</strong><br>' +
+          'Bitte <code>BSRP_CONFIG.contentUrl</code> mit der URL der retreat-content.txt füllen.' +
+        '</div>';
+      return;
+    }
+    mount.innerHTML =
+      '<div style="min-height:80vh;background:#faf8f5;display:flex;align-items:center;justify-content:center;font-family:Manrope,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;">' +
+        '<span aria-label="Inhalte werden geladen" style="display:inline-block;width:28px;height:28px;border:3px solid rgba(74,112,140,0.18);border-top-color:#4a708c;border-radius:50%;animation:bsrp-spin 0.7s linear infinite;"></span>' +
+      '</div>' +
+      '<style>@keyframes bsrp-spin{to{transform:rotate(360deg)}}</style>';
+
+    /* --- Fehler-Helper --------------------------------------- */
+    function showError(msg, detail) {
+      mount.innerHTML =
+        '<div style="padding:2rem 1.5rem;text-align:center;color:#7b2020;background:#fff5f5;border:1px solid #d9534f;border-radius:8px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.5">' +
+          '<strong style="font-size:15px">Retreat-LP konnte nicht geladen werden.</strong><br>' +
+          '<span style="opacity:0.8">' + msg + '</span>' +
+          (detail ? '<br><small style="opacity:0.6;font-family:monospace;font-size:12px">' + detail + '</small>' : '') +
+        '</div>';
+    }
+    if (!window.fetch) { showError('Browser unterstützt fetch() nicht.', ''); return; }
+
+    /* --- 3) Fetch + 4) Inject --------------------------------- */
+    fetch(CONTENT_URL, { credentials: 'omit' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
+        return r.text();
+      })
+      .then(function(html){
+        if (!html || html.length < 100) throw new Error('Leere Antwort');
+
+        /* DocumentFragment-Inject statt innerHTML: weniger Reflows,
+           Parsing parallel. Skripte werden allerdings nicht
+           automatisch ausgeführt - das machen wir gleich. */
+        mount.innerHTML = '';
+        var range = document.createRange();
+        range.selectNode(mount);
+        var fragment = range.createContextualFragment(html);
+        mount.appendChild(fragment);
+
+        /* Skript-Tags reaktivieren, damit das Hot-Swap im Content
+           gegen BSRP_CONFIG läuft. */
+        var scripts = mount.querySelectorAll('script');
+        scripts.forEach(function(oldScript){
+          var newScript = document.createElement('script');
+          for (var i = 0; i < oldScript.attributes.length; i++) {
+            var a = oldScript.attributes[i];
+            newScript.setAttribute(a.name, a.value);
+          }
+          newScript.textContent = oldScript.textContent;
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+      })
+      .catch(function(err){
+        console.error('[Retreat-LP] Content-Load fehlgeschlagen:', err);
+        showError(err.message || 'Unbekannter Fehler', CONTENT_URL);
+      });
+  })();
+</script>

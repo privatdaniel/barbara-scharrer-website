@@ -1,0 +1,2565 @@
+<style>
+  /* ============================================================
+     Scope: alle Klassen mit Präfix „bsrp-".
+     Farben + Typo übernommen aus der Webinar-LP (Brand BS).
+     ============================================================ */
+
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  .bsrp-root {
+    --bsrp-black:    #0a0a0a;
+    --bsrp-ink:      #1a1a1a;
+    --bsrp-muted:    #5a5a5a;
+    --bsrp-line:     rgba(10, 10, 10, 0.08);
+    --bsrp-blau-1:   #87a9c2;
+    --bsrp-blau-2:   #678ba5;
+    --bsrp-blau-3:   #4a708c;
+    --bsrp-beige-1:  #c1a68d;
+    --bsrp-beige-2:  #ac8f75;
+    --bsrp-beige-soft: #f6f0e8;
+    --bsrp-blau-soft:  #eef3f7;
+    --bsrp-bg:       #faf8f5;
+    --bsrp-radius-pill: 999px;
+    --bsrp-radius-lg:   24px;
+    --bsrp-radius-md:   16px;
+
+    font-family: Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--bsrp-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+    box-sizing: border-box;
+    overflow-x: clip;          /* moderner Fallback gegen Horizontal-Scroll */
+    max-width: 100%;
+  }
+  .bsrp-root *, .bsrp-root *::before, .bsrp-root *::after { box-sizing: border-box; }
+  .bsrp-root img { max-width: 100%; height: auto; display: block; }
+  .bsrp-root a { color: inherit; text-decoration: none; }
+  /* Globale Word-Wrap-Schutz für lange Compound-Wörter (z.B. „Beckenboden-Retreat") */
+  .bsrp-root :where(h1, h2, h3, h4, p, span, a, blockquote, label) {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+  .bsrp-h1, .bsrp-subheadline, .bsrp-lead, .bsrp-hero-promise {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+  .bsrp-root .bsrp-sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ================== STAGE (Nav + Hero gemeinsamer Background) ================== */
+  .bsrp-stage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 60% 90% at 88% 18%, rgba(135,169,194,0.20), transparent 60%),
+      radial-gradient(ellipse 50% 80% at 8% 90%, rgba(193,166,141,0.18), transparent 60%),
+      linear-gradient(180deg, #ffffff 0%, var(--bsrp-bg) 100%);
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+  .bsrp-stage > nav,
+  .bsrp-stage > section { position: relative; z-index: 2; }
+
+  /* ============================ NAVIGATION ============================ */
+  .bsrp-nav {
+    position: relative;
+    z-index: 5;
+    background: transparent;
+    border-bottom: none;
+  }
+  .bsrp-nav-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0.875rem 5%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .bsrp-nav-logo { justify-self: start; display: inline-flex; align-items: center; }
+  .bsrp-root .bsrp-logo-img { height: 52px; width: auto; max-width: none; }
+
+  .bsrp-nav-actions {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .bsrp-nav-exclusive {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.95rem 0.4rem 0.4rem;
+    background: linear-gradient(135deg, var(--bsrp-beige-1), var(--bsrp-beige-2));
+    color: #ffffff;
+    border-radius: var(--bsrp-radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(172, 143, 117, 0.35), 0 1px 0 rgba(255,255,255,0.4) inset;
+  }
+  .bsrp-nav-exclusive-icon {
+    flex: 0 0 auto;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.20);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .bsrp-nav-exclusive-icon svg { width: 12px; height: 12px; }
+
+  .bsrp-nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.05rem;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--bsrp-radius-pill);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--bsrp-ink);
+    box-shadow: 0 6px 24px rgba(74, 112, 140, 0.12), 0 1px 0 rgba(255,255,255,0.6) inset;
+    transition: transform .2s ease, box-shadow .25s ease;
+    white-space: nowrap;
+  }
+  .bsrp-nav-back:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(74, 112, 140, 0.18), 0 1px 0 rgba(255,255,255,0.6) inset;
+  }
+  .bsrp-nav-back svg {
+    width: 14px; height: 14px;
+    color: var(--bsrp-blau-3);
+    transition: transform .25s ease;
+  }
+  .bsrp-nav-back:hover svg { transform: translateX(-2px); }
+
+  /* ============================== HERO ============================== */
+  .bsrp-hero { position: relative; }
+  .bsrp-hero-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 5% 5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 2.75rem;
+    align-items: center;
+    min-height: clamp(440px, 60vh, 580px);
+  }
+  .bsrp-hero-copy { position: relative; max-width: 42rem; }
+
+  .bsrp-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(103, 139, 165, 0.25);
+    border-radius: var(--bsrp-radius-pill);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--bsrp-blau-3);
+    letter-spacing: 0.005em;
+    box-shadow: 0 4px 16px rgba(74, 112, 140, 0.08);
+    margin-bottom: 1.1rem;
+  }
+  /* Long auf Desktop, Short auf kleineren Viewports - vermeidet Umbruch */
+  .bsrp-eyebrow-short { display: none; }
+  .bsrp-eyebrow-long  { display: inline; }
+
+  .bsrp-h1 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.75rem, 2.7vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--bsrp-black);
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+  .bsrp-h1-accent {
+    background: linear-gradient(180deg, var(--bsrp-blau-2) 0%, var(--bsrp-blau-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bsrp-subheadline {
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--bsrp-ink);
+    margin: 0 0 1rem;
+    max-width: 34rem;
+  }
+  .bsrp-lead {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--bsrp-muted);
+    margin: 0 0 1.5rem;
+    max-width: 32rem;
+  }
+
+  /* Ergebnis-Versprechen: prominenter Block oberhalb der CTAs */
+  .bsrp-hero-promise {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--bsrp-ink);
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.15rem;
+    background: var(--bsrp-blau-soft);
+    border-left: 3px solid var(--bsrp-blau-3);
+    border-radius: 0 var(--bsrp-radius-md) var(--bsrp-radius-md) 0;
+    max-width: 36rem;
+  }
+
+  /* CTA-Button (Beige, gleich wie Webinar-LP) */
+  .bsrp-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .bsrp-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+  }
+  .bsrp-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--bsrp-blau-3);
+    text-decoration: none;
+    padding: 0.5rem 0;
+    border-bottom: 1.5px solid transparent;
+    transition: border-color .2s ease, color .2s ease;
+    white-space: nowrap;
+  }
+  .bsrp-cta-secondary:hover {
+    border-bottom-color: var(--bsrp-blau-3);
+    color: var(--bsrp-blau-2);
+  }
+  .bsrp-cta-secondary svg {
+    width: 14px; height: 14px;
+    transition: transform .25s ease;
+  }
+  .bsrp-cta-secondary:hover svg { transform: translateY(2px); }
+  .bsrp-cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 1rem 1.85rem;
+    border-radius: var(--bsrp-radius-lg);
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bsrp-beige-2), var(--bsrp-beige-1));
+    color: #ffffff;
+    font-family: Manrope, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: 0.005em;
+    border: 0.5px solid rgba(255,255,255,0.25);
+    box-shadow: 0 10px 26px rgba(172, 143, 117, .4), 0 1px 0 rgba(255,255,255,.4) inset;
+    transition: transform .2s ease, box-shadow .25s ease, background-image .3s ease;
+    text-align: center;
+    cursor: pointer;
+  }
+  .bsrp-root .bsrp-cta,
+  .bsrp-root .bsrp-cta:visited,
+  .bsrp-root .bsrp-cta:hover,
+  .bsrp-root .bsrp-cta:focus,
+  .bsrp-root .bsrp-cta:active { color: #ffffff; text-decoration: none; }
+  .bsrp-cta:hover {
+    transform: translateY(-1px);
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bsrp-beige-2) 70%, var(--bsrp-beige-1));
+    box-shadow: 0 14px 32px rgba(172, 143, 117, .45), 0 1px 0 rgba(255,255,255,.4) inset;
+  }
+  .bsrp-cta:active { transform: translateY(0); }
+  .bsrp-cta-arrow { width: 18px; height: 18px; transition: transform .25s ease; }
+  .bsrp-cta:hover .bsrp-cta-arrow { transform: translateX(3px); }
+  .bsrp-cta-meta {
+    font-size: 0.8125rem;
+    color: var(--bsrp-muted);
+    opacity: 0.75;
+    line-height: 1.4;
+    padding-left: 0.25rem;
+  }
+  .bsrp-cta-meta strong { color: var(--bsrp-ink); font-weight: 700; }
+
+  /* Hero-Video (YouTube-Embed rechts) · 16:9 für ungeschnittenes Thumbnail */
+  .bsrp-hero-video-wrap {
+    position: relative;
+    border-radius: var(--bsrp-radius-lg);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    box-shadow:
+      0 1px 2px rgba(10,10,10,0.05),
+      0 24px 48px rgba(74, 112, 140, 0.18),
+      0 8px 18px rgba(74, 112, 140, 0.10);
+    background: var(--bsrp-bg);
+  }
+  .bsrp-hero-video-wrap iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
+  /* Hero-Play-Button größer und prominenter als die Testimonial-Buttons */
+  .bsrp-hero-play .bsrp-testi-play-icon { width: 80px; height: 80px; }
+  .bsrp-hero-play .bsrp-testi-play-icon svg { width: 28px; height: 28px; }
+  /* ============================ TRUST-SEKTION ============================ */
+  .bsrp-trust {
+    position: relative;
+    z-index: 3;
+    max-width: 76rem;
+    margin: -1rem auto 2rem;
+    background: #ffffff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
+    border-radius: var(--bsrp-radius-lg);
+    box-shadow:
+      0 1px 2px   rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(10, 10, 10, 0.06),
+      0 28px 60px rgba(10, 10, 10, 0.04);
+  }
+  .bsrp-trust-inner { padding: 2.25rem 2.5rem 2.5rem; }
+  .bsrp-trust-header { text-align: center; max-width: 40rem; margin: 0 auto 1.75rem; }
+  .bsrp-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.125rem, 1.45vw, 1.375rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--bsrp-black);
+    margin: 0 0 0.4rem;
+    text-wrap: balance;
+  }
+  .bsrp-trust-sub {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--bsrp-blau-3);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .bsrp-trust-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+  .bsrp-trust-card {
+    padding: 0.5rem 1.25rem;
+    text-align: center;
+    border-left: 1px solid rgba(103, 139, 165, 0.12);
+  }
+  .bsrp-trust-card:first-child { border-left: 0; }
+  .bsrp-trust-icon {
+    width: 36px; height: 36px;
+    margin: 0 auto 0.85rem;
+    border-radius: 50%;
+    background: rgba(135, 169, 194, 0.10);
+    color: var(--bsrp-blau-3);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .bsrp-trust-icon svg { width: 18px; height: 18px; }
+  .bsrp-trust-value {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.125rem, 1.4vw, 1.375rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--bsrp-blau-3);
+    margin: 0 0 0.35rem;
+  }
+  .bsrp-trust-label {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--bsrp-muted);
+    font-weight: 500;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  /* ============================ STORY / INTRO ============================ */
+  .bsrp-story {
+    position: relative;
+    background: #ffffff;
+    padding: 5rem 5% 5.5rem;
+  }
+  .bsrp-story-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .bsrp-story-text-eyebrow {
+    display: inline-block;
+    color: var(--bsrp-blau-3);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+  }
+  .bsrp-story-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.625rem, 2.4vw, 2.125rem);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.018em;
+    color: var(--bsrp-black);
+    margin: 0 0 1.5rem;
+    text-wrap: balance;
+  }
+  .bsrp-story-body { font-size: 1.0625rem; line-height: 1.7; color: var(--bsrp-ink); }
+  .bsrp-story-body p { margin: 0 0 1.1rem; }
+  .bsrp-story-body p strong { font-weight: 700; color: var(--bsrp-black); }
+  .bsrp-story-signoff {
+    margin-top: 1.25rem !important;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--bsrp-blau-3);
+  }
+  .bsrp-story-photo {
+    position: relative;
+    border-radius: var(--bsrp-radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    box-shadow:
+      0 1px 2px rgba(10,10,10,0.05),
+      0 22px 48px rgba(74, 112, 140, 0.14);
+  }
+  .bsrp-story-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ============================ SÄULEN ============================ */
+  .bsrp-pillars {
+    max-width: 76rem;
+    margin: 0 auto 2rem;
+    background: var(--bsrp-bg);
+    border-radius: var(--bsrp-radius-lg);
+    padding: 4rem 3rem 4.5rem;
+  }
+  .bsrp-pillars-header { text-align: center; max-width: 42rem; margin: 0 auto 2.5rem; }
+  .bsrp-pillars-eyebrow {
+    display: inline-block;
+    color: var(--bsrp-blau-3);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .bsrp-pillars-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--bsrp-black);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .bsrp-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .bsrp-pillar {
+    background: #fff;
+    border: 1px solid var(--bsrp-line);
+    border-radius: var(--bsrp-radius-md);
+    padding: 1.5rem 1.4rem 1.6rem;
+    box-shadow: 0 1px 2px rgba(10,10,10,0.03), 0 8px 24px rgba(74,112,140,0.06);
+    transition: transform .2s ease, box-shadow .25s ease;
+  }
+  .bsrp-pillar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 1px 2px rgba(10,10,10,0.04), 0 14px 32px rgba(74,112,140,0.10);
+  }
+  .bsrp-pillar-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--bsrp-blau-1), var(--bsrp-blau-3));
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 6px 16px rgba(74, 112, 140, 0.25);
+  }
+  .bsrp-pillar-icon svg { width: 24px; height: 24px; }
+  .bsrp-pillar-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--bsrp-ink);
+    margin: 0 0 0.45rem;
+    line-height: 1.25;
+  }
+  .bsrp-pillar-text {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bsrp-muted);
+    margin: 0;
+  }
+
+  /* Featured-Pillar: das Kernversprechen (Beckenboden) sticht heraus.
+     Spannt die volle Breite über der Reihe mit den 3 Supporting-Cards. */
+  .bsrp-pillar-featured {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #36617e 0%, var(--bsrp-blau-3) 55%, #345e7c 100%);
+    color: #fff;
+    border: 0;
+    padding: 1.75rem 2rem 1.85rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 1.5rem;
+    align-items: start;
+    box-shadow: 0 4px 12px rgba(74, 112, 140, 0.18), 0 18px 40px rgba(74, 112, 140, 0.16);
+    position: relative;
+    overflow: hidden;
+  }
+  .bsrp-pillar-featured::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 100% 0%, rgba(255,255,255,0.10), transparent 60%);
+    pointer-events: none;
+  }
+  .bsrp-pillar-featured .bsrp-pillar-icon {
+    width: 64px; height: 64px;
+    background: rgba(255,255,255,0.18);
+    grid-row: span 3;
+    align-self: center;
+    margin: 0;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.20);
+  }
+  .bsrp-pillar-featured .bsrp-pillar-icon svg { width: 32px; height: 32px; }
+  .bsrp-pillar-featured .bsrp-pillar-title {
+    color: #fff;
+    font-size: 1.375rem;
+    margin: 0 0 0.5rem;
+  }
+  .bsrp-pillar-featured .bsrp-pillar-text {
+    color: rgba(255,255,255,0.92);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    max-width: 48rem;
+  }
+  .bsrp-pillar-badge {
+    grid-column: 2;
+    display: inline-block;
+    align-self: start;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bsrp-beige-1);
+    background: rgba(255,255,255,0.10);
+    padding: 5px 11px;
+    border-radius: var(--bsrp-radius-pill);
+    margin-bottom: 0.65rem;
+    width: max-content;
+  }
+
+  /* ============================ BANNER (Bayerischer Wald) ============================ */
+  .bsrp-banner {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: clamp(560px, 68vw, 800px);
+    overflow: hidden;
+    background: var(--bsrp-bg);  /* warm-beige, fließt in vorherige Section */
+  }
+  /* Bild fadet per Mask von transparent oben (Headline-Bereich)
+     zu voll sichtbar unten (Personen mit klarer Schärfe). */
+  .bsrp-banner-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 55%;
+    -webkit-mask-image: linear-gradient(180deg,
+                          transparent 0%,
+                          transparent 12%,
+                          rgba(0,0,0,0.40) 22%,
+                          rgba(0,0,0,0.85) 32%,
+                          #000 42%,
+                          #000 100%);
+            mask-image: linear-gradient(180deg,
+                          transparent 0%,
+                          transparent 12%,
+                          rgba(0,0,0,0.40) 22%,
+                          rgba(0,0,0,0.85) 32%,
+                          #000 42%,
+                          #000 100%);
+  }
+  /* Veil nicht mehr nötig, da Bild oben transparent ist */
+  .bsrp-banner-veil { display: none; }
+
+  .bsrp-banner-caption {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 5.5rem 5% 0;
+    text-align: center;
+    z-index: 2;
+  }
+  .bsrp-banner-eyebrow {
+    display: inline-block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    margin-bottom: 0.85rem;
+    color: #5a8a52;            /* Mid-Waldgrün auf beigem Hintergrund */
+  }
+  .bsrp-banner-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.875rem, 3.4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.12;
+    margin: 0;
+    letter-spacing: -0.02em;
+    /* Premium-Gradient: helles Frischgrün → tiefes Waldgrün */
+    background: linear-gradient(165deg, #4F9248 0%, #2E6B3A 45%, #1F4A2C 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ============================ LOCATION ============================ */
+  .bsrp-location {
+    background: #fff;
+    padding: 5rem 5%;
+  }
+  .bsrp-location-inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  /* Variante ohne Foto: zentrierter, fokussierter Textblock. */
+  .bsrp-location-inner.is-text-only {
+    grid-template-columns: 1fr;
+    max-width: 44rem;
+    text-align: center;
+    gap: 0;
+  }
+  .bsrp-location-inner.is-text-only .bsrp-mini-pills { justify-content: center; }
+  .bsrp-location-photo {
+    position: relative;
+    border-radius: var(--bsrp-radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    box-shadow:
+      0 1px 2px rgba(10,10,10,0.05),
+      0 22px 48px rgba(74, 112, 140, 0.14);
+  }
+  .bsrp-location-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .bsrp-location-eyebrow {
+    display: inline-block;
+    color: var(--bsrp-blau-3);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .bsrp-location-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--bsrp-black);
+    margin: 0 0 1.25rem;
+    text-wrap: balance;
+  }
+  .bsrp-location-body { font-size: 1.0625rem; line-height: 1.7; color: var(--bsrp-ink); }
+  .bsrp-location-body p { margin: 0 0 1rem; }
+  .bsrp-mini-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+  .bsrp-mini-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bsrp-blau-soft);
+    color: var(--bsrp-blau-3);
+    border-radius: var(--bsrp-radius-pill);
+    padding: 7px 14px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  /* ============================ IMPRESSIONEN (Slider) ============================ */
+  .bsrp-impressionen {
+    padding: 5rem 0 5.5rem;
+    background: var(--bsrp-bg);
+  }
+  .bsrp-imp-header {
+    text-align: center;
+    max-width: 42rem;
+    margin: 0 auto 2.5rem;
+    padding: 0 5%;
+  }
+  .bsrp-imp-eyebrow {
+    display: inline-block;
+    color: var(--bsrp-blau-3);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .bsrp-imp-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--bsrp-black);
+    margin: 0;
+  }
+  /* Slider: horizontaler Scroll mit Snap, alle Bilder uniform */
+  .bsrp-imp-slider {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: max(5%, calc(50% - 38rem));
+    padding: 6px max(5%, calc(50% - 38rem)) 24px;
+    margin: 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(74, 112, 140, 0.30) transparent;
+  }
+  .bsrp-imp-slider::-webkit-scrollbar { height: 8px; }
+  .bsrp-imp-slider::-webkit-scrollbar-track { background: transparent; }
+  .bsrp-imp-slider::-webkit-scrollbar-thumb {
+    background: rgba(74, 112, 140, 0.30);
+    border-radius: 4px;
+  }
+  .bsrp-imp-slider::-webkit-scrollbar-thumb:hover { background: rgba(74, 112, 140, 0.55); }
+  .bsrp-imp-slider:focus-visible {
+    outline: 2px solid var(--bsrp-blau-3);
+    outline-offset: 4px;
+    border-radius: var(--bsrp-radius-md);
+  }
+  .bsrp-imp-slide {
+    flex: 0 0 auto;
+    width: clamp(260px, 26vw, 340px);
+    aspect-ratio: 3 / 4;
+    border-radius: var(--bsrp-radius-md);
+    overflow: hidden;
+    scroll-snap-align: start;
+    background: #ddd;
+    box-shadow: 0 1px 2px rgba(10,10,10,0.04), 0 12px 28px rgba(74,112,140,0.10);
+    position: relative;
+    margin: 0;
+  }
+  .bsrp-imp-slide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+  }
+  .bsrp-imp-slide:hover img { transform: scale(1.04); }
+  .bsrp-imp-hint {
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 0 5%;
+    text-align: center;
+    color: var(--bsrp-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    justify-self: center;
+    width: 100%;
+    justify-content: center;
+  }
+  .bsrp-imp-hint svg { color: var(--bsrp-blau-3); }
+
+  /* ============================ TESTIMONIALS (5 equal cards, 3+2 centered) ============================ */
+  .bsrp-testimonials {
+    padding: 5rem 5% 5.5rem;
+    background: var(--bsrp-bg);
+  }
+  .bsrp-testi-inner {
+    max-width: 76rem;
+    margin: 0 auto;
+  }
+  .bsrp-testi-header {
+    text-align: center;
+    max-width: 44rem;
+    margin: 0 auto 3rem;
+  }
+  .bsrp-testi-eyebrow {
+    display: inline-block;
+    color: var(--bsrp-blau-3);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .bsrp-testi-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--bsrp-black);
+    margin: 0 0 0.85rem;
+    text-wrap: balance;
+  }
+  .bsrp-testi-sub {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--bsrp-muted);
+    margin: 0 auto;
+    max-width: 38rem;
+  }
+
+  /* 6-Col Grid: 3 Cards in Reihe 1, 2 zentrierte in Reihe 2.
+     grid-auto-rows: 1fr sorgt für identische Card-Höhen über alle Reihen. */
+  .bsrp-testi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 1.5rem;
+  }
+  .bsrp-testi-grid > .bsrp-testi-card:nth-child(1) { grid-column: 1 / span 2; }
+  .bsrp-testi-grid > .bsrp-testi-card:nth-child(2) { grid-column: 3 / span 2; }
+  .bsrp-testi-grid > .bsrp-testi-card:nth-child(3) { grid-column: 5 / span 2; }
+  .bsrp-testi-grid > .bsrp-testi-card:nth-child(4) { grid-column: 2 / span 2; }
+  .bsrp-testi-grid > .bsrp-testi-card:nth-child(5) { grid-column: 4 / span 2; }
+
+  /* Card: clean, schattig, ohne Border. Premium-Feel. */
+  .bsrp-testi-card {
+    background: #ffffff;
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 14px 32px rgba(10, 10, 10, 0.06);
+    display: flex;
+    flex-direction: column;
+    transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .3s ease;
+  }
+  .bsrp-testi-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 2px 4px rgba(10, 10, 10, 0.05),
+      0 28px 56px rgba(10, 10, 10, 0.10);
+  }
+
+  /* Alle Videos im 16:9 (Querformat) */
+  .bsrp-testi-video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--bsrp-bg);
+    overflow: hidden;
+  }
+  .bsrp-testi-video iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
+
+  /* Click-to-Play Facade. Sauberes Thumbnail, dezenter Play-Button.
+     Kein dunkles Overlay, kein schwarzer Hintergrund. */
+  .bsrp-testi-play {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+  }
+  .bsrp-testi-play img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    transition: transform .5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .bsrp-testi-play:hover img { transform: scale(1.04); }
+
+  .bsrp-testi-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--bsrp-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.55) inset;
+    transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1), background .25s ease;
+    z-index: 2;
+  }
+  .bsrp-testi-play:hover .bsrp-testi-play-icon {
+    transform: translate(-50%, -50%) scale(1.08);
+    background: #ffffff;
+  }
+  .bsrp-testi-play-icon svg {
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
+  }
+  .bsrp-testi-play:focus-visible {
+    outline: 3px solid var(--bsrp-blau-3);
+    outline-offset: 2px;
+  }
+
+  /* Zitat: cleanly gesetzt, generous padding.
+     WICHTIG: <blockquote>-Reset gegen Webflow-Defaults
+     (border-left + grauer Background). */
+  .bsrp-root blockquote.bsrp-testi-quote {
+    margin: 0;
+    padding: 1.5rem 1.6rem 1.65rem;
+    background: #ffffff;
+    border: 0;
+    border-left: 0;
+    border-radius: 0;
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    font-style: normal;
+    quotes: none;
+  }
+  .bsrp-root blockquote.bsrp-testi-quote::before,
+  .bsrp-root blockquote.bsrp-testi-quote::after { content: none; }
+  .bsrp-root blockquote.bsrp-testi-quote p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--bsrp-ink);
+    font-weight: 500;
+    letter-spacing: -0.003em;
+    text-wrap: pretty;
+  }
+
+
+  /* ============================ TERMINE + SOFT-CTA ============================ */
+  .bsrp-final {
+    padding: 5rem 5%;
+    background: #fff;
+  }
+  .bsrp-final-inner {
+    max-width: 60rem;
+    margin: 0 auto;
+  }
+  .bsrp-termine-eyebrow {
+    display: inline-block;
+    color: var(--bsrp-blau-3);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .bsrp-termine-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--bsrp-black);
+    margin: 0 0 1.75rem;
+    text-wrap: balance;
+  }
+  .bsrp-termine-list {
+    display: flex; flex-direction: column;
+    gap: 0.75rem;
+    margin: 0 0 3rem;
+  }
+  .bsrp-termin {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
+    background: #fff;
+    border: 1px solid var(--bsrp-line);
+    border-radius: var(--bsrp-radius-md);
+    padding: 1rem 1.4rem;
+  }
+  .bsrp-termin.upcoming { border-left: 3px solid var(--bsrp-blau-3); }
+  .bsrp-termin-main {
+    font-weight: 700;
+    color: var(--bsrp-ink);
+    font-size: 1rem;
+  }
+  .bsrp-termin-sub {
+    font-size: 0.875rem;
+    color: var(--bsrp-muted);
+    margin-top: 0.15rem;
+  }
+  .bsrp-termin-tag {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bsrp-blau-3);
+    background: var(--bsrp-blau-soft);
+    padding: 5px 11px;
+    border-radius: var(--bsrp-radius-pill);
+    white-space: nowrap;
+  }
+
+  .bsrp-warteliste-sub {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--bsrp-muted);
+    max-width: 44rem;
+    margin: 0 0 2rem;
+  }
+
+  /* ============================ WARTELISTE-FORMULAR ============================ */
+  .bsrp-form-card {
+    background: #ffffff;
+    border: 1px solid var(--bsrp-line);
+    border-radius: var(--bsrp-radius-lg);
+    padding: 2rem 2rem 2.25rem;
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 18px 44px rgba(74, 112, 140, 0.10);
+    margin: 0 0 2.75rem;
+  }
+  #form-warteliste { display: block; }
+  #form-warteliste .form_field-wrap {
+    margin-bottom: 1.1rem;
+    position: relative;
+  }
+  #form-warteliste .form_field-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--bsrp-ink);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.005em;
+  }
+  #form-warteliste .form_field-label span[aria-hidden="true"] {
+    color: var(--bsrp-blau-3);
+    margin-left: 2px;
+  }
+  #form-warteliste .form_field_input {
+    width: 100%;
+    height: 48px;
+    padding: 0 1rem;
+    background: #fff;
+    border: 1.5px solid var(--bsrp-line);
+    border-radius: 12px;
+    font-family: Manrope, sans-serif;
+    font-size: 1rem;
+    color: var(--bsrp-ink);
+    transition: border-color .15s ease, box-shadow .15s ease;
+    outline: none;
+    -webkit-appearance: none;
+            appearance: none;
+  }
+  #form-warteliste .form_field_input:focus {
+    border-color: var(--bsrp-blau-3);
+    box-shadow: 0 0 0 4px rgba(74, 112, 140, 0.10);
+  }
+  #form-warteliste .form_field_input.is-invalid,
+  #form-warteliste .status-toggle.is-invalid {
+    border-color: #d9534f;
+    box-shadow: 0 0 0 4px rgba(217, 83, 79, 0.10);
+  }
+  #form-warteliste .field-error {
+    display: block;
+    font-size: 0.8125rem;
+    color: #b02525;
+    margin-top: 0.35rem;
+    min-height: 0;
+  }
+  #form-warteliste .field-error:empty { display: none; }
+
+  /* Status-Toggle: 2 große Optionen statt klassischer Radios */
+  #form-warteliste .status-fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 1.1rem;
+  }
+  #form-warteliste .status-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+  #form-warteliste .status-option {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    background: #fff;
+    border: 1.5px solid var(--bsrp-line);
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  #form-warteliste .status-option:hover {
+    border-color: rgba(74, 112, 140, 0.40);
+  }
+  #form-warteliste .status-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  #form-warteliste .status-option:has(input[type="radio"]:checked) {
+    border-color: var(--bsrp-blau-3);
+    background: var(--bsrp-blau-soft);
+    box-shadow: 0 0 0 4px rgba(74, 112, 140, 0.10);
+  }
+  #form-warteliste .status-option:focus-within {
+    outline: 2px solid var(--bsrp-blau-3);
+    outline-offset: 2px;
+  }
+  #form-warteliste .status-option-content {
+    display: flex; flex-direction: column;
+    gap: 2px;
+  }
+  #form-warteliste .status-option-title {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--bsrp-ink);
+    line-height: 1.3;
+  }
+  #form-warteliste .status-option-sub {
+    font-size: 0.8125rem;
+    color: var(--bsrp-muted);
+    line-height: 1.4;
+  }
+
+  /* Telefon-Gruppe */
+  #form-warteliste .phone-input-group {
+    display: grid;
+    grid-template-columns: minmax(140px, 0.5fr) 1fr;
+    gap: 0.5rem;
+  }
+  #form-warteliste .phone-prefix-select {
+    height: 48px;
+    padding: 0 0.7rem;
+    background: #fff;
+    border: 1.5px solid var(--bsrp-line);
+    border-radius: 12px;
+    font-family: Manrope, sans-serif;
+    font-size: 0.9375rem;
+    color: var(--bsrp-ink);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+            appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg viewBox='0 0 24 24' fill='none' stroke='%234a708c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    background-size: 16px;
+    padding-right: 1.85rem;
+  }
+  #form-warteliste .phone-prefix-select:focus {
+    border-color: var(--bsrp-blau-3);
+    box-shadow: 0 0 0 4px rgba(74, 112, 140, 0.10);
+  }
+  #form-warteliste .phone-number-input { font-variant-numeric: tabular-nums; }
+
+  /* Datenschutz */
+  #form-warteliste .checkbox-wrap { margin-bottom: 1.25rem; }
+  #form-warteliste .datenschutzhinweis {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.6rem;
+    align-items: start;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--bsrp-muted);
+  }
+  #form-warteliste .datenschutzhinweis input[type="checkbox"] {
+    width: 18px; height: 18px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: var(--bsrp-blau-3);
+  }
+  #form-warteliste .datenschutz-link {
+    color: var(--bsrp-blau-3);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Globale Fehlermeldung */
+  #form-warteliste .form_error {
+    background: #fff5f5;
+    border: 1px solid #d9534f;
+    color: #7b2020;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    font-size: 0.9375rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Submit-Button */
+  #form-warteliste .form_button {
+    width: 100%;
+    height: 56px;
+    border: 0;
+    border-radius: var(--bsrp-radius-lg);
+    background-image: radial-gradient(circle farthest-corner at 50% 100%, var(--bsrp-beige-2), var(--bsrp-beige-1));
+    color: #ffffff;
+    font-family: Manrope, sans-serif;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: 0.005em;
+    box-shadow: 0 10px 26px rgba(172, 143, 117, .4), 0 1px 0 rgba(255,255,255,.4) inset;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .25s ease;
+  }
+  #form-warteliste .form_button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px rgba(172, 143, 117, .45), 0 1px 0 rgba(255,255,255,.4) inset;
+  }
+  #form-warteliste .form_button:active:not(:disabled) { transform: translateY(0); }
+  #form-warteliste .form_button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  /* Soft-CTA-Block */
+  .bsrp-softblock {
+    background: linear-gradient(135deg, var(--bsrp-beige-soft) 0%, #fff8ef 100%);
+    border-radius: var(--bsrp-radius-lg);
+    padding: 2.5rem 2.5rem 2.75rem;
+    text-align: center;
+    border: 1px solid rgba(193, 166, 141, 0.25);
+  }
+  .bsrp-softblock-eyebrow {
+    display: inline-block;
+    color: var(--bsrp-beige-2);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .bsrp-softblock-h3 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bsrp-black);
+    margin: 0 0 0.85rem;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .bsrp-softblock-text {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--bsrp-ink);
+    max-width: 36rem;
+    margin: 0 auto 1.5rem;
+  }
+  .bsrp-softblock-cta-wrap {
+    display: inline-flex; flex-direction: column;
+    align-items: center; gap: 0.75rem;
+  }
+  .bsrp-softblock-meta {
+    font-size: 0.8125rem;
+    color: var(--bsrp-muted);
+  }
+
+  /* ============================ RESPONSIVE ============================ */
+  /* ====================== RESPONSIVE ====================== */
+
+  /* Desktop S / kleines Notebook */
+  @media (max-width: 1280px) {
+    .bsrp-trust   { margin-left: 2rem; margin-right: 2rem; }
+    .bsrp-pillars { margin-left: 2rem; margin-right: 2rem; }
+  }
+
+  /* Tablet */
+  @media (max-width: 991px) {
+    /* Hero stack */
+    .bsrp-hero-inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 1.5rem 5% 3rem;
+      min-height: 0;
+    }
+    .bsrp-hero-copy { max-width: none; order: 1; }
+    .bsrp-hero-video-col { order: 2; }
+    /* Eyebrow auf Tablet auch Kurzform für saubere Single-Line */
+    .bsrp-eyebrow-long  { display: none; }
+    .bsrp-eyebrow-short { display: inline; }
+
+    /* Nav-Exklusiv-Pill kleiner */
+    .bsrp-nav-exclusive {
+      font-size: 0.6875rem;
+      padding: 0.35rem 0.8rem 0.35rem 0.35rem;
+    }
+    .bsrp-nav-exclusive-icon { width: 20px; height: 20px; }
+    .bsrp-nav-exclusive-icon svg { width: 11px; height: 11px; }
+
+    /* Pillars: 1 Card pro Zeile (untereinander), Featured oben full-width.
+       Auf Tablet ist die volle Card-Breite klar lesbarer als zwei schmalere. */
+    .bsrp-pillars-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .bsrp-pillar-featured {
+      grid-template-columns: auto 1fr;
+      gap: 0 1.5rem;
+      padding: 1.65rem 1.75rem 1.75rem;
+    }
+    .bsrp-pillar-featured .bsrp-pillar-icon { width: 60px; height: 60px; }
+    .bsrp-pillar-featured .bsrp-pillar-icon svg { width: 30px; height: 30px; }
+    .bsrp-pillar-featured .bsrp-pillar-title { font-size: 1.25rem; }
+
+    /* Story & Location: max-width für Lesbarkeit (45–75 chars) */
+    .bsrp-story-inner    { grid-template-columns: 1fr; gap: 2rem; }
+    .bsrp-story-text     { max-width: 38rem; margin: 0 auto; width: 100%; }
+    .bsrp-story-photo    { order: -1; max-width: 24rem; margin: 0 auto; aspect-ratio: 4 / 5; }
+    .bsrp-location-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .bsrp-location-text  { max-width: 38rem; margin: 0 auto; width: 100%; }
+
+    /* Trust auf Tablet: 2 + 1-span-2 statt 3 dünner Spalten */
+    .bsrp-trust-grid { grid-template-columns: 1fr 1fr; gap: 0; }
+    .bsrp-trust-card {
+      padding: 1.25rem 1rem;
+      border-left: 0;
+      border-top: 1px solid rgba(103, 139, 165, 0.12);
+    }
+    .bsrp-trust-card:nth-child(-n+2) { border-top: 0; }
+    .bsrp-trust-card:nth-child(even) { border-left: 1px solid rgba(103, 139, 165, 0.12); }
+    .bsrp-trust-card:nth-child(3)    { grid-column: span 2; border-top: 1px solid rgba(103, 139, 165, 0.12); border-left: 0; }
+
+    /* Impressionen-Slider auf Tablet: Slides etwas schmaler für gleichmäßigeren Peek */
+    .bsrp-imp-slide { width: clamp(240px, 38vw, 320px); }
+
+    /* Testimonials auf Tablet: 2-col Grid, 5. Card unten zentriert */
+    .bsrp-testi-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      gap: 1rem;
+    }
+    .bsrp-testi-grid > .bsrp-testi-card:nth-child(1) { grid-column: 1 / span 2; }
+    .bsrp-testi-grid > .bsrp-testi-card:nth-child(2) { grid-column: 3 / span 2; }
+    .bsrp-testi-grid > .bsrp-testi-card:nth-child(3) { grid-column: 1 / span 2; }
+    .bsrp-testi-grid > .bsrp-testi-card:nth-child(4) { grid-column: 3 / span 2; }
+    .bsrp-testi-grid > .bsrp-testi-card:nth-child(5) { grid-column: 2 / span 2; }
+    .bsrp-root blockquote.bsrp-testi-quote { padding: 1.3rem 1.4rem 1.4rem; }
+
+    /* Banner auf Tablet: höher + tiefere Transparenz-Zone,
+       damit die Headline klar im weißen Bereich steht (kein Overlap mit Personen) */
+    .bsrp-banner { height: clamp(580px, 72vw, 720px); }
+    .bsrp-banner-img {
+      object-position: center 58%;
+      -webkit-mask-image: linear-gradient(180deg,
+                            transparent 0%,
+                            transparent 28%,
+                            rgba(0,0,0,0.50) 40%,
+                            rgba(0,0,0,0.92) 52%,
+                            #000 62%,
+                            #000 100%);
+              mask-image: linear-gradient(180deg,
+                            transparent 0%,
+                            transparent 28%,
+                            rgba(0,0,0,0.50) 40%,
+                            rgba(0,0,0,0.92) 52%,
+                            #000 62%,
+                            #000 100%);
+    }
+    .bsrp-banner-caption {
+      padding: 5.5rem 5% 0;
+      max-width: 36rem;
+      margin: 0 auto;
+    }
+    .bsrp-banner-h2 {
+      font-size: clamp(1.875rem, 4.2vw, 2.5rem);
+      line-height: 1.15;
+    }
+    .bsrp-banner-eyebrow {
+      font-size: 0.875rem;
+      margin-bottom: 0.7rem;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    /* Stage + Banner: statt 100vw die Container-Breite nutzen.
+       Verhindert Overflow rechts wenn der Webflow-main-wrapper
+       eigenes Padding hat (klassisches iPhone-Issue). */
+    .bsrp-stage,
+    .bsrp-banner {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+    }
+
+    /* Nav: kleineres Logo, 44 px Touch-Target am Back-Button */
+    .bsrp-nav-inner { padding: 0.625rem 1rem; gap: 0.5rem; }
+    .bsrp-root .bsrp-logo-img { height: 40px; }
+    .bsrp-nav-exclusive { display: none; }
+    .bsrp-nav-back {
+      min-height: 44px;
+      padding: 0.6rem 0.95rem;
+      font-size: 0.8125rem;
+    }
+
+    /* Hero: kompakter, CTA above the fold */
+    .bsrp-hero-inner { padding: 1rem 1rem 2.5rem; gap: 1.5rem; }
+    .bsrp-hero-eyebrow {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+      margin-bottom: 0.75rem;
+      max-width: 100%;
+      white-space: normal;
+      line-height: 1.3;
+    }
+    /* Eyebrow auf Mobile: Kurzform statt Langform - verhindert Umbruch */
+    .bsrp-eyebrow-long  { display: none; }
+    .bsrp-eyebrow-short { display: inline; }
+    .bsrp-h1 { font-size: clamp(1.375rem, 5.5vw, 1.875rem); }
+    .bsrp-subheadline { font-size: 0.9375rem; margin-bottom: 0.6rem; }
+    .bsrp-lead { font-size: 0.9375rem; margin-bottom: 1rem; }
+    /* CTA: Text wrappt zur Not, Padding angepasst für engen Viewport */
+    .bsrp-cta {
+      width: 100%;
+      max-width: 100%;
+      padding: 0.85rem 1rem;
+      font-size: 0.9375rem;
+      line-height: 1.3;
+      white-space: normal;
+    }
+    .bsrp-cta-wrap { align-items: stretch; gap: 0.5rem; }
+    .bsrp-cta-row { gap: 0.25rem; }
+    .bsrp-cta-secondary {
+      min-height: 44px;
+      padding: 0.65rem 0.5rem;
+      width: 100%;
+      max-width: 100%;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.9375rem;
+      line-height: 1.3;
+      white-space: normal;
+    }
+    /* Trust-Hinweis-Text bleibt sichtbar (Vertrauensignal) */
+    .bsrp-cta-meta {
+      display: block;
+      font-size: 0.75rem;
+      text-align: center;
+      padding-left: 0;
+      opacity: 0.7;
+    }
+
+    /* Hero-Promise-Block kompakter */
+    .bsrp-hero-promise {
+      font-size: 0.9375rem;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.25rem;
+      max-width: 100%;
+    }
+
+    /* Warteliste-Form: kompaktes Padding, Status-Toggle stacked */
+    .bsrp-form-card { padding: 1.5rem 1.25rem 1.75rem; }
+    #form-warteliste .status-toggle { grid-template-columns: 1fr; }
+    #form-warteliste .phone-input-group {
+      grid-template-columns: minmax(120px, 0.55fr) 1fr;
+    }
+    .bsrp-warteliste-sub { font-size: 0.9375rem; }
+
+    /* Hero-Video aspect 16:9, kleinerer Radius */
+    .bsrp-hero-video-wrap { aspect-ratio: 16 / 9; border-radius: var(--bsrp-radius-md); }
+    .bsrp-hero-play .bsrp-testi-play-icon { width: 64px; height: 64px; }
+    .bsrp-hero-play .bsrp-testi-play-icon svg { width: 22px; height: 22px; }
+
+    /* Trust */
+    .bsrp-trust { margin: -0.75rem 1rem 1.5rem; }
+    .bsrp-trust-inner { padding: 1.75rem 1.5rem 2rem; }
+    .bsrp-trust-grid { grid-template-columns: 1fr; }
+    .bsrp-trust-card {
+      padding: 1.25rem 0;
+      border-left: 0;
+      border-top: 1px solid rgba(103, 139, 165, 0.12);
+    }
+    .bsrp-trust-card:nth-child(even) { border-left: 0; }
+    .bsrp-trust-card:nth-child(3) { grid-column: auto; }
+    .bsrp-trust-card:first-child { border-top: 0; padding-top: 0; }
+    .bsrp-trust-label { font-size: 0.875rem; }
+
+    /* Story / Location einheitliches Container-Padding */
+    .bsrp-story        { padding: 3rem 1rem 3.5rem; }
+    .bsrp-location     { padding: 3rem 1rem 3.5rem; }
+    .bsrp-impressionen { padding: 3rem 1rem 3.5rem; }
+    .bsrp-final        { padding: 3rem 1rem 3.5rem; }
+    .bsrp-story-body   { font-size: 1rem; line-height: 1.7; }
+    .bsrp-location-body{ font-size: 1rem; line-height: 1.65; }
+
+    /* Banner Mobile: Stack-Layout statt Overlay
+       - Caption (Eyebrow + Headline) ZUERST oben, dann Bild
+       - flex + order dreht die Source-Reihenfolge (img steht im HTML vor Caption)
+       - Sanfter Top-Fade des Bilds als Übergang von der weißen Caption */
+    .bsrp-banner {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      overflow: visible;
+      background: var(--bsrp-bg);
+    }
+    .bsrp-banner-caption {
+      order: 1;
+      position: static;
+      text-align: center;
+      padding: 3rem 1.25rem 2.25rem;
+      max-width: 26rem;
+      margin: 0 auto;
+      text-shadow: none;
+    }
+    .bsrp-banner-img {
+      order: 2;
+      position: static;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      object-position: center 50%;
+      -webkit-mask-image: linear-gradient(180deg,
+                            rgba(0,0,0,0)    0%,
+                            rgba(0,0,0,0.55) 8%,
+                            #000             22%,
+                            #000             100%);
+              mask-image: linear-gradient(180deg,
+                            rgba(0,0,0,0)    0%,
+                            rgba(0,0,0,0.55) 8%,
+                            #000             22%,
+                            #000             100%);
+    }
+    .bsrp-banner-h2 {
+      font-size: clamp(1.625rem, 7vw, 2rem);
+      line-height: 1.18;
+    }
+    .bsrp-banner-eyebrow {
+      font-size: 0.8125rem;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.6rem;
+    }
+
+    /* Pillars: 1-Spalte (untereinander), Featured bleibt prominent */
+    .bsrp-pillars { margin: 0 1rem; padding: 2.5rem 1.25rem 3rem; border-radius: var(--bsrp-radius-lg); }
+    .bsrp-pillars-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+    .bsrp-pillars-header { margin-bottom: 1.75rem; }
+    .bsrp-pillar-featured {
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+      padding: 1.5rem 1.4rem 1.65rem;
+    }
+    .bsrp-pillar-featured .bsrp-pillar-icon {
+      grid-row: auto;
+      align-self: flex-start;
+      width: 52px; height: 52px;
+    }
+    .bsrp-pillar-featured .bsrp-pillar-icon svg { width: 26px; height: 26px; }
+    .bsrp-pillar-featured .bsrp-pillar-title { font-size: 1.15rem; }
+    .bsrp-pillar-badge { grid-column: 1; margin-bottom: 0.25rem; }
+
+    /* Impressionen-Slider auf Mobile: kompakter, eindeutiger Swipe-Hint */
+    .bsrp-imp-slider {
+      padding: 6px 1rem 20px;
+      gap: 10px;
+      scroll-padding-inline: 1rem;
+    }
+    .bsrp-imp-slide { width: clamp(240px, 78vw, 320px); }
+    .bsrp-imp-hint  { font-size: 0.75rem; padding: 0 1rem; }
+
+    /* Testimonials auf Mobile: alles 1-spaltig */
+    .bsrp-testimonials { padding: 3rem 1rem 3.5rem; }
+    .bsrp-testi-header { margin-bottom: 2rem; }
+    .bsrp-testi-grid {
+      grid-template-columns: 1fr;
+      grid-auto-rows: auto;
+      gap: 0.9rem;
+    }
+    .bsrp-testi-grid > .bsrp-testi-card:nth-child(n) { grid-column: auto; }
+    .bsrp-root blockquote.bsrp-testi-quote { padding: 1.2rem 1.35rem 1.3rem; }
+    .bsrp-root blockquote.bsrp-testi-quote p { font-size: 0.9375rem; }
+    .bsrp-testi-play-icon { width: 52px; height: 52px; }
+    .bsrp-testi-play-icon svg { width: 16px; height: 16px; }
+
+    /* Termine: Tag oben, kompakter */
+    .bsrp-softblock { padding: 2rem 1.25rem 2.25rem; }
+    .bsrp-softblock-text { font-size: 0.9375rem; }
+    .bsrp-termin {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 1rem 1.1rem;
+    }
+    .bsrp-termin-tag  { align-self: flex-start; }
+    .bsrp-termin-sub  { font-size: 0.9375rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bsrp-pillar, .bsrp-imp-slide img, .bsrp-cta, .bsrp-cta-arrow { transition: none; }
+    .bsrp-imp-slider { scroll-behavior: auto; }
+  }
+</style>
+
+
+<!-- =====================================================================
+     INHALT
+     ===================================================================== -->
+<div class="bsrp-root">
+
+  <!-- ===================== STAGE (Nav + Hero) ===================== -->
+  <div class="bsrp-stage">
+
+    <!-- ====================== NAVIGATION ====================== -->
+    <nav class="bsrp-nav" aria-label="Retreat-Navigation">
+      <div class="bsrp-nav-inner">
+        <a href="https://www.barbarascharrer.de/" class="bsrp-nav-logo" data-bsrp-url="home" aria-label="Barbara Scharrer Startseite">
+          <img class="bsrp-logo-img" data-bsrp-img="logo" src="https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg" width="240" height="60" alt="Barbara Scharrer – Aufrecht & Echt" />
+        </a>
+
+        <div class="bsrp-nav-actions">
+          <a href="https://www.barbarascharrer.de/" class="bsrp-nav-back" data-bsrp-url="home" aria-label="Zurück zur Startseite von Barbara Scharrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Zurück zur Startseite
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ========================= HERO ========================= -->
+    <section class="bsrp-hero" aria-labelledby="bsrp-hero-heading">
+      <div class="bsrp-hero-inner">
+
+        <div class="bsrp-hero-copy">
+
+          <!-- 1. Tagline / Eyebrow -->
+          <span class="bsrp-hero-eyebrow">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>
+              <span class="bsrp-eyebrow-long">Nächstes Retreat · 22. bis 25. April 2027 · Kloster Schweinheim</span>
+              <span class="bsrp-eyebrow-short">22.–25. April 2027 · Kloster Schweinheim</span>
+            </span>
+          </span>
+
+          <!-- 3. H1-Headline -->
+          <h1 id="bsrp-hero-heading" class="bsrp-h1">
+            Beckenboden-Retreat: <span class="bsrp-h1-accent">Loslassen, auftanken, bei dir ankommen</span>.
+          </h1>
+
+          <!-- 4. Subheadline -->
+          <p class="bsrp-subheadline">
+            Beckenboden- und Ganzkörpertraining, mitten in der Natur, vier Tage nur für dich.
+          </p>
+
+          <!-- 5. Ergebnis-Versprechen (was du mitnimmst) -->
+          <p class="bsrp-hero-promise">
+            Du gehst nach Hause mit einem stabileren Körper, einem klareren Kopf und Frauen an deiner Seite, die genau wissen, wovon du sprichst.
+          </p>
+
+          <!-- 6. CTA-Block: Primär für Kundinnen (Warteliste), sekundär für Nicht-Kundinnen -->
+          <div class="bsrp-cta-wrap">
+            <div class="bsrp-cta-row">
+              <a class="bsrp-cta" href="#warteliste">
+                Platz auf der Warteliste sichern
+                <svg class="bsrp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+              <a class="bsrp-cta-secondary" href="https://www.barbarascharrer.de/retreat-beratung" data-bsrp-url="retreatBeratung">
+                Du bist noch nicht im Programm? Hier entlang
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </a>
+            </div>
+            <div class="bsrp-cta-meta">
+              <strong>22. bis 25. April 2027 · Kloster Schweinheim.</strong><br/>
+              Exklusiv für Programm-Teilnehmerinnen.
+            </div>
+          </div>
+        </div>
+
+        <!-- Vlog-Video (rechts) · Click-to-Play Facade.
+             Spart ~500KB YouTube-JS beim Page-Load und zeigt das volle
+             16:9-Thumbnail ohne Crop. -->
+        <div class="bsrp-hero-video-col">
+          <div class="bsrp-hero-video-wrap">
+            <button type="button" class="bsrp-testi-play bsrp-hero-play" data-bsrp-yt="vqhtF9mu6kg" aria-label="Vlog vom ersten Retreat im Bayerischen Wald abspielen">
+              <img src="https://i.ytimg.com/vi/vqhtF9mu6kg/maxresdefault.jpg" alt="Eindrücke vom ersten Retreat in der Schnitzmühle, Bayerischer Wald" width="1280" height="720" />
+              <span class="bsrp-testi-play-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg>
+              </span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ========================= TRUST-SEKTION ========================= -->
+  <section class="bsrp-trust" aria-labelledby="bsrp-trust-heading">
+    <div class="bsrp-trust-inner">
+
+      <header class="bsrp-trust-header">
+        <h2 id="bsrp-trust-heading" class="bsrp-h2">Was unser Beckenboden-Retreat ausmacht</h2>
+        <p class="bsrp-trust-sub">Live, gemeinsam, geerdet · fernab vom Alltag.</p>
+      </header>
+
+      <div class="bsrp-trust-grid">
+
+        <div class="bsrp-trust-card">
+          <div class="bsrp-trust-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <p class="bsrp-trust-value">Kloster Schweinheim</p>
+          <p class="bsrp-trust-label">53881 Euskirchen · April 2027</p>
+        </div>
+
+        <div class="bsrp-trust-card">
+          <div class="bsrp-trust-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="4.5" r="2"/>
+              <line x1="12" y1="6.5" x2="12" y2="15"/>
+              <line x1="12" y1="9" x2="6" y2="6"/>
+              <line x1="12" y1="9" x2="18" y2="6"/>
+              <line x1="12" y1="15" x2="8" y2="21"/>
+              <line x1="12" y1="15" x2="16" y2="21"/>
+            </svg>
+          </div>
+          <p class="bsrp-trust-value">Beckenboden + Körper</p>
+          <p class="bsrp-trust-label">Training nach dem AUFricht-Prinzip</p>
+        </div>
+
+        <div class="bsrp-trust-card">
+          <div class="bsrp-trust-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <p class="bsrp-trust-value">Exklusiv im Programm</p>
+          <p class="bsrp-trust-label">Nur für unsere Programm-Teilnehmerinnen</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= STORY / INTRO ========================= -->
+  <section class="bsrp-story" aria-labelledby="bsrp-story-heading">
+    <div class="bsrp-story-inner">
+
+      <div class="bsrp-story-text">
+        <span class="bsrp-story-text-eyebrow">Über das Retreat</span>
+        <h2 id="bsrp-story-heading" class="bsrp-story-h2">Ein paar Tage nur für dich.</h2>
+
+        <div class="bsrp-story-body">
+          <p>Manchmal braucht es einen Ortswechsel, damit der Kopf endlich still wird. Einen Wald in Hörweite, einen Fluss in der Nähe, einen Raum ohne Termine. Genau dafür habe ich dieses Retreat ins Leben gerufen.</p>
+
+          <p>Wir trainieren gemeinsam Beckenboden und Tiefenmuskulatur, so wie du es aus dem Programm kennst, aber mit allem, was online nicht möglich ist: <strong>Blickkontakt, geführte Atmung in der Gruppe, Spaziergänge am Morgen, ehrliche Gespräche am Abend.</strong></p>
+
+          <p class="bsrp-story-signoff">Deine Barbara</p>
+        </div>
+      </div>
+
+      <figure class="bsrp-story-photo">
+        <img data-bsrp-img="story" src="retreat-images/bild-3.jpg" width="800" height="1000" alt="Barbara Scharrer im Gespräch mit einer Retreat-Teilnehmerin" loading="lazy" />
+        <figcaption class="bsrp-sr-only">Barbara Scharrer beim persönlichen Austausch während eines Retreats.</figcaption>
+      </figure>
+
+    </div>
+  </section>
+
+  <!-- ========================= VIER SÄULEN ========================= -->
+  <section class="bsrp-pillars" id="programm" aria-labelledby="bsrp-pillars-heading">
+
+    <header class="bsrp-pillars-header">
+      <span class="bsrp-pillars-eyebrow">Was dich erwartet</span>
+      <h2 id="bsrp-pillars-heading" class="bsrp-pillars-h2">Vier Dinge, die dieses Retreat ausmachen.</h2>
+    </header>
+
+    <div class="bsrp-pillars-grid">
+
+      <article class="bsrp-pillar bsrp-pillar-featured">
+        <span class="bsrp-pillar-badge">Das Herzstück</span>
+        <span class="bsrp-pillar-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="20" y2="21"/>
+            <path d="M12 21V10"/>
+            <path d="M12 14c-3 0-5-2-5-5 3 0 5 2 5 5z"/>
+            <path d="M12 11c3 0 5-2 5-5-3 0-5 2-5 5z"/>
+          </svg>
+        </span>
+        <h3 class="bsrp-pillar-title">Beckenboden stärken</h3>
+        <p class="bsrp-pillar-text">Geführte Sessions nach dem AUFricht-Prinzip. Hier liegt unser Fokus, der dieses Retreat von jedem Yoga- oder Wellness-Retreat unterscheidet: spezialisiert auf das, was du im Programm bereits trainierst, mit individuellem Blick und in deinem Tempo.</p>
+      </article>
+
+      <article class="bsrp-pillar">
+        <span class="bsrp-pillar-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="4.5" r="2"/>
+            <line x1="12" y1="6.5" x2="12" y2="15"/>
+            <line x1="12" y1="9" x2="6" y2="6"/>
+            <line x1="12" y1="9" x2="18" y2="6"/>
+            <line x1="12" y1="15" x2="8" y2="21"/>
+            <line x1="12" y1="15" x2="16" y2="21"/>
+          </svg>
+        </span>
+        <h3 class="bsrp-pillar-title">Ganzkörpertraining</h3>
+        <p class="bsrp-pillar-text">Bewegung, die Haltung, Tiefenmuskulatur und Beckenboden zusammen denkt.</p>
+      </article>
+
+      <article class="bsrp-pillar">
+        <span class="bsrp-pillar-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 21c0-8 6-16 16-17-1 9-5 16-12 17-2 0.3-4 0-4 0z"/>
+            <path d="M5 21c4-5 9-9 16-17"/>
+          </svg>
+        </span>
+        <h3 class="bsrp-pillar-title">Natur und Ruhe</h3>
+        <p class="bsrp-pillar-text">Mitten in der Natur, mit Zeit zum Durchatmen und Spaziergängen am Morgen.</p>
+      </article>
+
+      <article class="bsrp-pillar">
+        <span class="bsrp-pillar-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="2.5"/>
+            <path d="M6.5 20v-0.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5V20"/>
+            <circle cx="5" cy="9.5" r="1.75"/>
+            <path d="M2 19v-0.5c0-1.7 1-3 2.5-3.5"/>
+            <circle cx="19" cy="9.5" r="1.75"/>
+            <path d="M22 19v-0.5c0-1.7-1-3-2.5-3.5"/>
+          </svg>
+        </span>
+        <h3 class="bsrp-pillar-title">Community</h3>
+        <p class="bsrp-pillar-text">Frauen, die denselben Weg gehen. Echte Gespräche statt Smalltalk.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ========================= TESTIMONIALS ========================= -->
+  <section class="bsrp-testimonials" id="testimonials" aria-labelledby="bsrp-testi-heading">
+    <div class="bsrp-testi-inner">
+
+      <header class="bsrp-testi-header">
+        <span class="bsrp-testi-eyebrow">Stimmen vom ersten Retreat</span>
+        <h2 id="bsrp-testi-heading" class="bsrp-testi-h2">Hör es von ihnen selbst.</h2>
+        <p class="bsrp-testi-sub">
+          Aufgenommen in der Schnitzmühle, beim ersten Retreat im Bayerischen Wald. Wir haben die Kamera laufen lassen und gefragt, was diese Tage für sie waren. Ungeschnitten, ungeplant, aus eigenen Worten.
+        </p>
+      </header>
+
+      <!-- 5 gleichgewichtige Cards · Grid sortiert 3+2 zentriert -->
+      <div class="bsrp-testi-grid">
+
+        <article class="bsrp-testi-card">
+          <div class="bsrp-testi-video">
+            <button type="button" class="bsrp-testi-play" data-bsrp-yt="OAC0pU1Goj8" aria-label="Video-Testimonial abspielen">
+              <img src="https://i.ytimg.com/vi/OAC0pU1Goj8/maxresdefault.jpg" alt="" loading="lazy" width="1280" height="720" />
+              <span class="bsrp-testi-play-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg>
+              </span>
+            </button>
+          </div>
+          <blockquote class="bsrp-testi-quote">
+            <p>„Ich war ganz schön skeptisch. Heute bin ich seit zwei Jahren dabei. Und meine Migräne, die ich seit dem 18. Lebensjahr hatte, ist weg."</p>
+          </blockquote>
+        </article>
+
+        <article class="bsrp-testi-card">
+          <div class="bsrp-testi-video">
+            <button type="button" class="bsrp-testi-play" data-bsrp-yt="ZDFtAQntSy0" aria-label="Video-Testimonial abspielen">
+              <img src="https://i.ytimg.com/vi/ZDFtAQntSy0/maxresdefault.jpg" alt="" loading="lazy" width="1280" height="720" />
+              <span class="bsrp-testi-play-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg>
+              </span>
+            </button>
+          </div>
+          <blockquote class="bsrp-testi-quote">
+            <p>„Vorher war die größte Frage: wo ist die nächste Toilette? Nach acht Wochen Training ist nicht nur die Blase besser. Auch Migräne und Rückenschmerzen sind weg."</p>
+          </blockquote>
+        </article>
+
+        <article class="bsrp-testi-card">
+          <div class="bsrp-testi-video">
+            <button type="button" class="bsrp-testi-play" data-bsrp-yt="v6dTlrNVMc0" aria-label="Video-Testimonial abspielen">
+              <img src="https://i.ytimg.com/vi/v6dTlrNVMc0/maxresdefault.jpg" alt="" loading="lazy" width="1280" height="720" />
+              <span class="bsrp-testi-play-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg>
+              </span>
+            </button>
+          </div>
+          <blockquote class="bsrp-testi-quote">
+            <p>„Das Retreat gibt Halt. Es gibt Aufrichtung. So viele echte Begegnungen, wie du sie über Zoom einfach nicht bekommst."</p>
+          </blockquote>
+        </article>
+
+        <article class="bsrp-testi-card">
+          <div class="bsrp-testi-video">
+            <button type="button" class="bsrp-testi-play" data-bsrp-yt="KyUubAzIQyA" aria-label="Video-Testimonial abspielen">
+              <img src="https://i.ytimg.com/vi/KyUubAzIQyA/maxresdefault.jpg" alt="" loading="lazy" width="1280" height="720" />
+              <span class="bsrp-testi-play-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg>
+              </span>
+            </button>
+          </div>
+          <blockquote class="bsrp-testi-quote">
+            <p>„Es war nicht nur eine körperliche Aufrichtung, sondern eine wahnsinnige geistige. Diese tiefen Gespräche, dieses Gesehen-Werden, das hat man im Alltag selten."</p>
+          </blockquote>
+        </article>
+
+        <article class="bsrp-testi-card">
+          <div class="bsrp-testi-video">
+            <button type="button" class="bsrp-testi-play" data-bsrp-yt="ilzcckvTDhk" aria-label="Video-Testimonial abspielen">
+              <img src="https://i.ytimg.com/vi/ilzcckvTDhk/maxresdefault.jpg" alt="" loading="lazy" width="1280" height="720" />
+              <span class="bsrp-testi-play-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg>
+              </span>
+            </button>
+          </div>
+          <blockquote class="bsrp-testi-quote">
+            <p>„Inkontinenz hat viel mit Haltung zu tun. Mit Kontrolle. Daran haben wir hier gearbeitet, im Körper und im Innen. So viel Gänsehaut wie in diesen Tagen hatte ich lange nicht."</p>
+          </blockquote>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= BAYERISCHER-WALD-BANNER ========================= -->
+  <section class="bsrp-banner" aria-label="Bayerischer Wald Impression">
+    <img class="bsrp-banner-img" data-bsrp-img="heroBanner" src="retreat-images/bild-1.jpg" width="1600" height="1100" alt="Retreat-Gruppe im Bayerischen Wald rund um Barbara Scharrer" />
+    <div class="bsrp-banner-veil" aria-hidden="true"></div>
+    <div class="bsrp-banner-caption">
+      <span class="bsrp-banner-eyebrow">Unser erstes Retreat war im Bayerischen Wald</span>
+      <h2 class="bsrp-banner-h2">Natur, Ruhe, durchatmen.</h2>
+    </div>
+  </section>
+
+  <!-- ========================= LOCATION ========================= -->
+  <section class="bsrp-location" id="location" aria-labelledby="bsrp-location-heading">
+    <div class="bsrp-location-inner">
+
+      <!-- Bild via BSRP_CONFIG.images.location (Webflow Asset URL). -->
+      <figure class="bsrp-location-photo">
+        <img data-bsrp-img="location" src="retreat-images/bild-12.jpg" width="1400" height="1050" alt="Kloster Schweinheim in der Eifel" loading="lazy" />
+        <figcaption class="bsrp-sr-only">Kloster Schweinheim in 53881 Euskirchen, Eifel.</figcaption>
+      </figure>
+
+      <div class="bsrp-location-text">
+        <span class="bsrp-location-eyebrow">Die nächste Location</span>
+        <h2 id="bsrp-location-heading" class="bsrp-location-h2">Kloster Schweinheim, in der Eifel.</h2>
+        <div class="bsrp-location-body">
+          <p>Das Kloster Schweinheim liegt in 53881 Euskirchen, mitten in der Eifel in Nordrhein-Westfalen. Stille Mauern, weiche Tagesstruktur, ringsum Natur. Ein Ort, der dich vom Alltag wegholt und Raum schafft für das, was wirklich zählt.</p>
+          <p>Wir wählen unsere Retreat-Orte sorgfältig: kein glattgebügeltes Wellnesshotel, sondern ein Platz, an dem du wirklich runterkommen kannst.</p>
+        </div>
+        <div class="bsrp-mini-pills">
+          <span class="bsrp-mini-pill">Naturnah</span>
+          <span class="bsrp-mini-pill">Geerdet</span>
+          <span class="bsrp-mini-pill">Ruhe statt Trubel</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================= IMPRESSIONEN ========================= -->
+  <section class="bsrp-impressionen" id="impressionen" aria-labelledby="bsrp-imp-heading">
+
+    <header class="bsrp-imp-header">
+      <span class="bsrp-imp-eyebrow">Eindrücke</span>
+      <h2 id="bsrp-imp-heading" class="bsrp-imp-h2">So fühlt sich das an.</h2>
+    </header>
+
+    <div class="bsrp-imp-slider" role="region" aria-label="Eindrücke vom Retreat" tabindex="0">
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento1" src="retreat-images/bild-5.jpg" width="900" height="1200" alt="Beckenbodentraining auf Yogamatten beim Retreat in der Schnitzmühle" loading="lazy" />
+      </figure>
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento2" src="retreat-images/bild-2.jpg" width="900" height="1200" alt="Gesprächsrunde der Retreat-Teilnehmerinnen im Seminarraum" loading="lazy" />
+      </figure>
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento3" src="retreat-images/bild-7.jpg" width="900" height="1200" alt="Plank-Übung im Ganzkörpertraining beim Beckenboden-Retreat" loading="lazy" />
+      </figure>
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento4" src="retreat-images/bild-6.jpg" width="900" height="1200" alt="Barbara Scharrer korrigiert die Haltung einer Teilnehmerin" loading="lazy" />
+      </figure>
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento5" src="retreat-images/bild-9.jpg" width="900" height="1200" alt="Gemeinsame Mahlzeit beim Retreat im Bayerischen Wald" loading="lazy" />
+      </figure>
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento6" src="retreat-images/bild-11.jpg" width="900" height="1200" alt="Barbara Scharrer leitet eine Beckenboden-Übung an" loading="lazy" />
+      </figure>
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento7" src="retreat-images/bild-8.jpg" width="900" height="1200" alt="Retreat-Teilnehmerinnen beim Abendessen in der Schnitzmühle" loading="lazy" />
+      </figure>
+      <figure class="bsrp-imp-slide">
+        <img data-bsrp-img="bento8" src="retreat-images/bild-4.jpg" width="900" height="1200" alt="Ganzkörpertraining auf Hockern beim Retreat" loading="lazy" />
+      </figure>
+    </div>
+
+    <p class="bsrp-imp-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+      Wischen für mehr Eindrücke
+    </p>
+
+  </section>
+
+  <!-- ========================= WARTELISTE + TERMINE + SOFT-CTA ========================= -->
+  <section class="bsrp-final" id="warteliste" aria-labelledby="bsrp-warteliste-heading">
+    <div class="bsrp-final-inner">
+
+      <span class="bsrp-termine-eyebrow">Warteliste</span>
+      <h2 id="bsrp-warteliste-heading" class="bsrp-termine-h2">Sichere dir deinen Platz im April 2027.</h2>
+      <p class="bsrp-warteliste-sub">
+        22. bis 25. April 2027 im Kloster Schweinheim, 53881 Euskirchen. Trag dich auf die Warteliste ein, wir melden uns mit allen Details und sichern dir den Platz.
+      </p>
+
+      <!-- Formular-Card: Status-Toggle + Kontaktdaten -->
+      <div class="bsrp-form-card">
+        <form id="form-warteliste" novalidate autocomplete="on">
+
+          <!-- Honeypot -->
+          <input type="text" id="hp_website_w" name="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;opacity:0;pointer-events:none;">
+
+          <!-- Zeitstempel (Bot-Filter) -->
+          <input type="hidden" id="formStartTime_w" name="formStartTime" value="">
+
+          <!-- Status-Toggle: Kundin / Noch nicht -->
+          <fieldset class="form_field-wrap status-fieldset">
+            <legend class="form_field-label">Bist du bereits im Programm? <span aria-hidden="true">*</span></legend>
+            <div class="status-toggle" role="radiogroup" aria-describedby="err_kundenstatus">
+              <label class="status-option">
+                <input type="radio" name="kundenstatus" value="ja" required aria-required="true">
+                <span class="status-option-content">
+                  <span class="status-option-title">Ja, ich bin bereits Kundin</span>
+                  <span class="status-option-sub">Wir nehmen dich auf die Warteliste auf.</span>
+                </span>
+              </label>
+              <label class="status-option">
+                <input type="radio" name="kundenstatus" value="nein" required aria-required="true">
+                <span class="status-option-content">
+                  <span class="status-option-title">Nein, noch nicht</span>
+                  <span class="status-option-sub">Wir zeigen dir, wie das Programm zu dir passt.</span>
+                </span>
+              </label>
+            </div>
+            <span class="field-error" id="err_kundenstatus" role="alert" aria-live="polite"></span>
+          </fieldset>
+
+          <!-- Vorname -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="w_first_name">Vorname <span aria-hidden="true">*</span></label>
+            <input class="form_field_input" type="text" id="w_first_name" name="first_name" placeholder="Maria" autocomplete="given-name" required aria-required="true" aria-describedby="err_first_name">
+            <span class="field-error" id="err_first_name" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Nachname -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="w_last_name">Nachname <span aria-hidden="true">*</span></label>
+            <input class="form_field_input" type="text" id="w_last_name" name="last_name" placeholder="Mustermann" autocomplete="family-name" required aria-required="true" aria-describedby="err_last_name">
+            <span class="field-error" id="err_last_name" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- E-Mail -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="w_email">Deine E-Mail-Adresse <span aria-hidden="true">*</span></label>
+            <input class="form_field_input" type="email" id="w_email" name="email" placeholder="deine@mailadresse.de" autocomplete="email" required aria-required="true" aria-describedby="err_email">
+            <span class="field-error" id="err_email" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Telefon mit Ländervorwahl -->
+          <div class="form_field-wrap">
+            <label class="form_field-label" for="w_phone">Deine Telefonnummer <span aria-hidden="true">*</span></label>
+            <div class="phone-input-group">
+              <select id="w_phone_prefix" name="phone_prefix" class="phone-prefix-select" aria-label="Ländervorwahl">
+                <optgroup label="Häufig">
+                  <option value="+49" selected>🇩🇪 Deutschland (+49)</option>
+                  <option value="+43">🇦🇹 Österreich (+43)</option>
+                  <option value="+41">🇨🇭 Schweiz (+41)</option>
+                </optgroup>
+                <optgroup label="Weitere">
+                  <option value="+32">🇧🇪 Belgien (+32)</option>
+                  <option value="+45">🇩🇰 Dänemark (+45)</option>
+                  <option value="+33">🇫🇷 Frankreich (+33)</option>
+                  <option value="+39">🇮🇹 Italien (+39)</option>
+                  <option value="+423">🇱🇮 Liechtenstein (+423)</option>
+                  <option value="+352">🇱🇺 Luxemburg (+352)</option>
+                  <option value="+31">🇳🇱 Niederlande (+31)</option>
+                  <option value="+48">🇵🇱 Polen (+48)</option>
+                  <option value="+46">🇸🇪 Schweden (+46)</option>
+                  <option value="+34">🇪🇸 Spanien (+34)</option>
+                  <option value="+420">🇨🇿 Tschechien (+420)</option>
+                  <option value="+44">🇬🇧 Vereinigtes Königreich (+44)</option>
+                </optgroup>
+              </select>
+              <input class="form_field_input phone-number-input" type="tel" id="w_phone" name="phone" placeholder="151 51 00 00 55" autocomplete="tel-national" required aria-required="true" aria-describedby="err_phone">
+            </div>
+            <span class="field-error" id="err_phone" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Hidden: Touchpoint + UTM -->
+          <input type="hidden" name="touchpoint" value="Warteliste_Retreat_April_2027">
+          <input type="hidden" name="utm_source">
+          <input type="hidden" name="utm_medium">
+          <input type="hidden" name="utm_campaign">
+          <input type="hidden" name="utm_term">
+          <input type="hidden" name="utm_content">
+
+          <!-- Datenschutz-Checkbox -->
+          <div class="form_field-wrap checkbox-wrap">
+            <label class="datenschutzhinweis" for="w_datenschutz">
+              <input type="checkbox" id="w_datenschutz" name="datenschutz" required aria-required="true" aria-describedby="err_datenschutz">
+              <span>
+                Mit dem Absenden stimme ich der Verarbeitung meiner Daten gemäß der
+                <a class="datenschutz-link" href="https://barbarascharrer.de/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> zu.
+                Diese Einwilligung kann ich jederzeit widerrufen.
+              </span>
+            </label>
+            <span class="field-error" id="err_datenschutz" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Globale Fehlermeldung -->
+          <div id="form-error-w" class="form_error" role="alert" aria-live="assertive" style="display:none;"></div>
+
+          <!-- Absenden -->
+          <button type="submit" id="form-submit-btn-w" class="form_button">
+            Auf die Warteliste setzen
+          </button>
+        </form>
+      </div>
+
+      <!-- Kontext: weitere Termine (werden aus BSRP_CONFIG.termine gerendert) -->
+      <div class="bsrp-termine-list" id="bsrp-termine-mount" aria-live="polite">
+        <noscript>
+          <article class="bsrp-termin upcoming">
+            <div>
+              <div class="bsrp-termin-main">22. bis 25. April 2027 · Kloster Schweinheim</div>
+              <div class="bsrp-termin-sub">53881 Euskirchen, Deutschland.</div>
+            </div>
+            <span class="bsrp-termin-tag">Nächster Termin</span>
+          </article>
+        </noscript>
+      </div>
+
+      <!-- Soft-CTA: eigener Pfad für Nicht-Kundinnen.
+           Knappheit + Vorteil-als-Kundin statt direkter Preis-Hinweis.
+           Aus Feedback 18.06.2026. -->
+      <div class="bsrp-softblock">
+        <span class="bsrp-softblock-eyebrow">Du bist noch keine Kundin?</span>
+        <h3 class="bsrp-softblock-h3">Als Kundin werden dir Retreats zuerst angeboten.</h3>
+        <p class="bsrp-softblock-text">
+          Im Programm trainierst du deinen Beckenboden gezielt nach dem AUFricht-Prinzip, in deinem Tempo und mit echter Begleitung. Die Plätze bei unseren Retreats sind limitiert und meist schon belegt, weil Programm-Teilnehmerinnen jedes Retreat als Erste angeboten bekommen. Im kostenlosen Erstgespräch schauen wir, ob das Programm zu dir passt.
+        </p>
+        <div class="bsrp-softblock-cta-wrap">
+          <a class="bsrp-cta" href="https://www.barbarascharrer.de/beratung" data-bsrp-url="beratung">
+            Kostenfreie Beratung anfragen
+            <svg class="bsrp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <div class="bsrp-softblock-meta">Unverbindlich · vertraulich</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Footer fügt der Kunde selbst ein ===== -->
+
+</div>
+
+
+<!-- =====================================================================
+     JS · Hot-Swap (Bilder, URLs, Termine) aus BSRP_CONFIG
+     ===================================================================== -->
+<script>
+  (function(){
+    var cfg = window.BSRP_CONFIG;
+    if (!cfg) {
+      console.warn('[BSRP] BSRP_CONFIG fehlt - Embed-Loader-Snippet im Custom-Code-Embed prüfen.');
+      return;
+    }
+
+    /* HTML-Escape für sichere Termine-Rendering */
+    function esc(s){
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    /* 1) Bild-URLs aus cfg.images übernehmen */
+    if (cfg.images) {
+      document.querySelectorAll('[data-bsrp-img]').forEach(function(el){
+        var key = el.getAttribute('data-bsrp-img');
+        if (cfg.images[key]) el.src = cfg.images[key];
+      });
+    }
+
+    /* 2) Link-URLs aus cfg.urls übernehmen */
+    if (cfg.urls) {
+      document.querySelectorAll('[data-bsrp-url]').forEach(function(el){
+        var key = el.getAttribute('data-bsrp-url');
+        if (cfg.urls[key]) el.href = cfg.urls[key];
+      });
+    }
+
+    /* 3) Termine aus cfg.termine rendern (mit Fallback bei leerer Liste) */
+    var mount = document.getElementById('bsrp-termine-mount');
+    if (mount) {
+      if (Array.isArray(cfg.termine) && cfg.termine.length) {
+        mount.innerHTML = cfg.termine.map(function(t){
+          var cls   = 'bsrp-termin' + (t.upcoming ? ' upcoming' : '');
+          var tag   = t.tag ? '<span class="bsrp-termin-tag">' + esc(t.tag) + '</span>' : '';
+          return ''
+            + '<article class="' + cls + '">'
+            +   '<div>'
+            +     '<div class="bsrp-termin-main">' + esc(t.title) + '</div>'
+            +     (t.sub ? '<div class="bsrp-termin-sub">' + esc(t.sub) + '</div>' : '')
+            +   '</div>'
+            +   tag
+            + '</article>';
+        }).join('');
+      } else {
+        /* Leeres Termine-Array: freundlicher Hinweis statt leerer Sektion */
+        mount.innerHTML =
+          '<article class="bsrp-termin">' +
+            '<div>' +
+              '<div class="bsrp-termin-main">Neue Termine in Planung</div>' +
+              '<div class="bsrp-termin-sub">Schreib uns über die Beratung, sobald ein Datum steht.</div>' +
+            '</div>' +
+            '<span class="bsrp-termin-tag">Bald</span>' +
+          '</article>';
+      }
+    }
+  })();
+</script>
+
+
+<!-- =====================================================================
+     JS · Testimonial-Videos: Click-to-Play Facade
+     Spart Bandbreite und versteckt YouTube-Branding bis zum Klick.
+     Beim Klick wird die Thumbnail-Button durch das iframe ersetzt
+     (mit autoplay=1, damit das Video sofort startet).
+     ===================================================================== -->
+<script>
+  (function(){
+    function buildIframe(id, label){
+      var iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube.com/embed/" + id +
+                   "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+      iframe.title = label || "Video-Testimonial";
+      iframe.setAttribute("allow",
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen");
+      iframe.setAttribute("allowfullscreen", "");
+      iframe.setAttribute("frameborder", "0");
+      return iframe;
+    }
+
+    document.querySelectorAll(".bsrp-testi-play").forEach(function(btn){
+      /* Thumbnail-Fallback: maxresdefault → hqdefault (manche Videos
+         haben kein maxres, z.B. Shorts; dann auf 480x360 zurückfallen) */
+      var img = btn.querySelector("img");
+      if (img) {
+        img.addEventListener("error", function once(){
+          img.removeEventListener("error", once);
+          img.src = img.src.replace("maxresdefault", "hqdefault");
+        }, { once: true });
+      }
+
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+        var id = btn.getAttribute("data-bsrp-yt");
+        if (!id) return;
+        var label = btn.getAttribute("aria-label");
+        var iframe = buildIframe(id, label);
+        var wrap = btn.parentNode;
+        wrap.replaceChild(iframe, btn);
+      });
+    });
+  })();
+</script>
+
+
+<!-- =====================================================================
+     JS · Warteliste-Formular (Validierung, Webhook, Redirect-Routing)
+     ===================================================================== -->
+<script>
+  (function(){
+    "use strict";
+
+    /* -----------------------------------------------------------------
+       KONFIG  -  URLs split-string-obfuskiert (analog zur Webinar-LP).
+       Redirect-URLs werden aus BSRP_CONFIG.urls überschrieben, falls
+       gesetzt (siehe retreat-embed-loader.html).
+    ----------------------------------------------------------------- */
+    var _cfg = {
+      endpoint: [
+        "https://hook.eu2",
+        ".make.com/",
+        "uut4cdx4hqs8imkk95jm2lek3qlb1mvh"
+      ].join(""),
+      trackingEndpoint: "https://barbara-scharrer-tracking.vercel.app/api/lead",
+      redirectCustomer:    "https://www.barbarascharrer.de/retreat-warteliste",
+      redirectNonCustomer: "https://www.barbarascharrer.de/retreat-beratung",
+      minFillTime: 3000,
+      submitTimeoutMs: 8000
+    };
+
+    var _err = {
+      kundenstatus: "Bitte wähle, ob du bereits im Programm bist.",
+      first_name:   "Bitte gib deinen Vornamen ein.",
+      last_name:    "Bitte gib deinen Nachnamen ein.",
+      email:        "Bitte gib eine gültige E-Mail-Adresse ein.",
+      phone:        "Bitte gib eine gültige Telefonnummer ein.",
+      datenschutz:  "Bitte stimme der Datenschutzerklärung zu."
+    };
+
+    function $id(id){ return document.getElementById(id); }
+
+    function setFieldError(field, errId, msg){
+      var e = $id(errId);
+      if (e) e.textContent = msg || "";
+      if (field) field.classList.toggle("is-invalid", !!msg);
+    }
+
+    function clearAllErrors(form){
+      form.querySelectorAll(".field-error").forEach(function(n){ n.textContent = ""; });
+      form.querySelectorAll(".is-invalid").forEach(function(n){ n.classList.remove("is-invalid"); });
+      var gErr = $id("form-error-w");
+      if (gErr) { gErr.textContent = ""; gErr.style.display = "none"; }
+    }
+
+    function showGlobalError(msg){
+      var gErr = $id("form-error-w");
+      if (!gErr) return;
+      gErr.textContent = msg;
+      gErr.style.display = "block";
+    }
+
+    function isValidEmail(s){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
+    }
+    function isValidPhone(s){
+      var digits = s.replace(/\D+/g, "");
+      if (digits.length < 6 || digits.length > 15) return false;
+      /* Trivial-Sequenzen abfangen: 123456, 000000, etc. */
+      if (/^(.)\1+$/.test(digits)) return false;
+      if (/^012345|^123456|^234567/.test(digits)) return false;
+      return true;
+    }
+
+    function fillUtmHidden(form){
+      var p = new URLSearchParams(window.location.search);
+      ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"].forEach(function(n){
+        var v = p.get(n);
+        if (v) {
+          var el = form.querySelector("[name='" + n + "']");
+          if (el) el.value = v;
+        }
+      });
+    }
+
+    function collectData(form){
+      var data = {};
+      var fd = new FormData(form);
+      fd.forEach(function(v, k){
+        /* Mehrfach-Felder zusammenfügen (kommt hier nicht vor, aber safe) */
+        if (data[k] !== undefined) {
+          if (Array.isArray(data[k])) data[k].push(v);
+          else data[k] = [data[k], v];
+        } else {
+          data[k] = v;
+        }
+      });
+      /* phone = prefix + number */
+      var prefix = (form.querySelector("[name='phone_prefix']") || {}).value || "";
+      if (data.phone && prefix) {
+        data.phone_e164 = (prefix + " " + String(data.phone).replace(/^0+/, "").trim()).replace(/\s+/g, " ").trim();
+      }
+      /* Honeypot raus, ist nur Bot-Spüre */
+      delete data.website;
+      /* Form-Start-Time → Bot-Indikator separat hinten */
+      data._meta = {
+        page: window.location.pathname,
+        url:  window.location.href,
+        referrer: document.referrer || null,
+        ts: new Date().toISOString()
+      };
+      return data;
+    }
+
+    function resolveRedirect(form){
+      var urls = (window.BSRP_CONFIG && window.BSRP_CONFIG.urls) || {};
+      var status = form.querySelector("input[name='kundenstatus']:checked");
+      var isCustomer = status && status.value === "ja";
+      return isCustomer
+        ? (urls.warteliste      || _cfg.redirectCustomer)
+        : (urls.retreatBeratung || _cfg.redirectNonCustomer);
+    }
+
+    function postJSON(url, body, timeoutMs){
+      if (!url) return Promise.resolve(null);
+      var ctrl = (typeof AbortController === "function") ? new AbortController() : null;
+      var to   = ctrl ? setTimeout(function(){ ctrl.abort(); }, timeoutMs || 8000) : null;
+      return fetch(url, {
+        method: "POST",
+        mode: "cors",
+        credentials: "omit",
+        keepalive: true,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: ctrl ? ctrl.signal : undefined
+      }).finally(function(){ if (to) clearTimeout(to); });
+    }
+
+    function validateForm(form){
+      clearAllErrors(form);
+      var ok = true;
+
+      /* Kundenstatus */
+      var status = form.querySelector("input[name='kundenstatus']:checked");
+      if (!status) { setFieldError(null, "err_kundenstatus", _err.kundenstatus); ok = false; }
+
+      /* Vorname */
+      var fn = form.querySelector("[name='first_name']");
+      if (!fn.value.trim()) { setFieldError(fn, "err_first_name", _err.first_name); ok = false; }
+
+      /* Nachname */
+      var ln = form.querySelector("[name='last_name']");
+      if (!ln.value.trim()) { setFieldError(ln, "err_last_name", _err.last_name); ok = false; }
+
+      /* E-Mail */
+      var em = form.querySelector("[name='email']");
+      if (!isValidEmail(em.value.trim())) { setFieldError(em, "err_email", _err.email); ok = false; }
+
+      /* Telefon */
+      var ph = form.querySelector("[name='phone']");
+      if (!isValidPhone(ph.value.trim())) { setFieldError(ph, "err_phone", _err.phone); ok = false; }
+
+      /* Datenschutz */
+      var ds = form.querySelector("[name='datenschutz']");
+      if (!ds.checked) { setFieldError(null, "err_datenschutz", _err.datenschutz); ok = false; }
+
+      return ok;
+    }
+
+    function initForm(){
+      var form = $id("form-warteliste");
+      if (!form) return;
+
+      /* Start-Time setzen */
+      var st = form.querySelector("[name='formStartTime']");
+      var startMs = Date.now();
+      if (st) st.value = String(startMs);
+
+      /* UTM aus URL ziehen */
+      fillUtmHidden(form);
+
+      /* Felder live entglühen, sobald Eingabe da ist */
+      form.addEventListener("input", function(e){
+        var t = e.target;
+        if (!t || !t.classList) return;
+        if (t.classList.contains("is-invalid")) t.classList.remove("is-invalid");
+        var wrap = t.closest(".form_field-wrap");
+        if (wrap) {
+          var err = wrap.querySelector(".field-error");
+          if (err) err.textContent = "";
+        }
+      });
+
+      /* Submit */
+      form.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        /* Honeypot: wenn ausgefüllt → still scheitern */
+        var hp = form.querySelector("[name='website']");
+        if (hp && hp.value) {
+          window.location.href = resolveRedirect(form);
+          return;
+        }
+
+        /* Bot-Indikator: zu schnell ausgefüllt */
+        if (Date.now() - startMs < _cfg.minFillTime) {
+          showGlobalError("Bitte nimm dir kurz Zeit, das Formular sorgfältig auszufüllen.");
+          return;
+        }
+
+        if (!validateForm(form)) {
+          showGlobalError("Bitte prüfe die markierten Felder.");
+          return;
+        }
+
+        var btn = $id("form-submit-btn-w");
+        var origLabel = btn ? btn.textContent : "";
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Wird gesendet…";
+        }
+
+        var data     = collectData(form);
+        var redirect = resolveRedirect(form);
+
+        /* Parallel: Hauptwebhook + Tracking (Tracking-Fehler ignorieren) */
+        var pMain  = postJSON(_cfg.endpoint,         data, _cfg.submitTimeoutMs);
+        var pTrack = postJSON(_cfg.trackingEndpoint, data, _cfg.submitTimeoutMs).catch(function(){ return null; });
+
+        Promise.all([pMain, pTrack])
+          .then(function(){ window.location.href = redirect; })
+          .catch(function(err){
+            console.error("[BSRP] Warteliste-Submit fehlgeschlagen:", err);
+            if (btn) { btn.disabled = false; btn.textContent = origLabel; }
+            showGlobalError("Da ist gerade etwas schiefgegangen. Bitte versuche es nochmal, oder schreib uns direkt: info@barbarascharrer.de");
+          });
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initForm);
+    } else {
+      initForm();
+    }
+  })();
+</script>
