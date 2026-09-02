@@ -316,7 +316,8 @@
       0 8px 18px rgba(74, 112, 140, 0.10);
     background: var(--bsrp-bg);
   }
-  .bsrp-hero-video-wrap iframe {
+  .bsrp-hero-video-wrap iframe,
+  .bsrp-hero-video-wrap .wistia_embed {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     border: 0;
@@ -1711,19 +1712,19 @@
           </div>
         </div>
 
-        <!-- Vlog-Video (rechts) · Click-to-Play Facade.
-             Spart ~500KB YouTube-JS beim Page-Load und zeigt das volle
-             16:9-Thumbnail ohne Crop. -->
+        <!-- Vlog-Video (rechts) · Wistia-Player mit Marken-Farbe (Blau 678ba5).
+             videoFoam=true = responsive; nutzt aspect-ratio vom .bsrp-hero-video-wrap (16:9). -->
         <div class="bsrp-hero-video-col">
           <div class="bsrp-hero-video-wrap">
-            <button type="button" class="bsrp-testi-play bsrp-hero-play" data-bsrp-yt="vqhtF9mu6kg" aria-label="Vlog vom ersten Retreat im Bayerischen Wald abspielen">
-              <img src="https://i.ytimg.com/vi/vqhtF9mu6kg/maxresdefault.jpg" alt="Eindrücke vom ersten Retreat in der Schnitzmühle, Bayerischer Wald" width="1280" height="720" />
-              <span class="bsrp-testi-play-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg>
-              </span>
-            </button>
+            <div class="wistia_embed wistia_async_m9ufcovijb videoFoam=true playerColor=678ba5" style="height:100%;position:absolute;inset:0;width:100%;">
+              <div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;">
+                <img src="https://fast.wistia.com/embed/medias/m9ufcovijb/swatch" style="filter:blur(5px);height:100%;object-fit:cover;width:100%;" alt="Vlog vom ersten Retreat im Bayerischen Wald" aria-hidden="true" onload="this.parentNode.style.opacity=1;" />
+              </div>
+            </div>
           </div>
         </div>
+        <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+        <script src="https://fast.wistia.com/embed/medias/m9ufcovijb.jsonp" async></script>
 
       </div>
     </section>
