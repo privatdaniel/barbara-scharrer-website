@@ -78,10 +78,8 @@
   .bslp-nav {
     position: relative;
     z-index: 5;
-    background: rgba(255, 255, 255, 0.72);
-    -webkit-backdrop-filter: saturate(140%) blur(10px);
-    backdrop-filter: saturate(140%) blur(10px);
-    border-bottom: 1px solid rgba(103, 139, 165, 0.15);
+    background: transparent;
+    border-bottom: 0;
   }
   .bslp-nav-inner {
     max-width: 76rem;
@@ -2382,7 +2380,7 @@
   }
   @media (max-width: 1023px) {
     /* unter 1024: Tagline-Text wäre für eine Zeile zu lang → Mobile-Banner-Modus aktivieren */
-    .bslp-nav { padding: 0; background: rgba(255, 255, 255, 0.85); }
+    .bslp-nav { padding: 0; background: transparent; }
     .bslp-nav-inner {
       display: flex;
       flex-direction: column;
@@ -2393,23 +2391,18 @@
     .bslp-nav-logo { order: 2; padding: 0.6rem 5%; }
     .bslp-nav-tagline {
       order: 1;
-      width: 100%;
-      max-width: none;
-      border-radius: 0;
-      border-left: 0;
-      border-right: 0;
-      border-top: 0;
-      border-bottom: 1px solid rgba(103, 139, 165, 0.20);
+      width: auto;
+      max-width: calc(100% - 2rem);
+      margin: 0.75rem auto 0.35rem;
+      border-radius: var(--bslp-radius-pill);
       justify-content: center;
-      padding: 0.55rem 5%;
+      padding: 0.5rem 0.95rem;
       font-size: 0.8125rem;
       line-height: 1.35;
       gap: 0.55rem;
       text-align: center;
       white-space: normal;
     }
-    .bslp-nav-tagline-icon { width: 22px; height: 22px; }
-    .bslp-nav-tagline-icon svg { width: 12px; height: 12px; }
     .bslp-root .bslp-logo-img { height: 38px; }
   }
   @media (max-width: 1280px) {
@@ -3827,70 +3820,6 @@
             <span class="field-error" id="err_phone" role="alert" aria-live="polite"></span>
           </div>
 
-          <!-- Vorqualifizierung (Pflicht, Mehrfachauswahl) — als Chip-Design -->
-          <fieldset class="form_field-wrap qualify-group" id="prev_invest-wrap" aria-describedby="err_prev_invest">
-            <legend class="form_field-label qualify-legend">Was hast du bisher schon selbst bezahlt, um das in den Griff zu bekommen? <span aria-hidden="true">*</span></legend>
-            <p class="qualify-hint">Mehrfachauswahl möglich.</p>
-
-            <div class="qualify-chips">
-              <label class="qualify-chip">
-                <input type="checkbox" name="prev_invest[]" value="Physiotherapie über das Rezept hinaus">
-                <span class="qualify-chip-inner">
-                  <span class="qualify-chip-check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <span class="qualify-chip-label">Physiotherapie (extra)</span>
-                </span>
-              </label>
-              <label class="qualify-chip">
-                <input type="checkbox" name="prev_invest[]" value="Osteopathie oder Heilpraktikerin">
-                <span class="qualify-chip-inner">
-                  <span class="qualify-chip-check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <span class="qualify-chip-label">Osteopathie / Heilpraktikerin</span>
-                </span>
-              </label>
-              <label class="qualify-chip">
-                <input type="checkbox" name="prev_invest[]" value="Beckenbodengerät oder Trainingsstuhl">
-                <span class="qualify-chip-inner">
-                  <span class="qualify-chip-check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <span class="qualify-chip-label">Beckenbodengerät / -stuhl</span>
-                </span>
-              </label>
-              <label class="qualify-chip">
-                <input type="checkbox" name="prev_invest[]" value="Kur oder Privatklinik">
-                <span class="qualify-chip-inner">
-                  <span class="qualify-chip-check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <span class="qualify-chip-label">Kur / Privatklinik</span>
-                </span>
-              </label>
-              <label class="qualify-chip">
-                <input type="checkbox" name="prev_invest[]" value="Personal Training oder Kurse">
-                <span class="qualify-chip-inner">
-                  <span class="qualify-chip-check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <span class="qualify-chip-label">Personal Training / Kurse</span>
-                </span>
-              </label>
-              <label class="qualify-chip qualify-chip--none">
-                <input type="checkbox" name="prev_invest[]" value="Bisher noch nichts" data-qualify-none>
-                <span class="qualify-chip-inner">
-                  <span class="qualify-chip-check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <span class="qualify-chip-label">Bisher noch nichts</span>
-                </span>
-              </label>
-            </div>
-            <span class="field-error" id="err_prev_invest" role="alert" aria-live="polite"></span>
-          </fieldset>
-
           <!-- Hidden-Felder -->
           <input type="hidden" name="touchpoint" value="Anmeldung_Webinar">
           <!-- Datum + Uhrzeit werden automatisch aus BSLP_CONFIG gesetzt (siehe Loader oben) -->
@@ -3967,14 +3896,17 @@
               minFillTime: 3000
             };
 
-            /* Overrides aus BSLP_CONFIG (Loader). Beide sind optional:
-               - redirectUrl:    ganze URL überschreiben (z. B. organische /webinar → /webinar-teilnahme-danke)
-               - showPrevInvest: false → Mehrfachauswahl "Was hast du bisher..." wird entfernt */
+            /* Overrides aus BSLP_CONFIG (Loader). Alle optional:
+               - redirectUrl:             Redirect-URL überschreiben
+                                          (organische /webinar → /webinar-teilnahme-danke)
+               - enableSecondaryWebhook:  false → Zweit-Webhook NICHT feuern
+                                          (organische /webinar spiegelt das
+                                          Live-Verhalten der alten Seite). */
             var _bsCfg = (typeof window !== "undefined" && window.BSLP_CONFIG) || {};
             if (typeof _bsCfg.redirectUrl === "string" && _bsCfg.redirectUrl) {
               _cfg.redirect = _bsCfg.redirectUrl;
             }
-            var _showPrevInvest = (_bsCfg.showPrevInvest !== false);
+            var _sendSecondary = (_bsCfg.enableSecondaryWebhook !== false);
 
             /* ------------------------------------------------------------------
                FEHLERTEXTE
@@ -3985,8 +3917,7 @@
               email: "Bitte gib eine gültige E-Mail-Adresse ein.",
               phone: "Bitte gib deine Telefonnummer ein.",
               datenschutz: "Bitte stimme der Datenschutzerklärung zu.",
-              captcha: "Bitte bestätige, dass du kein Roboter bist.",
-              prev_invest: "Bitte wähle mindestens eine Option aus."
+              captcha: "Bitte bestätige, dass du kein Roboter bist."
             };
 
             /* ------------------------------------------------------------------
@@ -4030,10 +3961,6 @@
               if (name === "phone") {
                 var grp = $id("phone-group");
                 if (grp) grp.classList.toggle("is-invalid", !!msg);
-              }
-              if (name === "prev_invest") {
-                var pw = $id("prev_invest-wrap");
-                if (pw) pw.classList.toggle("is-invalid-wrap", !!msg);
               }
             }
 
@@ -4171,20 +4098,6 @@
                 }
               }
 
-              /* Vorqualifizierung: nur validieren, wenn Feld aktiv (Config-Flag). */
-              if (_showPrevInvest) {
-                var prevChecked = form.querySelectorAll('input[name="prev_invest[]"]:checked').length;
-                if (prevChecked === 0) {
-                  setFieldError("prev_invest", _errMsg.prev_invest);
-                  valid = false;
-                  if (!firstInvalid) {
-                    firstInvalid = form.querySelector('input[name="prev_invest[]"]');
-                  }
-                } else {
-                  clearFieldError("prev_invest");
-                }
-              }
-
               if (firstInvalid) {
                 try { firstInvalid.focus(); } catch (e) {}
               }
@@ -4230,18 +4143,6 @@
                 var t = e.target;
                 if (t.type === "checkbox" && t.name === "datenschutz" && t.checkValidity()) {
                   clearFieldError("datenschutz");
-                }
-                /* Vorqualifizierung: sobald eine Option ausgewählt ist, Fehler ausblenden.
-                   „Bisher noch nichts" ist wechselseitig ausschließend zu allen anderen. */
-                if (t.type === "checkbox" && t.name === "prev_invest[]") {
-                  var others = form.querySelectorAll('input[name="prev_invest[]"]');
-                  if (t.dataset.qualifyNone && t.checked) {
-                    others.forEach(function(o){ if (o !== t) o.checked = false; });
-                  } else if (t.checked) {
-                    others.forEach(function(o){ if (o.dataset.qualifyNone) o.checked = false; });
-                  }
-                  var anyChecked = form.querySelectorAll('input[name="prev_invest[]"]:checked').length > 0;
-                  if (anyChecked) clearFieldError("prev_invest");
                 }
               });
 
@@ -4327,15 +4228,11 @@
                   return v;
                 }
 
-                /* Vorqualifizierung: alle angehakten Werte einsammeln. */
-                var prevInvest = fd.getAll("prev_invest[]").map(function(v){ return v.toString(); });
-
                 var trackingPayload = {
                   first_name:   (fd.get("first_name")   || "").toString(),
                   last_name:    (fd.get("last_name")    || "").toString(),
                   email:        (fd.get("email")        || "").toString(),
                   phone:        (fd.get("phone")        || "").toString() || null,
-                  prev_invest:  prevInvest.length ? prevInvest : null,
                   webinar_date: (function(d){
                     d = (d || "").toString().trim();
                     if (!d) return null;
@@ -4365,27 +4262,32 @@
                   window.location.href = _cfg.redirect;
                 }, 4000);
 
-                // Make (FormData, no-cors) + optionaler Zweit-Hook + Tracking (JSON) parallel.
+                // Make (FormData, no-cors) + optional Zweit-Hook + Tracking (JSON) parallel.
                 // Nur der primäre Make-Hook ist required; Zweit-Hook und Tracking
                 // sind fire-and-forget und dürfen die Anmeldung nie blockieren.
-                Promise.allSettled([
+                var _requests = [
                   fetch(_cfg.endpoint, {
                     method: "POST",
                     mode: "no-cors",
                     body: fd
                   }),
-                  fetch(_cfg.endpointSecondary, {
-                    method: "POST",
-                    mode: "no-cors",
-                    body: fd
-                  }).catch(function(){ /* Zweit-Hook-Fehler ignorieren */ }),
                   fetch(_cfg.trackingEndpoint, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(trackingPayload),
                     keepalive: true
                   }).catch(function(){ /* Tracking-Fehler ignorieren */ })
-                ]).then(function() {
+                ];
+                if (_sendSecondary) {
+                  _requests.push(
+                    fetch(_cfg.endpointSecondary, {
+                      method: "POST",
+                      mode: "no-cors",
+                      body: fd
+                    }).catch(function(){ /* Zweit-Hook-Fehler ignorieren */ })
+                  );
+                }
+                Promise.allSettled(_requests).then(function() {
                   clearTimeout(fallback);
                   window.location.href = _cfg.redirect;
                 }).catch(function() {
@@ -4422,11 +4324,6 @@
             function bslpFormInit() {
               var form = $id("form-webinar");
               if (!form) return;
-              /* Mehrfachauswahl prev_invest bei Bedarf komplett entfernen (organische Seite). */
-              if (!_showPrevInvest) {
-                var pw = $id("prev_invest-wrap");
-                if (pw && pw.parentNode) pw.parentNode.removeChild(pw);
-              }
               var ts = $id("formStartTime");
               if (ts) ts.value = Date.now();
               fillUtm(form);

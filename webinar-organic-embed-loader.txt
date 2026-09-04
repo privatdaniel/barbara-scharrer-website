@@ -1,12 +1,15 @@
 <!-- =====================================================================
      WEBFLOW HTML EMBED, Loader für die ORGANISCHE Webinar-Seite (/webinar)
      =====================================================================
-     Diese Variante teilt das Layout mit der Paid-LP (webinar-video), nur:
-       - showPrevInvest = false  → Mehrfachauswahl-Feld wird ausgeblendet
+     Diese Variante teilt Inhalte + Layout 1:1 mit der Paid-LP (/webinar-video).
+     Unterschiedlich ist nur das Formular-Verhalten:
        - redirectUrl             → Redirect auf die ALTE Danke-Seite
                                    (/webinar-teilnahme-danke)
+       - enableSecondaryWebhook  → Zweit-Webhook AUS
+                                   (spiegelt exakt das Verhalten des Live-
+                                    Formulars auf der aktuellen /webinar-Seite)
 
-     Der Content-File und der Webhook sind dieselben wie bei der Paid-LP.
+     Der Content-File und der Haupt-Webhook sind dieselben wie bei der Paid-LP.
      Alle Design-, Text- und Video-Änderungen greifen automatisch auch hier.
 
      SETUP:
@@ -25,12 +28,11 @@
     time:    '19:00',
 
     /* ------- Overrides für die organische Seite --------------------- */
-    /* Redirect zeigt auf die ALTE Danke-Seite (Webhook + Redirect wie
-       das alte Formular, das dort schon läuft).                        */
+    /* Redirect zeigt auf die ALTE Danke-Seite.                          */
     redirectUrl: 'https://www.barbarascharrer.de/webinar-teilnahme-danke',
-    /* Mehrfachauswahl "Was hast du bisher..." ausblenden (im alten
-       Formular ebenfalls nicht vorhanden).                             */
-    showPrevInvest: false,
+    /* Zweit-Webhook aus → nur der Haupt-Webhook feuert, exakt wie das
+       Live-Formular auf /webinar aktuell.                               */
+    enableSecondaryWebhook: false,
 
     /* ------- Bild-URLs (Webflow Asset URLs einsetzen) --------------- */
     images: {
