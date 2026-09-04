@@ -160,12 +160,12 @@
   .bslp-hero-inner {
     max-width: 76rem;
     margin: 0 auto;
-    padding: 1.75rem 2rem 3.5rem;
+    padding: 1.25rem 2rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 1.25rem;
+    gap: 1rem;
   }
   .bslp-hero-copy {
     position: relative;
@@ -1092,7 +1092,7 @@
   .bslp-story {
     position: relative;
     background: #ffffff;
-    padding: 5rem 0 6rem;
+    padding: 3rem 0 4rem;
   }
   .bslp-story-inner {
     max-width: 76rem;
@@ -1102,13 +1102,13 @@
   /* (alte Critical-Aside-Regel entfernt, "Das Schlimmste" ist jetzt bslp-story-critical-hero) */
   .bslp-story-h2 {
     font-family: Manrope, sans-serif;
-    font-size: clamp(1.625rem, 2.6vw, 2.375rem);
+    font-size: clamp(1.375rem, 2.05vw, 1.875rem);
     font-weight: 700;
-    line-height: 1.18;
-    letter-spacing: -0.018em;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
     color: var(--bslp-black);
-    margin: 0 auto 3rem;
-    max-width: 72rem;
+    margin: 0 auto 2.25rem;
+    max-width: 60rem;
     text-wrap: balance;
     text-align: center;
   }
@@ -1426,6 +1426,40 @@
     border-left: 3px solid rgba(217, 83, 79, 0.35);
     border-radius: 8px;
   }
+
+  /* Zwischen-CTA zwischen Problem-Cards & Solution-Card */
+  .bslp-mid-cta {
+    padding: 0.5rem 2rem 2rem;
+    background: #ffffff;
+  }
+  .bslp-mid-cta-inner {
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .bslp-mid-cta-line {
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    color: var(--bslp-ink);
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .bslp-mid-cta-line strong { color: var(--bslp-blau-3); font-weight: 700; }
+  .bslp-cta.bslp-cta--mid {
+    padding: 1rem 1.75rem;
+    font-size: 1.05rem;
+    box-shadow: 0 14px 36px rgba(172, 143, 117, .38), 0 1px 0 rgba(255,255,255,.4) inset;
+  }
+  .bslp-mid-cta-meta {
+    font-size: 0.85rem;
+    color: var(--bslp-muted);
+    margin: 0;
+  }
+  .bslp-mid-cta-meta strong { color: var(--bslp-black); font-weight: 700; }
 
   /* Lösungs-Card — dimensionaler Hintergrund, volle Card-Breite, Content links-bündig */
   .bslp-story-solution {
@@ -2427,7 +2461,10 @@
     .bslp-hero .bslp-cta-meta { font-size: 0.75rem; padding: 0 1rem; }
   }
   @media (max-width: 767px) {
-    .bslp-hero-inner { padding: 1.25rem 5% 2rem; }
+    /* Logo auf Mobile ausblenden (Wunsch Barbara), Live-Zeile steht solo oben */
+    .bslp-nav-logo { display: none; }
+
+    .bslp-hero-inner { padding: 1rem 5% 1.5rem; gap: 0.85rem; }
     .bslp-h1 { letter-spacing: -0.018em; }
     .bslp-hero .bslp-cta { width: 100%; padding: 0.95rem 1.25rem; font-size: 1rem; }
     .bslp-hero .bslp-cta-wrap { align-items: stretch; gap: 0.5rem; width: 100%; }
@@ -2454,7 +2491,12 @@
     }
     .bslp-trust-sub > span:last-child { display: inline; vertical-align: middle; }
 
-    .bslp-story { padding: 3rem 5% 3.5rem; }
+    .bslp-story { padding: 2rem 5% 2.5rem; }
+    .bslp-mid-cta { padding: 0.25rem 5% 1.25rem; }
+    .bslp-mid-cta-inner { gap: 0.7rem; }
+    .bslp-mid-cta-line { font-size: 1rem; }
+    .bslp-cta.bslp-cta--mid { width: 100%; padding: 0.95rem 1.25rem; font-size: 0.95rem; }
+    .bslp-mid-cta-meta { font-size: 0.8rem; }
     .bslp-story-h2 { margin-bottom: 2rem; }
     .bslp-story-body { font-size: 1rem; line-height: 1.7; }
     .bslp-story-checklist li { font-size: 1rem; padding: 0.85rem 0; gap: 0.7rem; }
@@ -2490,17 +2532,17 @@
     .bslp-cta-mega-sub { font-size: 0.8125rem; }
     .bslp-cta-mega-arrow { display: none; }
 
-    .bslp-content { margin: 2rem 1rem; padding: 2.5rem 1.25rem; }
+    .bslp-content { margin: 1.25rem 1rem; padding: 2rem 1.25rem; }
     .bslp-content-h2 { margin-bottom: 2rem; }
     .bslp-content-list li { padding: 0.95rem 1rem; font-size: 0.9375rem; gap: 0.7rem; }
 
-    .bslp-testimonials { padding: 3rem 5% 1rem; margin-top: 2rem; }
+    .bslp-testimonials { padding: 2rem 5% 0.5rem; margin-top: 1.25rem; }
     .bslp-testimonials-header { margin-bottom: 2rem; }
     .bslp-testimonials-grid { grid-template-columns: 1fr; gap: 1.25rem; }
     .bslp-test-body { padding: 1.25rem 1.25rem 1.5rem; }
     .bslp-test-play-icon { width: 56px; height: 56px; }
 
-    .bslp-signup { margin: 2rem 1rem 3rem; padding: 2.75rem 1.25rem; }
+    .bslp-signup { margin: 1.25rem 1rem 2rem; padding: 2.25rem 1.25rem; }
     .bslp-signup-form-card { padding: 1.75rem 1.25rem; }
     .bslp-signup-trust { gap: 0.5rem 0.85rem; }
 
@@ -2542,7 +2584,7 @@
     .bslp-qualify-col { padding: 1.5rem 1.25rem 1.75rem; }
   }
   @media (max-width: 479px) {
-    .bslp-hero-inner { padding: 1rem 5% 1.5rem; }
+    .bslp-hero-inner { padding: 0.85rem 5% 1.25rem; gap: 0.7rem; }
     .bslp-h1 { font-size: clamp(1.375rem, 6.5vw, 1.75rem); }
     .bslp-hero-eyebrow { font-size: 0.7rem; padding: 0.3rem 0.7rem; line-height: 1.35; }
     .bslp-lead { font-size: 0.875rem; line-height: 1.5; }
@@ -2601,7 +2643,7 @@
     .bslp-story-critical-hero-badge { font-size: 0.7rem; padding: 0.35rem 0.75rem; }
     .bslp-story-critical-hero-lead { font-size: clamp(1.125rem, 4.5vw, 1.375rem); }
     .bslp-story-critical-hero-body { font-size: 0.9375rem; }
-    .bslp-story-h2 { font-size: clamp(1.375rem, 5vw, 1.75rem); margin-bottom: 1.5rem !important; padding: 0 0.25rem; }
+    .bslp-story-h2 { font-size: clamp(1.15rem, 4.4vw, 1.5rem); margin-bottom: 1.25rem !important; padding: 0 0.25rem; }
     .bslp-kennst-card { padding: 1.5rem 1.15rem !important; gap: 0.85rem; }
 
     /* --- Solution-Card --- */
@@ -2648,7 +2690,7 @@
     .bslp-qualify-col { padding: 1.5rem 1.15rem !important; }
 
     /* --- Signup --- */
-    .bslp-signup { padding: 2rem 1rem 2.5rem !important; }
+    .bslp-signup { padding: 1.5rem 1rem 2rem !important; }
     .bslp-signup-eyebrow { font-size: 0.7rem; padding: 0.35rem 0.75rem; line-height: 1.35; }
     .bslp-signup-trust { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
     .bslp-signup-trust li { font-size: 0.875rem; }
@@ -2672,7 +2714,7 @@
     .bslp-story-critical-hero-badge { font-size: 0.7rem; padding: 0.35rem 0.75rem; }
     .bslp-story-critical-hero-lead { font-size: clamp(1.125rem, 4.5vw, 1.375rem); }
     .bslp-story-critical-hero-body { font-size: 0.9375rem; }
-    .bslp-story-h2 { font-size: clamp(1.375rem, 5vw, 1.75rem); }
+    .bslp-story-h2 { font-size: clamp(1.25rem, 4.6vw, 1.625rem); }
 
     /* Solution-Card: großzügiger Text-Bereich, Bild + Stat kompakt */
     .bslp-story-solution { padding: 1.75rem 1.25rem; margin: 1.5rem auto 0 !important; }
@@ -2910,17 +2952,8 @@
         </a>
 
         <div class="bslp-nav-tagline">
-          <span class="bslp-nav-tagline-icon" aria-hidden="true">
-            <!-- Broadcast/Live-Icon (Funkwellen) -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
-              <path d="M16.24 7.76a6 6 0 0 1 0 8.49"/>
-              <path d="M7.76 16.24a6 6 0 0 1 0-8.49"/>
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-              <path d="M4.93 19.07a10 10 0 0 1 0-14.14"/>
-            </svg>
-          </span>
-          <span><span class="bslp-blau">Live-Workshop</span> für Frauen, die ihre <span class="bslp-blau">Blasenschwäche</span> nicht mehr <span class="bslp-blau">hinnehmen</span> wollen</span>
+          <span class="bslp-live-dot" aria-hidden="true"></span>
+          <span><span class="bslp-blau">0&nbsp;€ Live-Workshop</span> <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>15.09.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
         </div>
       </div>
     </nav>
@@ -2931,11 +2964,6 @@
       <div class="bslp-hero-inner">
 
         <div class="bslp-hero-copy">
-          <span class="bslp-hero-eyebrow">
-            <span class="bslp-live-dot" aria-hidden="true"></span>
-            <span>0&nbsp;€ Live-Workshop <span data-bslp-weekday>Dienstag</span>, <span data-bslp-date>15.09.2026</span> · <span data-bslp-time>19:00</span>&nbsp;Uhr · vertraulich &amp; diskret</span>
-          </span>
-
           <h1 id="bslp-hero-heading" class="bslp-h1">
             Was, wenn deine <span class="bslp-h1-accent">Blase</span> gar nicht das eigentliche Problem ist?
           </h1>
@@ -2946,17 +2974,6 @@
           <p class="bslp-lead">
             Einlagen, Beckenbodenübungen, Arztbesuche, vielleicht schon der Gedanke an eine OP. <strong>Du hast alles versucht und trotzdem bestimmt die Blase noch immer deinen Alltag?</strong> Erfahre, warum bisher nichts dauerhaft geholfen hat und was wirklich zählt, um aus dem Symptom-Kreislauf auszubrechen. Vorkenntnisse brauchst du keine. <strong>Die Bereitschaft, selbst zu arbeiten, schon.</strong>
           </p>
-        </div>
-
-        <!-- ================= HERO-VIDEO (Mittelpunkt) ================= -->
-        <!-- YouTube-ID wird via BSLP_CONFIG.heroVideo aus dem Embed-Code gesetzt. -->
-        <div class="bslp-hero-video" data-bslp-hero-video>
-          <button class="bslp-hero-video-play" type="button" aria-label="Video von Barbara abspielen">
-            <img class="bslp-hero-video-thumb" data-bslp-hero-thumb alt="" loading="lazy" />
-            <span class="bslp-hero-video-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </span>
-          </button>
         </div>
 
         <div class="bslp-cta-wrap">
@@ -2970,6 +2987,17 @@
           <div class="bslp-cta-meta">
             <strong>Kostenfrei und diskret.</strong> Rund 2 Stunden, plane sie dir direkt ein.
           </div>
+        </div>
+
+        <!-- ================= HERO-VIDEO ================= -->
+        <!-- Video steht unter dem CTA, damit auf Mobile das Formular ohne Scroll erreichbar bleibt. -->
+        <div class="bslp-hero-video" data-bslp-hero-video>
+          <button class="bslp-hero-video-play" type="button" aria-label="Video von Barbara abspielen">
+            <img class="bslp-hero-video-thumb" data-bslp-hero-thumb alt="" loading="lazy" />
+            <span class="bslp-hero-video-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
         </div>
 
         <!-- Value-Bullets direkt unter dem CTA -->
@@ -3216,6 +3244,21 @@
         <p class="bslp-story-statement">Darin steckt die gute Nachricht: <em>Wenn Fleiß nie dein Problem war, dann fehlt dir auch kein Fleiß.</em> Dir fehlt das Verständnis für den Körper, damit du ihn endlich richtig trainieren kannst.</p>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ==== ZWISCHEN-CTA: füllt den Leerraum zwischen Problem-Cards & Solution-Card ==== -->
+  <section class="bslp-mid-cta" aria-label="Direkt zum Workshop anmelden">
+    <div class="bslp-mid-cta-inner">
+      <p class="bslp-mid-cta-line">Du willst wissen, wie <strong>der andere Weg</strong> aussieht?</p>
+      <a class="bslp-cta bslp-cta--mid" href="#webinar-anmeldung">
+        Ja, ich will den Workshop
+        <svg class="bslp-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+      <p class="bslp-mid-cta-meta"><strong>Kostenfrei und diskret.</strong> Nur wenige Klicks bis zur Anmeldung.</p>
     </div>
   </section>
 
@@ -3924,6 +3967,15 @@
               minFillTime: 3000
             };
 
+            /* Overrides aus BSLP_CONFIG (Loader). Beide sind optional:
+               - redirectUrl:    ganze URL überschreiben (z. B. organische /webinar → /webinar-teilnahme-danke)
+               - showPrevInvest: false → Mehrfachauswahl "Was hast du bisher..." wird entfernt */
+            var _bsCfg = (typeof window !== "undefined" && window.BSLP_CONFIG) || {};
+            if (typeof _bsCfg.redirectUrl === "string" && _bsCfg.redirectUrl) {
+              _cfg.redirect = _bsCfg.redirectUrl;
+            }
+            var _showPrevInvest = (_bsCfg.showPrevInvest !== false);
+
             /* ------------------------------------------------------------------
                FEHLERTEXTE
             ------------------------------------------------------------------ */
@@ -4119,16 +4171,18 @@
                 }
               }
 
-              /* Vorqualifizierung: mindestens eine Checkbox muss ausgewählt sein. */
-              var prevChecked = form.querySelectorAll('input[name="prev_invest[]"]:checked').length;
-              if (prevChecked === 0) {
-                setFieldError("prev_invest", _errMsg.prev_invest);
-                valid = false;
-                if (!firstInvalid) {
-                  firstInvalid = form.querySelector('input[name="prev_invest[]"]');
+              /* Vorqualifizierung: nur validieren, wenn Feld aktiv (Config-Flag). */
+              if (_showPrevInvest) {
+                var prevChecked = form.querySelectorAll('input[name="prev_invest[]"]:checked').length;
+                if (prevChecked === 0) {
+                  setFieldError("prev_invest", _errMsg.prev_invest);
+                  valid = false;
+                  if (!firstInvalid) {
+                    firstInvalid = form.querySelector('input[name="prev_invest[]"]');
+                  }
+                } else {
+                  clearFieldError("prev_invest");
                 }
-              } else {
-                clearFieldError("prev_invest");
               }
 
               if (firstInvalid) {
@@ -4368,6 +4422,11 @@
             function bslpFormInit() {
               var form = $id("form-webinar");
               if (!form) return;
+              /* Mehrfachauswahl prev_invest bei Bedarf komplett entfernen (organische Seite). */
+              if (!_showPrevInvest) {
+                var pw = $id("prev_invest-wrap");
+                if (pw && pw.parentNode) pw.parentNode.removeChild(pw);
+              }
               var ts = $id("formStartTime");
               if (ts) ts.value = Date.now();
               fillUtm(form);

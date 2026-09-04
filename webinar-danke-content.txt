@@ -403,6 +403,123 @@
   .bsty-root .bsty-btn:focus,
   .bsty-root .bsty-btn:active { text-decoration: none; }
 
+  /* ============================ WHATSAPP-GRUPPE ============================ */
+  .bsty-whatsapp {
+    position: relative;
+    z-index: 3;
+    max-width: 76rem;
+    margin: 0 auto 3rem;
+    background:
+      radial-gradient(ellipse 90% 60% at 20% 0%, rgba(37, 211, 102, 0.10) 0%, transparent 60%),
+      linear-gradient(180deg, #ffffff 0%, #f7fbf8 100%);
+    border: 1px solid rgba(37, 211, 102, 0.28);
+    border-radius: var(--bsty-radius-lg);
+    box-shadow:
+      0 1px 2px rgba(10, 10, 10, 0.04),
+      0 12px 32px rgba(37, 211, 102, 0.06),
+      0 28px 60px rgba(10, 10, 10, 0.04);
+    padding: 2.25rem 2.5rem;
+  }
+  .bsty-whatsapp-inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.75rem;
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+  .bsty-whatsapp-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: #ffffff;
+    box-shadow: 0 10px 24px rgba(37, 211, 102, 0.35), 0 1px 0 rgba(255,255,255,0.35) inset;
+    flex: 0 0 auto;
+  }
+  .bsty-whatsapp-icon svg { width: 38px; height: 38px; }
+  .bsty-whatsapp-copy { min-width: 0; }
+  .bsty-whatsapp-eyebrow {
+    display: inline-block;
+    font-family: Manrope, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #128C7E;
+    margin: 0 0 0.45rem;
+  }
+  .bsty-whatsapp-h2 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--bsty-black);
+    margin: 0 0 0.55rem;
+    text-wrap: pretty;
+  }
+  .bsty-whatsapp-body {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--bsty-ink);
+    margin: 0;
+    max-width: 44rem;
+  }
+  .bsty-whatsapp-body strong { color: var(--bsty-black); font-weight: 700; }
+  .bsty-whatsapp-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: var(--bsty-radius-pill);
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: #ffffff !important;
+    font-family: Manrope, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.005em;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 10px 26px rgba(37, 211, 102, 0.40), 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.25s ease;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  .bsty-whatsapp-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px rgba(37, 211, 102, 0.48), 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+  }
+  .bsty-whatsapp-cta svg { width: 20px; height: 20px; }
+  .bsty-root .bsty-whatsapp-cta,
+  .bsty-root .bsty-whatsapp-cta:visited,
+  .bsty-root .bsty-whatsapp-cta:hover,
+  .bsty-root .bsty-whatsapp-cta:focus,
+  .bsty-root .bsty-whatsapp-cta:active { text-decoration: none; color: #ffffff; }
+
+  @media (max-width: 1023px) {
+    .bsty-whatsapp { margin: 0 1rem 2rem; padding: 1.75rem 1.5rem; }
+    .bsty-whatsapp-inner {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+      gap: 1.15rem;
+    }
+    .bsty-whatsapp-body { max-width: none; }
+    .bsty-whatsapp-cta { width: 100%; padding: 1rem 1.25rem; font-size: 1rem; }
+  }
+  @media (max-width: 479px) {
+    .bsty-whatsapp { padding: 1.5rem 1.15rem; }
+    .bsty-whatsapp-icon { width: 60px; height: 60px; }
+    .bsty-whatsapp-icon svg { width: 32px; height: 32px; }
+    .bsty-whatsapp-h2 { font-size: 1.15rem; }
+    .bsty-whatsapp-body { font-size: 0.9rem; }
+  }
+
   /* ============================ NEXT-STEPS CARDS ============================ */
   .bsty-steps {
     max-width: 76rem;
@@ -951,6 +1068,32 @@
       </button>
     </div>
 
+  </section>
+
+  <!-- ====================== WHATSAPP-GRUPPE ====================== -->
+  <section class="bsty-whatsapp" aria-labelledby="bsty-whatsapp-heading">
+    <div class="bsty-whatsapp-inner">
+      <span class="bsty-whatsapp-icon" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="currentColor">
+          <path d="M16.001 3.2C8.928 3.2 3.2 8.929 3.2 16c0 2.257.591 4.468 1.716 6.412L3.2 28.8l6.548-1.712A12.75 12.75 0 0 0 16 28.8c7.072 0 12.8-5.728 12.8-12.8S23.073 3.2 16.001 3.2Zm0 23.36a10.52 10.52 0 0 1-5.361-1.464l-.384-.229-3.885 1.015 1.037-3.789-.25-.39A10.55 10.55 0 0 1 5.44 16c0-5.831 4.729-10.56 10.561-10.56 5.831 0 10.56 4.729 10.56 10.56s-4.729 10.56-10.56 10.56Zm5.79-7.9c-.317-.158-1.879-.928-2.17-1.033-.29-.106-.502-.158-.713.159-.21.317-.819 1.033-1.005 1.244-.184.211-.37.237-.687.079-.317-.158-1.338-.493-2.549-1.573-.943-.84-1.579-1.879-1.765-2.196-.184-.317-.02-.489.139-.647.142-.141.317-.37.475-.554.158-.185.211-.317.317-.528.106-.211.053-.396-.026-.554-.079-.158-.713-1.72-.977-2.354-.257-.618-.518-.534-.713-.544-.184-.008-.396-.01-.607-.01-.211 0-.554.079-.844.396-.29.317-1.108 1.084-1.108 2.646 0 1.562 1.134 3.07 1.292 3.281.158.211 2.229 3.406 5.401 4.777.755.326 1.343.52 1.802.665.757.24 1.446.206 1.99.125.607-.091 1.879-.769 2.144-1.512.265-.744.265-1.381.185-1.512-.079-.132-.29-.211-.607-.37Z"/>
+        </svg>
+      </span>
+      <div class="bsty-whatsapp-copy">
+        <span class="bsty-whatsapp-eyebrow">Bonus für Teilnehmerinnen</span>
+        <h2 id="bsty-whatsapp-heading" class="bsty-whatsapp-h2">
+          Trete unserer WhatsApp-Gruppe bei
+        </h2>
+        <p class="bsty-whatsapp-body">
+          Tausche dich mit anderen Teilnehmerinnen aus, stelle deine Fragen und erhalte kurz vor dem Workshop den Reminder direkt aufs Handy. <strong>Kein Spam, nur wichtige Infos.</strong>
+        </p>
+      </div>
+      <a class="bsty-whatsapp-cta" href="https://chat.whatsapp.com/IRc7M49iCr9F2D5BSuV7ej?s=cl&amp;p=i&amp;mlu=4&amp;ilr=4" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16.001 3.2C8.928 3.2 3.2 8.929 3.2 16c0 2.257.591 4.468 1.716 6.412L3.2 28.8l6.548-1.712A12.75 12.75 0 0 0 16 28.8c7.072 0 12.8-5.728 12.8-12.8S23.073 3.2 16.001 3.2Zm5.79 16.42c-.317-.158-1.879-.928-2.17-1.033-.29-.106-.502-.158-.713.159-.21.317-.819 1.033-1.005 1.244-.184.211-.37.237-.687.079-.317-.158-1.338-.493-2.549-1.573-.943-.84-1.579-1.879-1.765-2.196-.184-.317-.02-.489.139-.647.142-.141.317-.37.475-.554.158-.185.211-.317.317-.528.106-.211.053-.396-.026-.554-.079-.158-.713-1.72-.977-2.354-.257-.618-.518-.534-.713-.544-.184-.008-.396-.01-.607-.01-.211 0-.554.079-.844.396-.29.317-1.108 1.084-1.108 2.646 0 1.562 1.134 3.07 1.292 3.281.158.211 2.229 3.406 5.401 4.777.755.326 1.343.52 1.802.665.757.24 1.446.206 1.99.125.607-.091 1.879-.769 2.144-1.512.265-.744.265-1.381.185-1.512-.079-.132-.29-.211-.607-.37Z"/>
+        </svg>
+        Zur WhatsApp-Gruppe
+      </a>
+    </div>
   </section>
 
   <!-- ====================== NEXT STEPS (Damit du nichts verpasst) ====================== -->

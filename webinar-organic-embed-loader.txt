@@ -1,0 +1,135 @@
+<!-- =====================================================================
+     WEBFLOW HTML EMBED, Loader für die ORGANISCHE Webinar-Seite (/webinar)
+     =====================================================================
+     Diese Variante teilt das Layout mit der Paid-LP (webinar-video), nur:
+       - showPrevInvest = false  → Mehrfachauswahl-Feld wird ausgeblendet
+       - redirectUrl             → Redirect auf die ALTE Danke-Seite
+                                   (/webinar-teilnahme-danke)
+
+     Der Content-File und der Webhook sind dieselben wie bei der Paid-LP.
+     Alle Design-, Text- und Video-Änderungen greifen automatisch auch hier.
+
+     SETUP:
+       1. Diesen Block in das HTML-Embed-Widget der /webinar-Seite einfügen
+          (in main-wrapper, exakt wie bei /webinar-video).
+       2. In Webflow bei der /webinar-Seite den Weiterleitungs-Slug korrekt
+          setzen (Redirect wird von diesem Loader gesteuert).
+     ===================================================================== -->
+
+<script>
+  window.BSLP_CONFIG = {
+
+    /* ------- Datum & Uhrzeit ---------------------------------------- */
+    weekday: 'Dienstag',
+    date:    '{{wf:Webinar-Datum|Dynamo}}',
+    time:    '19:00',
+
+    /* ------- Overrides für die organische Seite --------------------- */
+    /* Redirect zeigt auf die ALTE Danke-Seite (Webhook + Redirect wie
+       das alte Formular, das dort schon läuft).                        */
+    redirectUrl: 'https://www.barbarascharrer.de/webinar-teilnahme-danke',
+    /* Mehrfachauswahl "Was hast du bisher..." ausblenden (im alten
+       Formular ebenfalls nicht vorhanden).                             */
+    showPrevInvest: false,
+
+    /* ------- Bild-URLs (Webflow Asset URLs einsetzen) --------------- */
+    images: {
+      logo:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/668e6f44a6b021dcba231ce8_barbara-scharrer-logo.svg',
+      hero:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f8672353d856ffc85c759d_barbara-scharrer-bg.jpg',
+      host:     'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f867224de8d3c6c89408ea_barbara-scharrer-host.jpg',
+      aufricht: 'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f867226accedec2291e6be_aufrechtprinzip.png',
+      empathy:  'https://cdn.prod.website-files.com/668e6c0a21c7d4d7b3faed6c/69f8672353d856ffc85c759d_barbara-scharrer-bg.jpg',
+      lesson:   ''
+    },
+
+    /* ------- Hero-Video (Wistia mit Marken-Farbe) ------------------- */
+    heroVideo: 'https://leonscharrer53.wistia.com/medias/zbz2gtfcrr',
+
+    /* ------- Testimonial-Cards (bis zu 4) --------------------------- */
+    testimonials: [
+      {
+        name:      'Anke',
+        context:   '98 % besser nach 8 Wochen',
+        youtubeId: 'https://youtu.be/1gH_EjTzASs',
+        quote:     'Nach nur 8 Wochen ist meine Inkontinenz zu 98–99 % verschwunden. Heute fühle ich mich sicherer, aufrechter — und kann meinem Körper wieder vertrauen.'
+      },
+      {
+        name:      'Susanne',
+        context:   '',
+        youtubeId: 'https://youtu.be/0IKpeaJDAU4',
+        quote:     'Heute kann ich wieder stundenlang durch die Stadt laufen, schlafe meistens durch und habe meine Lebensqualität zurückgewonnen.'
+      },
+      {
+        name:      'Hannelore',
+        context:   'über 80, 75 bis 80 % besser',
+        youtubeId: 'https://youtu.be/Kfr3-wKZU7c',
+        quote:     'Innerhalb weniger Wochen hat sich meine Inkontinenz um 75 bis 80 % verbessert. Ich traue mich wieder unter Menschen.'
+      },
+      {
+        name:      'Inge',
+        context:   '',
+        youtubeId: 'https://youtu.be/eEXh7JvBI0c',
+        quote:     'Bessere Haltung, weniger Beschwerden, und nebenbei kam meine Migräne einfach nicht mehr wieder.'
+      }
+    ]
+  };
+</script>
+
+<div id="bslp-mount" style="min-height:240px;">
+  <div style="padding:3rem 1.5rem;text-align:center;color:#888;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;">
+    <span style="display:inline-block;width:18px;height:18px;border:2px solid #ddd;border-top-color:#678ba5;border-radius:50%;animation:bslp-spin 0.7s linear infinite;vertical-align:middle;margin-right:0.5rem;"></span>
+    Die Seite lädt…
+  </div>
+</div>
+<style>@keyframes bslp-spin { to { transform: rotate(360deg); } }</style>
+
+<script>
+  (function(){
+    /* Content-URL identisch zur Paid-LP: raw.githubusercontent.com,
+       5-Minuten-Cache. Nach jedem git push ist die neue Version in
+       max. 5 Min live. */
+    var CONTENT_URL = 'https://raw.githubusercontent.com/privatdaniel/barbara-scharrer-website/main/webinar-content.txt';
+
+    var mount = document.getElementById('bslp-mount');
+    if (!mount) return;
+
+    function showError(msg, detail) {
+      mount.innerHTML =
+        '<div style="padding:2rem 1.5rem;text-align:center;color:#7b2020;background:#fff5f5;border:1px solid #d9534f;border-radius:8px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.5">' +
+          '<strong style="font-size:15px">Seite konnte nicht geladen werden.</strong><br>' +
+          '<span style="opacity:0.8">' + msg + '</span>' +
+          (detail ? '<br><small style="opacity:0.6;font-family:monospace;font-size:12px">' + detail + '</small>' : '') +
+        '</div>';
+    }
+
+    if (!window.fetch) { showError('Browser unterstützt fetch() nicht.', ''); return; }
+
+    fetch(CONTENT_URL, { credentials: 'omit', cache: 'no-cache' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
+        return r.text();
+      })
+      .then(function(html){
+        if (!html || html.length < 100) throw new Error('Empty response');
+        mount.innerHTML = html;
+
+        /* <script>-Tags aus innerHTML manuell re-aktivieren */
+        var scripts = mount.querySelectorAll('script');
+        scripts.forEach(function(oldScript){
+          var newScript = document.createElement('script');
+          for (var i = 0; i < oldScript.attributes.length; i++) {
+            var a = oldScript.attributes[i];
+            newScript.setAttribute(a.name, a.value);
+          }
+          newScript.textContent = oldScript.textContent;
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+
+        console.info('[Webinar-Organic] geladen ('+ html.length +' Bytes, '+ scripts.length +' Scripts)');
+      })
+      .catch(function(err){
+        console.error('[Webinar-Organic] Content-Load fehlgeschlagen:', err);
+        showError(err.message || 'Unbekannter Fehler', CONTENT_URL);
+      });
+  })();
+</script>
